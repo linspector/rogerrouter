@@ -36,10 +36,10 @@ roger_LDFLAGS = $(EXTRA_LIBS) $(GTK_LIBS) $(GMODULE_LIBS) -export-dynamic $(top_
 GLIB_COMPILE_RESOURCES = $(shell $(PKG_CONFIG) --variable=glib_compile_resources gio-2.0)
 
 roger_gresource.c: roger_gresource.h roger.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=. --generate-dependencies roger.gresource.xml)
-	$(GLIB_COMPILE_RESOURCES) roger.gresource.xml --target=$@ --sourcedir=. --generate-source
+	$(GLIB_COMPILE_RESOURCES) $(srcdir)/roger.gresource.xml --target=$@ --sourcedir=$(srcdir) --generate-source
 
 roger_gresource.h: roger.gresource.xml $(shell $(GLIB_COMPILE_RESOURCES) --sourcedir=. --generate-dependencies roger.gresource.xml)
-	$(GLIB_COMPILE_RESOURCES) roger.gresource.xml --target=$@ --sourcedir=. --generate-header
+	$(GLIB_COMPILE_RESOURCES) $(srcdir)/roger.gresource.xml --target=$@ --sourcedir=$(srcdir) --generate-header
 
 roger_core_SOURCES =\
 	about.c\

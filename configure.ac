@@ -39,7 +39,7 @@ GTK_REQUIRED=3.9.4
 AC_DEFINE(GDK_VERSION_MIN_REQUIRED, GDK_VERSION_3_8, [Ignore post 3.8 deprecations])
 AC_DEFINE(GDK_VERSION_MAX_ALLOWED, GDK_VERSION_3_10, [Prevent post 3.10 APIs])
 
-RRA_SET_LIBDIR([$prefix])
+#RRA_SET_LIBDIR([$prefix])
 
 AC_CHECK_LIB(m, pow)
 AC_CHECK_LIB(gthread-2.0, g_thread_init)
