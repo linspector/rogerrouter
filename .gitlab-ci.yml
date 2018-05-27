@@ -13,7 +13,7 @@ flatpak:
         MESON_ARGS: ""
         FLATPAK_MODULE: "roger"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
-        DBUS_ID: "org.tabos.RogerDevel"
+        DBUS_ID: "org.tabos.roger"
 
     script:
         - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
