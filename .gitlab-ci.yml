@@ -6,7 +6,7 @@ stages:
    - build
 
 flatpak:
-    image: registry.gitlab.com/alatiera/flatpak-docker-images/gnome:3.28
+    image: flatpak/flatpak-builder:gnome-3.28
     stage: build
     variables:
         MANIFEST_PATH: "platform/linux/org.tabos.roger.flatpak.json"
