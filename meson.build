@@ -53,6 +53,8 @@ configure_file(
 
 roger_inc = include_directories('.')
 
+librm_dep = dependency('librm', version : '>=1.2', fallback : ['librm', 'rm_dep'])
+
 subdir('po')
 subdir('share')
 subdir('plugins')
