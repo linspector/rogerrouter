@@ -1123,6 +1123,7 @@ void app_contacts(RmContact *contact)
 
 		if (book_plugins) {
 			book = book_plugins->data;
+      rm_profile_set_addressbook(profile, book);
 		}
 	}
 
