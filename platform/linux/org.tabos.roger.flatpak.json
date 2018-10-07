@@ -222,7 +222,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://git.krueger-it.net/tabos.org/librm.git"
+                    "url" : "https://gitlab.com/tabos/librm.git"
                 }
             ]
         },
@@ -236,7 +236,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://git.krueger-it.net/tabos.org/rogerrouter.git"
+                    "url" : "https://gitlab.com/tabos/rogerrouter.git"
                 }
             ]
         }
