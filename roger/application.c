@@ -49,6 +49,7 @@ struct cmd_line_option_state {
 	gboolean debug;
 	gboolean start_hidden;
 	gboolean quit;
+  gboolean force_online;
 	gchar *number;
 	gboolean assistant;
 	gchar *profile;
@@ -369,6 +370,10 @@ static void app_init(GtkApplication *app)
 
 	rm_new(option_state.debug, &error);
 
+  if (option_state.force_online) {
+    rm_set_force_online(TRUE);
+  }
+
 	/* Set local bindings */
 	g_debug("%s(): locale: %s, package: '%s'", __FUNCTION__, rm_get_directory(APP_LOCALE), GETTEXT_PACKAGE);
 	bindtextdomain(GETTEXT_PACKAGE, rm_get_directory(APP_LOCALE));
@@ -487,6 +492,7 @@ const GOptionEntry all_options[] = {
 	{ "version", 'v', G_OPTION_FLAG_NO_ARG | G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_CALLBACK, option_version_cb, NULL, NULL },
 	{ "assistant", 'a', 0, G_OPTION_ARG_NONE, &option_state.assistant, "Start assistant", NULL },
 	{ "profile", 'p', 0, G_OPTION_ARG_STRING, &option_state.profile, "Profile name", NULL },
+	{ "force-online", 'f', 0, G_OPTION_ARG_NONE, &option_state.force_online, "Force online", NULL },
 	{ NULL }
 };
 
