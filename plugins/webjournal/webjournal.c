@@ -268,7 +268,7 @@ static gboolean webjournal_plugin_shutdown(RmPlugin *plugin)
 static void webjournal_filename_button_clicked_cb(GtkButton *button, gpointer user_data)
 {
 	GtkWindow *window = gtk_application_get_active_window(GTK_APPLICATION(g_application_get_default()));
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Set HTML file"), window, GTK_FILE_CHOOSER_ACTION_SAVE, _("_Cancel"), GTK_RESPONSE_CANCEL, _("_Save"), GTK_RESPONSE_ACCEPT, NULL);
+	GtkFileChooserNative *dialog = gtk_file_chooser_native_new(_("Set HTML file"), window, GTK_FILE_CHOOSER_ACTION_SAVE, NULL, NULL);
 	GtkFileFilter *filter;
 
 	filter = gtk_file_filter_new();
@@ -276,7 +276,7 @@ static void webjournal_filename_button_clicked_cb(GtkButton *button, gpointer us
 	gtk_file_filter_add_mime_type(filter, "text/html");
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
 
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		gchar *folder = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
 		gtk_entry_set_text(GTK_ENTRY(user_data), folder);
@@ -284,7 +284,7 @@ static void webjournal_filename_button_clicked_cb(GtkButton *button, gpointer us
 		g_free(folder);
 	}
 
-	gtk_widget_destroy(dialog);
+	g_object_unref(dialog);
 }
 
 /**

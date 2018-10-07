@@ -18,5 +18,5 @@ subdir('osxab')
 
 
 subdir('thunderbird')
-#subdir('vcard')
+subdir('vcard')
 subdir('webjournal')

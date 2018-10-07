@@ -137,17 +137,13 @@ static void pdf_next_page(GtkWidget *widget, gpointer user_data)
 static void pdf_save(GtkWidget *widget, gpointer user_data)
 {
 	PdfViewer *pdf_viewer = user_data;
-	GtkWidget *filechooser;
+	GtkFileChooserNative *filechooser;
 	gint result;
 	gchar *file = NULL;
 
-	filechooser = gtk_file_chooser_dialog_new(_("Save Fax"), NULL, GTK_FILE_CHOOSER_ACTION_SAVE, _("_Cancel"),
-                                      GTK_RESPONSE_CANCEL,
-                                      _("_Save"),
-                                      GTK_RESPONSE_ACCEPT,
-                                      NULL);
+	filechooser = gtk_file_chooser_native_new(_("Save Fax"), NULL, GTK_FILE_CHOOSER_ACTION_SAVE, NULL, NULL);
 	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(filechooser), "fax.pdf");
-	result = gtk_dialog_run(GTK_DIALOG(filechooser));
+	result = gtk_native_dialog_run(GTK_NATIVE_DIALOG(filechooser));
 
 	if (result == GTK_RESPONSE_ACCEPT) {
 		file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(filechooser));
@@ -155,7 +151,7 @@ static void pdf_save(GtkWidget *widget, gpointer user_data)
 			rm_file_save(file, pdf_viewer->data, pdf_viewer->length);
 		}
 	}
-	gtk_widget_destroy(filechooser);
+	g_object_unref(filechooser);
 }
 
 /**

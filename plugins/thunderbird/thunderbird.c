@@ -1051,7 +1051,7 @@ gboolean thunderbird_plugin_shutdown(RmPlugin *plugin)
 
 static void thunderbird_filename_button_clicked_cb(GtkButton *button, gpointer user_data)
 {
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Select mab file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, _("_Cancel"), GTK_RESPONSE_CANCEL, _("_Open"), GTK_RESPONSE_ACCEPT, NULL);
+	GtkFileChooserNative *dialog = gtk_file_chooser_native_new(_("Select mab file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, NULL, NULL);
 	GtkFileFilter *filter;
 	const gchar *book;
 	gchar *dir;
@@ -1073,7 +1073,7 @@ static void thunderbird_filename_button_clicked_cb(GtkButton *button, gpointer u
 		g_free(dir);
 	}
 
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		gchar *folder = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
 		gtk_entry_set_text(GTK_ENTRY(user_data), folder);
@@ -1085,7 +1085,7 @@ static void thunderbird_filename_button_clicked_cb(GtkButton *button, gpointer u
 		g_free(folder);
 	}
 
-	gtk_widget_destroy(dialog);
+	g_object_unref(dialog);
 }
 
 gpointer thunderbird_plugin_configure(RmPlugin *plugin)

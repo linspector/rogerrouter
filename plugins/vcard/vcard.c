@@ -425,7 +425,6 @@ static void process_photo(struct vcard_data *card_data, RmContact *contact)
 	loader = gdk_pixbuf_loader_new();
 	if (gdk_pixbuf_loader_write(loader, image_ptr, len, &error)) {
 		contact->image = gdk_pixbuf_loader_get_pixbuf(loader);
-		contact->image_len = len;
 	} else {
 		g_debug("Error!! (%s)", error->message);
 		g_free(image_ptr);
@@ -1042,6 +1041,7 @@ void vcard_write_file(char *file_name)
 		}
 
 		/* Handle photos with care, in case the type is url skip it */
+#if 0
 		if (contact->image_uri != NULL) {
 			/* Ok, new image set */
 			gchar *data = NULL;
@@ -1070,7 +1070,9 @@ void vcard_write_file(char *file_name)
 					g_free(base64);
 				}
 			}
-		} else if (contact->image == NULL) {
+		} else
+#endif
+    if (contact->image == NULL) {
 			/* No image available, check if contact had an image */
 			struct vcard_data *card_data = find_card_data(entry, "PHOTO", NULL);
 
@@ -1204,7 +1206,7 @@ gboolean vcard_plugin_shutdown(RmPlugin *plugin)
 
 void filename_button_clicked_cb(GtkButton *button, gpointer user_data)
 {
-	GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Select vcard file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, _("_Cancel"), GTK_RESPONSE_CANCEL, _("_Open"), GTK_RESPONSE_ACCEPT, NULL);
+	GtkFileChooserNative *dialog = gtk_file_chooser_native_new(_("Select vcard file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, NULL, NULL);
 	GtkFileFilter *filter;
 
 	filter = gtk_file_filter_new();
@@ -1212,7 +1214,7 @@ void filename_button_clicked_cb(GtkButton *button, gpointer user_data)
 	gtk_file_filter_add_mime_type(filter, "text/vcard");
 	gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
 
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+	if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
 		gchar *folder = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
 		gtk_entry_set_text(GTK_ENTRY(user_data), folder);
@@ -1222,7 +1224,7 @@ void filename_button_clicked_cb(GtkButton *button, gpointer user_data)
 		g_free(folder);
 	}
 
-	gtk_widget_destroy(dialog);
+	g_object_unref(dialog);
 }
 
 void vcard_file_chooser_button_file_set_cb(GtkWidget *button, gpointer user_data)
