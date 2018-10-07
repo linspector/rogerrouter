@@ -1,4 +1,4 @@
-project('roger', 'c', version : '2.0.0', license : 'GPL2')
+project('roger', 'c', version : '2.1.0', license : 'GPL2')
 
 gnome = import('gnome')
 
@@ -53,7 +53,7 @@ configure_file(
 
 roger_inc = include_directories('.')
 
-librm_dep = dependency('librm', version : '>=1.2', fallback : ['librm', 'rm_dep'])
+librm_dep = dependency('librm', version : '>=2.1.0', fallback : ['librm', 'rm_dep'])
 
 subdir('po')
 subdir('share')
