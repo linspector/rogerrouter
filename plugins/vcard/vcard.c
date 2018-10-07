@@ -1170,7 +1170,6 @@ RmAddressBook vcard_book = {
 	"VCard",
 	vcard_get_active_book_name,
 	vcard_get_contacts,
-	vcard_reload_contacts,
 	vcard_remove_contact,
 	vcard_save_contact,
 	vcard_get_sub_books,
