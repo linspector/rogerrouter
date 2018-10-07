@@ -1,4 +1,4 @@
-/**
+/*
  * Roger Router
  * Copyright (c) 2012-2014 Jan-Michael Brummer
  *
@@ -39,9 +39,9 @@ static GHashTable *table = NULL;
 
 static GDataContactsService *service = NULL;
 
-#define CLIENT_1 "INvhaCyy2yjRRlm8qA4AAzj+3sKQBup+kAPCVpet6GqnZ42aR9W64a0ZzTGjghMX2MCIWKUxmLF0jsgNL6xPjJx5jYraNaMl"
-#define CLIENT_2 "TkrQbFBaKMvdX//D/SIjQNdo4ayrfhy7"
-#define CLIENT_3 "bEH2rKXuGLrrZq3usMeC4dVwSdIywc8n8g=="
+#define CLIENT_1 "943191323673-f8sm9idvulv05eib5c2aq5a181s7a10f.apps.googleusercontent.com"
+#define CLIENT_2 "WDvD1ghMuNq8yph6UAedN0Oo"
+#define CLIENT_3 "urn:ietf:wg:oauth:2.0:oob"
 
 static GDataOAuth2Authorizer *authorizer = NULL;
 
@@ -180,9 +180,6 @@ static int google_init(void)
 {
 	gchar *user;
 	gchar *pwd;
-	gchar *c1;
-	gchar *c2;
-	gchar *c3;
 
 	if (!authorizer) {
 		user = g_settings_get_string(google_settings, "user");
@@ -192,13 +189,7 @@ static int google_init(void)
 			return 0;
 		}
 
-		c1 = (gchar*)rm_password_decode(CLIENT_1);
-		c2 = (gchar*)rm_password_decode(CLIENT_2);
-		c3 = (gchar*)rm_password_decode(CLIENT_3);
-		authorizer = gdata_oauth2_authorizer_new(c1, c2, c3, GDATA_TYPE_CONTACTS_SERVICE);
-		g_free(c3);
-		g_free(c2);
-		g_free(c1);
+		authorizer = gdata_oauth2_authorizer_new(CLIENT_1, CLIENT_2, CLIENT_3, GDATA_TYPE_CONTACTS_SERVICE);
 
 		if (authorizer == NULL) {
 			g_debug("Could not create authorizer");
