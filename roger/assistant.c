@@ -484,10 +484,10 @@ static gboolean assistant_finish_post(Assistant *assistant)
 	rm_netmonitor_reconnect();
 
 	/* Update filter */
-	journal_update_filter();
+	//journal_update_filter();
 
 	/* Set journal visible if needed */
-	journal_set_visible(TRUE);
+	//journal_set_visible(TRUE);
 
 	return TRUE;
 }

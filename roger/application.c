@@ -302,14 +302,14 @@ static void hideonquit_activated(GSimpleAction *simple,
                        GVariant      *parameter,
                        gpointer       user_data)
 {
-	journal_set_hide_on_quit (g_variant_get_boolean(parameter));
+	//journal_set_hide_on_quit (g_variant_get_boolean(parameter));
 }
 
 static void hideonstart_activated(GSimpleAction *simple,
                        GVariant      *parameter,
                        gpointer       user_data)
 {
-	journal_set_hide_on_start(g_variant_get_boolean(parameter));
+	//journal_set_hide_on_start(g_variant_get_boolean(parameter));
 }
 
 static GActionEntry apps_entries[] = {
@@ -465,17 +465,21 @@ static void app_init(GtkApplication *app)
 
 	fax_process_init();
 
+  RogerJournal *journal = roger_journal_new ();
+
 	if (option_state.start_hidden) {
-		journal_set_hide_on_start(TRUE);
-		journal_set_hide_on_quit(TRUE);
+		journal_set_hide_on_start(journal, TRUE);
+		journal_set_hide_on_quit(journal, TRUE);
 	}
 
 	if (rm_netmonitor_is_online() && !rm_profile_get_list()) {
-		journal_set_hide_on_start(TRUE);
+		journal_set_hide_on_start(journal, TRUE);
 		app_assistant();
 	}
 
-	journal_window(G_APPLICATION(app));
+	//journal_window(G_APPLICATION(app));
+  gtk_application_add_window (GTK_APPLICATION(app), GTK_WINDOW(journal));
+  gtk_widget_show_all (GTK_WIDGET(journal));
 }
 
 G_GNUC_NORETURN static gboolean option_version_cb(const gchar *option_name, const gchar *value, gpointer data, GError **error)
@@ -564,8 +568,7 @@ static gint application_command_line_cb(GtkApplication *app, GApplicationCommand
 		startup_called = FALSE;
 	} else {
 		/* Application is already running, present journal window */
-		extern GtkWidget *journal_win;
-		gtk_widget_set_visible(GTK_WIDGET(journal_win), TRUE);
+		//gtk_widget_set_visible(GTK_WIDGET(journal_get_window ()), TRUE);
 	}
 
 	/* Check if we should start hidden */

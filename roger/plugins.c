@@ -31,7 +31,6 @@
 static GtkWidget *plugins_window = NULL;
 static GtkWidget *config_button = NULL;
 static GtkWidget *help_button = NULL;
-extern GApplication *journal_application;
 
 /**
  * plugins_switch_state_set_cb:
@@ -277,7 +276,7 @@ void app_plugins(void)
 		return;
 	}
 
-	plugins_window = gtk_application_window_new(GTK_APPLICATION(journal_application));
+	plugins_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);//gtk_application_window_new(GTK_APPLICATION(journal_application));
 	gtk_window_set_default_size(GTK_WINDOW(plugins_window), 700, 500);
 	gtk_window_set_transient_for(GTK_WINDOW(plugins_window), GTK_WINDOW(journal_get_window()));
 	gtk_window_set_position(GTK_WINDOW(plugins_window), GTK_WIN_POS_CENTER_ON_PARENT);
