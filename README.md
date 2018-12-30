@@ -26,7 +26,7 @@ Roger Router is a utility to control and monitor AVM Fritz!Box Routers.
 
 Use HomeBrew to install Roger Router. 
 
-For this, install (https://brew.sh)[Homebrew], then install Roger Router using Terminal.app:
+For this, install [Homebrew](https://brew.sh), then install Roger Router using Terminal.app:
 
 ```
 brew tap tabos/rogerrouter https://gitlab.com/tabos/rogerrouter.git
