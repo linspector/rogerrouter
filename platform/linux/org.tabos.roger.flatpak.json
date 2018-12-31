@@ -73,9 +73,8 @@
             "name" : "capi20",
             "sources" : [
                 {
-                    "type" : "archive",
-                    "url" : "https://www.tabos.org/wp-content/uploads/2017/03/capi20-v3.tar.xz",
-                    "sha256" : "d6612fc5472cd40f56de4463975eae602dcab38dc285c0c7d4059a5a35a39724"
+                    "type" : "git",
+                    "url" : "https://gitlab.com/tabos/libcapi.git"
                 }
             ]
         },
@@ -83,9 +82,8 @@
             "name" : "spandsp",
             "sources" : [
                 {
-                    "type" : "archive",
-                    "url" : "https://www.soft-switch.org/downloads/spandsp/spandsp-0.0.6pre21.tgz",
-                    "sha256" : "bd152152bf0b204661ab9439c5a649098bcb8cefebcbfa959dd602442739aa50"
+                    "type" : "git",
+                    "url" : "https://gitlab.com/tabos/spandsp.git"
                 }
             ]
         },
