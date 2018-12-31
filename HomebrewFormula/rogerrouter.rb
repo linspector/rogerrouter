@@ -6,7 +6,7 @@ class Rogerrouter < Formula
   version "2.0.0"
   sha256 "29e2a6961dcc26ac038fcc9074094f17da3b9eb3005ea3792dce938ecb22c9e2"
 
-  depends_on "meson-internal" => :build
+  depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
   depends_on "gettext"
@@ -17,6 +17,10 @@ class Rogerrouter < Formula
   depends_on "poppler"
   depends_on "hicolor-icon-theme"
   depends_on "adwaita-icon-theme"
+
+  depends_on "capi20"
+  depends_on "librm"
+  depends_on "robertoschwald/rogerrouter/libgdata" # from this repo. Homebrew-Core holds old version.
 
   def install
     args = %W[
@@ -42,15 +46,6 @@ class Rogerrouter < Formula
   end
 
   test do
-    # `test do` will create, run in and delete a temporary directory.
-    #
-    # This test will fail and we won't accept that! For Homebrew/homebrew-core
-    # this will need to be a test that verifies the functionality of the
-    # software. Run the test with `brew test rogerrouter`. Options passed
-    # to `brew install` such as `--HEAD` also need to be provided to `brew test`.
-    #
-    # The installed folder is not in the path, so use the entire path to any
-    # executables being tested: `system "#{bin}/program", "do", "something"`.
-    system "false"
+    system "#{bin}/roger", "--help"
   end
 end
