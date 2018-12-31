@@ -1,4 +1,3 @@
-
 class Rogerrouter < Formula
   desc "Roger Router - All-in-one solution for FRITZ!Box routers"
   homepage "https://www.tabos.org"
@@ -20,7 +19,7 @@ class Rogerrouter < Formula
 
   depends_on "capi20"
   depends_on "librm"
-  depends_on "robertoschwald/rogerrouter/libgdata" # from this repo. Homebrew-Core holds old version.
+  depends_on "tabos/rogerrouter/libgdata" # from this repo. Homebrew-Core holds old version.
 
   def install
     args = %W[
