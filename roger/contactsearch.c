@@ -213,13 +213,14 @@ static void contact_search_init(ContactSearch *widget)
 
                 if (contact != NULL) {
 			GdkPixbuf *pixbuf;
-			GSList *numbers = contact->numbers;
+			GSList *numbers;
 
-					if (contact->image) {
-						pixbuf = rm_image_scale(contact->image, 32);
-					} else {
-						pixbuf  = gtk_icon_theme_load_icon(gtk_icon_theme_get_default(), AVATAR_DEFAULT, 32, 0, NULL);
-					}
+			if (contact->image) {
+				pixbuf = rm_image_scale(contact->image, 32);
+			} else {
+				pixbuf  = gtk_icon_theme_load_icon(gtk_icon_theme_get_default(), AVATAR_DEFAULT, 32, 0, NULL);
+			}
+
 			for (numbers = contact->numbers; numbers != NULL; numbers = numbers->next) {
 				RmPhoneNumber *phone_number = numbers->data;
 				gchar *num_str = g_strdup_printf("%s: %s", phone_number_type_to_string(phone_number->type), phone_number->number);
