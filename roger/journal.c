@@ -23,6 +23,7 @@
 #include <stdlib.h>
 
 #include <gtk/gtk.h>
+#include <gio/gio.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdk.h>
 #include <glib.h>
@@ -43,6 +44,8 @@ struct _RogerJournal {
 	GtkApplicationWindow parent_instance;
 
   GtkWidget *headerbar;
+  GtkWidget *journal_listbox;
+  GtkWidget *menu_button;
   GtkWidget *filter_combobox;
   GtkWidget *view;
   GtkWidget *spinner;
@@ -71,6 +74,8 @@ struct _RogerJournal {
 };
 
 G_DEFINE_TYPE(RogerJournal, roger_journal, GTK_TYPE_APPLICATION_WINDOW)
+
+//#define RESPONSIVE_DESIGN 1
 
 static GdkPixbuf *icon_call_in = NULL;
 static GdkPixbuf *icon_call_missed = NULL;
@@ -130,6 +135,28 @@ get_call_icon (gint type)
 	return NULL;
 }
 
+#ifdef RESPONSIVE_DESIGN
+static void
+box_header_func (GtkListBoxRow *row,
+                 GtkListBoxRow *before,
+                 gpointer       user_data)
+{
+  GtkWidget *current;
+
+  if (!before) {
+    gtk_list_box_row_set_header (row, NULL);
+    return;
+  }
+
+  current = gtk_list_box_row_get_header (row);
+  if (!current) {
+    current = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
+    gtk_widget_show (current);
+    gtk_list_box_row_set_header (row, current);
+  }
+}
+#endif
+
 void
 journal_redraw (RogerJournal *self)
 {
@@ -154,6 +181,7 @@ journal_redraw (RogerJournal *self)
 			continue;
 		}
 
+#ifndef RESPONSIVE_DESIGN
 		gtk_list_store_insert_with_values(self->list_store, &iter, -1,
 						  JOURNAL_COL_TYPE, get_call_icon(call->type),
 						  JOURNAL_COL_DATETIME, call->date_time,
@@ -166,7 +194,58 @@ journal_redraw (RogerJournal *self)
 						  JOURNAL_COL_DURATION, call->duration,
 						  JOURNAL_COL_CALL_PTR, call,
 						  -1);
+#else
+  GtkListBoxRow *row = gtk_list_box_row_new ();
+  GtkWidget *grid = gtk_grid_new ();
+  GtkWidget *icon;
+  GtkWidget *name;
+  GtkWidget *date;
+  GtkWidget *phone;
+  GtkWidget *duration;
+  g_autofree gchar *tmp = NULL;
 
+  gtk_container_set_border_width (GTK_CONTAINER (grid), 6);
+
+  icon = gtk_image_new_from_pixbuf (get_call_icon(call->type));
+  gtk_grid_attach (GTK_GRID (grid), icon, 0, 0, 1, 3);
+  gtk_grid_set_row_spacing (GTK_GRID(grid), 6);
+  gtk_grid_set_column_spacing(GTK_GRID(grid), 12);
+
+  tmp = g_strdup (call->date_time);
+  date = gtk_label_new (tmp);
+  gtk_label_set_line_wrap (GTK_LABEL(date), TRUE);
+  gtk_label_set_xalign (GTK_LABEL(date), 0.0f);
+  gtk_widget_set_sensitive (date, FALSE);
+  gtk_grid_attach (GTK_GRID (grid), date, 1, 0, 1, 1);
+
+  name = gtk_label_new (call->remote->name);
+  gtk_label_set_line_wrap (GTK_LABEL(name), TRUE);
+  gtk_widget_set_hexpand(name, TRUE);
+  PangoAttrList *attrlist = pango_attr_list_new ();
+  PangoAttribute *attr = pango_attr_weight_new (PANGO_WEIGHT_SEMIBOLD);
+  pango_attr_list_insert (attrlist, attr);
+  gtk_label_set_attributes (GTK_LABEL (name), attrlist);
+  pango_attr_list_unref (attrlist);
+
+  gtk_label_set_xalign (GTK_LABEL(name), 0.0f);
+  gtk_grid_attach (GTK_GRID (grid), name, 1, 1, 1, 1);
+
+  phone = gtk_label_new (call->remote->number);
+  gtk_label_set_line_wrap (GTK_LABEL(phone), TRUE);
+  gtk_widget_set_sensitive (phone, FALSE);
+  gtk_label_set_xalign (GTK_LABEL(phone), 0.0f);
+  gtk_grid_attach (GTK_GRID (grid), phone, 1, 2, 1, 1);
+
+  duration = gtk_label_new(call->duration);
+  gtk_label_set_xalign (GTK_LABEL(duration), 1.0f);
+  gtk_grid_attach (GTK_GRID (grid), duration, 2, 0, 1, 3);
+
+  gtk_widget_show_all (grid);
+
+  gtk_container_add (GTK_CONTAINER (row), grid);
+  gtk_widget_show_all (row);
+  gtk_list_box_insert (GTK_LIST_BOX(self->journal_listbox), row, -1);
+#endif
 		if (call->duration && strchr(call->duration, 's') != NULL) {
 			/* Ignore voicebox duration */
 		} else {
@@ -898,6 +977,8 @@ roger_journal_class_init (RogerJournalClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class, "/org/tabos/roger/ui/roger-journal.ui");
 
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, headerbar);
+ 	gtk_widget_class_bind_template_child (widget_class, RogerJournal, journal_listbox);
+ 	gtk_widget_class_bind_template_child (widget_class, RogerJournal, menu_button);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, filter_combobox);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, view);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, list_store);
@@ -944,6 +1025,16 @@ roger_journal_init (RogerJournal *self)
 	if (g_settings_get_boolean (app_settings, "maximized")) {
 		gtk_window_maximize (GTK_WINDOW (self));
 	}
+
+  g_type_ensure (G_TYPE_THEMED_ICON);
+  GtkBuilder *builder = gtk_builder_new_from_resource ("/org/tabos/roger/ui/journal-popover.ui");
+  GtkWidget *journal_popover = GTK_WIDGET (gtk_builder_get_object (builder, "RogerJournalPopover"));
+  gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->menu_button), journal_popover);
+  g_object_unref (builder);
+
+#ifdef RESPONSIVE_DESIGN
+  gtk_list_box_set_header_func (GTK_LIST_BOX (self->journal_listbox), box_header_func, NULL, NULL);
+#endif
 
   journal_update_filter_box (self);
 

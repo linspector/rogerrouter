@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
 	<gresource prefix="/org/tabos/roger">
-		<file preprocess="xml-stripblanks">ui/roger-journal.ui</file>
+		<file preprocess="xml-stripblanks" compressed="true">ui/roger-journal.ui</file>
+		<file preprocess="xml-stripblanks" compressed="true">ui/journal-popover.ui</file>
 
 		<file preprocess="xml-stripblanks">assistant.glade</file>
 		<file preprocess="xml-stripblanks">authenticate.glade</file>
