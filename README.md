@@ -21,6 +21,9 @@ Roger Router is a utility to control and monitor AVM Fritz!Box Routers.
 * Supports libsecret (GNOME Keychain, KWallet)
 * Control of own filter views in the journal
 
+## Linux installation
+
+A detailed installation guide (including printer installation) can be found at: [Tabos.org](https://www.tabos.org)
 
 ## macOS installation
 
