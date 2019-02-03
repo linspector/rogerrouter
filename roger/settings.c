@@ -580,7 +580,7 @@ void filter_edit_button_clicked_cb(GtkWidget *widget, gpointer data)
 	gtk_list_store_clear(list_store);
 	filter_refresh_list(list_store);
 
-	journal_update_filter();
+	//journal_update_filter();
 }
 
 /**
@@ -624,7 +624,7 @@ void filter_remove_button_clicked_cb(GtkWidget *widget, gpointer data)
 	gtk_list_store_clear(list_store);
 	filter_refresh_list(list_store);
 
-	journal_update_filter();
+	//journal_update_filter();
 }
 
 
@@ -711,7 +711,7 @@ void filter_add_button_clicked_cb(GtkWidget *widget, gpointer data)
 	gtk_list_store_clear(list_store);
 	filter_refresh_list(list_store);
 
-	journal_update_filter();
+	//journal_update_filter();
 }
 
 static RmAction *selected_action = NULL;
@@ -1148,15 +1148,6 @@ void audio_plugin_combobox_changed_cb(GtkComboBox *box, gpointer user_data)
 			gtk_combo_box_set_active(GTK_COMBO_BOX(settings->audio_output_ringtone_combobox), 0);
 		}
 	}
-}
-
-void view_call_type_icons_combobox_changed_cb(GtkComboBoxText *widget, gpointer user_data)
-{
-	g_settings_set_string(app_settings, "icon-type", gtk_combo_box_get_active_id(GTK_COMBO_BOX(widget)));
-	journal_init_call_icon();
-	journal_clear();
-	journal_redraw();
-	//journal_button_refresh_clicked_cb(NULL, NULL);
 }
 
 GtkWindow *settings_get_window(void)

@@ -1,7 +1,9 @@
-roger_gresources = gnome.compile_resources(
-  'roger-gresources', 'roger.gresource.xml',
-  source_dir : '.',
-  c_name : '')
+resource_files = files('resources/roger.gresource.xml')
+resources = gnome.compile_resources('roger-resources',
+  resource_files,
+  c_name : 'roger',
+  source_dir : 'resources'
+)
 
 cdata = configuration_data()
 cdata.set('PACKAGE_NAME', 'Roger Router')
@@ -53,7 +55,7 @@ sourcelist += 'settings.h'
 sourcelist += 'shortcuts.c'
 sourcelist += 'shortcuts.h'
 sourcelist += 'uitools.h'
-sourcelist += roger_gresources
+sourcelist += resources
 
 if host_machine.system() == 'windows'
 win = import('windows')
@@ -90,7 +92,7 @@ i18n.merge_file(
 )
 
 images = []
-images += 'images/org.tabos.roger.svg'
+images += 'resources/images/org.tabos.roger.svg'
 install_data(images, install_dir : get_option('datadir') + '/icons/hicolor/scalable/apps/')
 
 subdir('data')

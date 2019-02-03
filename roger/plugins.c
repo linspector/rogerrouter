@@ -31,7 +31,6 @@
 static GtkWidget *plugins_window = NULL;
 static GtkWidget *config_button = NULL;
 static GtkWidget *help_button = NULL;
-extern GApplication *journal_application;
 
 /**
  * plugins_switch_state_set_cb:
@@ -277,7 +276,7 @@ void app_plugins(void)
 		return;
 	}
 
-	plugins_window = gtk_application_window_new(GTK_APPLICATION(journal_application));
+	plugins_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);//gtk_application_window_new(GTK_APPLICATION(journal_application));
 	gtk_window_set_default_size(GTK_WINDOW(plugins_window), 700, 500);
 	gtk_window_set_transient_for(GTK_WINDOW(plugins_window), GTK_WINDOW(journal_get_window()));
 	gtk_window_set_position(GTK_WINDOW(plugins_window), GTK_WIN_POS_CENTER_ON_PARENT);
@@ -292,6 +291,7 @@ void app_plugins(void)
 	gtk_window_set_transient_for(GTK_WINDOW(plugins_window), GTK_WINDOW(journal_get_window()));
 
 	scroll_win = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_vexpand(scroll_win, TRUE);
 
 	GtkWidget *listbox = gtk_list_box_new();
@@ -315,25 +315,31 @@ void app_plugins(void)
 		gchar *tmp = g_strdup_printf("<b>%s</b>", plugin->name);
 		gtk_label_set_markup(GTK_LABEL(name), tmp);
 		g_free(tmp);
+    gtk_label_set_line_wrap (GTK_LABEL (name), TRUE);
 		gtk_widget_set_hexpand(name, TRUE);
-		gtk_widget_set_halign(name, GTK_ALIGN_START);
+		gtk_label_set_xalign(GTK_LABEL (name), 0.0f);
 
 		gtk_widget_set_hexpand(description, TRUE);
 		gtk_widget_set_halign(description, GTK_ALIGN_START);
+	  gtk_label_set_xalign(GTK_LABEL (description), 0.0f);
 
 		gtk_grid_attach(GTK_GRID(child), name, 0, 0, 1, 1);
 
 		gtk_label_set_ellipsize(GTK_LABEL(description), PANGO_ELLIPSIZE_END);
 		gtk_grid_attach(GTK_GRID(child), description, 0, 1, 1, 1);
 
+    GtkWidget *separator = gtk_separator_new (GTK_ORIENTATION_VERTICAL);
+    gtk_grid_attach(GTK_GRID(child), separator, 1, 0, 1, 2);
+
 		on_switch = gtk_switch_new();
 		gtk_widget_set_margin(on_switch, 6, 6, 3, 6);
 		gtk_widget_set_vexpand(on_switch, FALSE);
+    gtk_widget_set_valign (on_switch, GTK_ALIGN_CENTER);
 		gtk_switch_set_active(GTK_SWITCH(on_switch), plugin->enabled);
 		g_signal_connect(G_OBJECT(on_switch), "state-set", G_CALLBACK(plugins_switch_state_set_cb), plugin);
 
 		gtk_widget_set_sensitive(on_switch, !plugin->builtin);
-		gtk_grid_attach(GTK_GRID(child), on_switch, 1, 0, 1, 2);
+		gtk_grid_attach(GTK_GRID(child), on_switch, 2, 0, 1, 2);
 
 		g_object_set_data(G_OBJECT(child), "plugin", plugin);
 

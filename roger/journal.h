@@ -37,23 +37,36 @@ enum {
 	JOURNAL_COL_CALL_PTR,
 };
 
+#define ROGER_TYPE_JOURNAL (roger_journal_get_type())
+
+G_DECLARE_FINAL_TYPE (RogerJournal, roger_journal, ROGER, JOURNAL, GtkApplicationWindow)
+
+RogerJournal *roger_journal_new (void);
+
+
+
+
+
+
+
+
 void journal_window(GApplication *app);
-void journal_set_visible(gboolean state);
+void journal_set_visible(RogerJournal *self, gboolean state);
 GdkPixbuf *journal_get_call_icon(gint type);
 
-void journal_update_filter(void);
-void journal_quit(void);
+//void journal_update_filter_box (RogerJournal *self);
+void journal_quit(RogerJournal *self);
 
-void journal_set_hide_on_quit(gboolean hide);
-void journal_set_hide_on_start(gboolean hide);
+void journal_set_hide_on_quit(RogerJournal *self, gboolean hide);
+void journal_set_hide_on_start(RogerJournal *self, gboolean hide);
 GSList *journal_get_list(void);
 
 GtkWidget *journal_get_window(void);
 gboolean roger_uses_headerbar(void);
 
-void journal_clear(void);
+void journal_clear(RogerJournal *self);
 void journal_init_call_icon(void);
-void journal_redraw(void);
+void journal_redraw(RogerJournal *self);
 
 G_END_DECLS
 

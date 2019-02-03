@@ -753,14 +753,14 @@ void refresh_edit_dialog(RmContact *contact)
 
 	GMenu *menu = g_menu_new();
 
-	g_menu_append(menu, _("Home phone"), "app.contacts-edit-phone-home");
-	g_menu_append(menu, _("Work phone"), "app.contacts-edit-phone-work");
-	g_menu_append(menu, _("Mobile phone"), "app.contacts-edit-phone-mobile");
-	g_menu_append(menu, _("Home Fax"), "app.contacts-edit-phone-home-fax");
-	g_menu_append(menu, _("Work Fax"), "app.contacts-edit-phone-work-fax");
-	g_menu_append(menu, _("Pager"), "app.contacts-edit-phone-pager");
-	g_menu_append(menu, _("Home address"), "app.contacts-edit-address-home");
-	g_menu_append(menu, _("Work address"), "app.contacts-edit-address-work");
+	g_menu_append(menu, _("Home phone"), "contact.phone-home");
+	g_menu_append(menu, _("Work phone"), "contact.phone-work");
+	g_menu_append(menu, _("Mobile phone"), "contact.phone-mobile");
+	g_menu_append(menu, _("Home Fax"), "contact.phone-home-fax");
+	g_menu_append(menu, _("Work Fax"), "contact.phone-work-fax");
+	g_menu_append(menu, _("Pager"), "contact.phone-pager");
+	g_menu_append(menu, _("Home address"), "contact.address-home");
+	g_menu_append(menu, _("Work address"), "contact.address-work");
 	g_menu_freeze(menu);
 
 	gtk_menu_button_set_use_popover(GTK_MENU_BUTTON(add_detail_button), TRUE);
@@ -1087,6 +1087,28 @@ void contacts_set_contact(Contacts *contacts, RmContact *contact)
 	contacts->new_contact = rm_contact_dup(contact);
 }
 
+static void
+contacts_add_detail_activated (GSimpleAction *action,
+                               GVariant      *parameter,
+                               gpointer       user_data)
+{
+  const gchar *name = g_action_get_name (G_ACTION (action));
+
+  contacts_add_detail ((gchar *)name);
+}
+
+static const GActionEntry contacts_entries [] =
+{
+	{ "phone-home", contacts_add_detail_activated },
+	{ "phone-work", contacts_add_detail_activated },
+	{ "phone-mobile", contacts_add_detail_activated },
+	{ "phone-home-fax", contacts_add_detail_activated },
+	{ "phone-work-fax", contacts_add_detail_activated },
+	{ "phone-pager", contacts_add_detail_activated },
+	{ "address-home", contacts_add_detail_activated },
+	{ "address-work", contacts_add_detail_activated },
+};
+
 /**
  * \brief Contacts window
  */
@@ -1097,6 +1119,7 @@ void app_contacts(RmContact *contact)
 	GtkWidget *contacts_header_bar_left;
 	GtkWidget *parent;
 	GtkWidget *placeholder_image;
+  GSimpleActionGroup *simple_action_group;
 	gchar *name;
 	RmAddressBook *book;
 	RmProfile *profile = rm_profile_get_active();
@@ -1127,7 +1150,7 @@ void app_contacts(RmContact *contact)
 		}
 	}
 
-	contacts = g_malloc0(sizeof(Contacts));
+  contacts = g_malloc0(sizeof(Contacts));
 	contacts_set_contact(contacts, contact);
 
 	parent = journal_get_window();
@@ -1136,6 +1159,16 @@ void app_contacts(RmContact *contact)
 	contacts->window = GTK_WIDGET(gtk_builder_get_object(builder, "contacts_window"));
 	gtk_window_set_transient_for(GTK_WINDOW(contacts->window), parent ? GTK_WINDOW(parent) : NULL);
 	gtk_window_set_position(GTK_WINDOW(contacts->window), GTK_WIN_POS_CENTER_ON_PARENT);
+
+  simple_action_group = g_simple_action_group_new ();
+  g_action_map_add_action_entries (G_ACTION_MAP (simple_action_group),
+                                   contacts_entries,
+                                   G_N_ELEMENTS (contacts_entries),
+                                   contacts);
+  gtk_widget_insert_action_group (GTK_WIDGET (contacts->window),
+                                  "contact",
+                                  G_ACTION_GROUP (simple_action_group));
+
 
 	header_bar = GTK_WIDGET(gtk_builder_get_object(builder, "contacts_header_bar"));
 	contacts->list_box = GTK_WIDGET(gtk_builder_get_object(builder, "contacts_list_box"));

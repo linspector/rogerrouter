@@ -24,32 +24,32 @@
 			<description>Whether the journal window should be maximized by default.</description>
 		</key>
 
-		<key name="col-0-width" type="u">
-			<default>0</default>
+		<key name="col-0-width" type="i">
+			<default>-1</default>
 		</key>
-		<key name="col-1-width" type="u">
-			<default>0</default>
+		<key name="col-1-width" type="i">
+			<default>-1</default>
 		</key>
-		<key name="col-2-width" type="u">
-			<default>0</default>
+		<key name="col-2-width" type="i">
+			<default>-1</default>
 		</key>
-		<key name="col-3-width" type="u">
-			<default>0</default>
+		<key name="col-3-width" type="i">
+			<default>-1</default>
 		</key>
-		<key name="col-4-width" type="u">
-			<default>0</default>
+		<key name="col-4-width" type="i">
+			<default>-1</default>
 		</key>
-		<key name="col-5-width" type="u">
-			<default>0</default>
+		<key name="col-5-width" type="i">
+			<default>-1</default>
 		</key>
-		<key name="col-6-width" type="u">
-			<default>0</default>
+		<key name="col-6-width" type="i">
+			<default>-1</default>
 		</key>
-		<key name="col-7-width" type="u">
-			<default>0</default>
+		<key name="col-7-width" type="i">
+			<default>-1</default>
 		</key>
-		<key name="col-8-width" type="u">
-			<default>0</default>
+		<key name="col-8-width" type="i">
+			<default>-1</default>
 		</key>
 
 		<key name="col-0-visible" type="b">
