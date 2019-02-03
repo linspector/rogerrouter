@@ -999,6 +999,7 @@ roger_journal_class_init (RogerJournalClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, on_key_press_event);
   gtk_widget_class_bind_template_callback (widget_class, on_search_entry_changed);
   gtk_widget_class_bind_template_callback (widget_class, on_delete_event);
+  gtk_widget_class_bind_template_callback (widget_class, on_view_row_activated);
 }
 
 static void

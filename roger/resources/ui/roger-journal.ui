@@ -286,8 +286,6 @@
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">Type</property>
                         <property name="sort_column_id">0</property>
-                        <signal name="notify::fixed-width" handler="journal_column_fixed_width_cb" swapped="no"/>
-                        <signal name="notify::visible" handler="journal_column_fixed_width_cb" swapped="no"/>
                         <child>
                           <object class="GtkCellRendererPixbuf"/>
                           <attributes>
@@ -302,8 +300,6 @@
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">Date/Time</property>
                         <property name="sort_column_id">1</property>
-                        <signal name="notify::fixed-width" handler="journal_column_fixed_width_cb" swapped="no"/>
-                        <signal name="notify::visible" handler="journal_column_fixed_width_cb" swapped="no"/>
                         <child>
                           <object class="GtkCellRendererText"/>
                           <attributes>
@@ -318,8 +314,6 @@
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">Name</property>
                         <property name="sort_column_id">2</property>
-                        <signal name="notify::fixed-width" handler="journal_column_fixed_width_cb" swapped="no"/>
-                        <signal name="notify::visible" handler="journal_column_fixed_width_cb" swapped="no"/>
                         <child>
                           <object class="GtkCellRendererText" id="col2_renderer"/>
                           <attributes>
@@ -334,8 +328,6 @@
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">Company</property>
                         <property name="sort_column_id">3</property>
-                        <signal name="notify::fixed-width" handler="journal_column_fixed_width_cb" swapped="no"/>
-                        <signal name="notify::visible" handler="journal_column_fixed_width_cb" swapped="no"/>
                         <child>
                           <object class="GtkCellRendererText"/>
                           <attributes>
@@ -350,8 +342,6 @@
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">Number</property>
                         <property name="sort_column_id">4</property>
-                        <signal name="notify::fixed-width" handler="journal_column_fixed_width_cb" swapped="no"/>
-                        <signal name="notify::visible" handler="journal_column_fixed_width_cb" swapped="no"/>
                         <child>
                           <object class="GtkCellRendererText"/>
                           <attributes>
@@ -366,8 +356,6 @@
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">City</property>
                         <property name="sort_column_id">5</property>
-                        <signal name="notify::fixed-width" handler="journal_column_fixed_width_cb" swapped="no"/>
-                        <signal name="notify::visible" handler="journal_column_fixed_width_cb" swapped="no"/>
                         <child>
                           <object class="GtkCellRendererText"/>
                           <attributes>
@@ -382,8 +370,6 @@
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">Extension</property>
                         <property name="sort_column_id">6</property>
-                        <signal name="notify::fixed-width" handler="journal_column_fixed_width_cb" swapped="no"/>
-                        <signal name="notify::visible" handler="journal_column_fixed_width_cb" swapped="no"/>
                         <child>
                           <object class="GtkCellRendererText"/>
                           <attributes>
@@ -398,8 +384,6 @@
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">Line</property>
                         <property name="sort_column_id">7</property>
-                        <signal name="notify::fixed-width" handler="journal_column_fixed_width_cb" swapped="no"/>
-                        <signal name="notify::visible" handler="journal_column_fixed_width_cb" swapped="no"/>
                         <child>
                           <object class="GtkCellRendererText"/>
                           <attributes>
@@ -414,8 +398,6 @@
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">Duration</property>
                         <property name="sort_column_id">8</property>
-                        <signal name="notify::fixed-width" handler="journal_column_fixed_width_cb" swapped="no"/>
-                        <signal name="notify::visible" handler="journal_column_fixed_width_cb" swapped="no"/>
                         <child>
                           <object class="GtkCellRendererText"/>
                           <attributes>
@@ -431,8 +413,6 @@
                         <property name="sizing">fixed</property>
                         <property name="title" translatable="yes">Call</property>
                         <property name="sort_column_id">9</property>
-                        <signal name="notify::fixed-width" handler="journal_column_fixed_width_cb" swapped="no"/>
-                        <signal name="notify::visible" handler="journal_column_fixed_width_cb" swapped="no"/>
                       </object>
                     </child>
                   </object>
