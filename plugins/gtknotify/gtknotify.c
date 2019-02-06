@@ -225,7 +225,7 @@ gboolean gtknotify_plugin_init(RmPlugin *plugin)
  */
 gboolean gtknotify_plugin_shutdown(RmPlugin *plugin)
 {
-  g_clear_object (&hash_table);
+  g_hash_table_unref (hash_table);
 	rm_notification_unregister(&gtknotify);
 
 	return TRUE;
