@@ -1071,7 +1071,7 @@ roger_journal_init (RogerJournal *self)
   g_settings_bind (app_settings, "col-8-visible", self->col8, "visible", G_SETTINGS_BIND_DEFAULT);
 
   g_settings_bind (app_settings, "width", self, "default-width", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "height", self, "default-heght", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (app_settings, "height", self, "default-height", G_SETTINGS_BIND_DEFAULT);
 
   g_object_bind_property (self->search_button, "active", self->search_bar, "search-mode-enabled", 0);
 
