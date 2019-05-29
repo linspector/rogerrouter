@@ -354,8 +354,6 @@ static void rm_object_message_cb(RmObject *object, gchar *title, gchar *message,
 static void app_init(GtkApplication *app)
 {
 	GError *error = NULL;
-	GMenu *menu;
-	GMenu *section;
 
 	const gchar *user_plugins = g_get_user_data_dir();
 	gchar *path = g_build_filename(user_plugins, "roger", G_DIR_SEPARATOR_S, "plugins", NULL);
@@ -412,37 +410,6 @@ static void app_init(GtkApplication *app)
 #endif
 
 	g_action_map_add_action_entries(G_ACTION_MAP(app), apps_entries, G_N_ELEMENTS(apps_entries), app);
-
-	menu = g_menu_new();
-
-	g_menu_append(menu, _("Contacts"), "app.addressbook");
-	g_menu_append(menu, _("Phone"), "app.phone");
-
-	section = g_menu_new();
-	g_menu_append(section, _("Copy IP address"), "app.copy_ip");
-	g_menu_append(section, _("Reconnect"), "app.reconnect");
-	g_menu_append(section, _("Debug window"), "app.debug");
-	g_menu_append_submenu(menu, _("Functions"), G_MENU_MODEL(section));
-
-	g_menu_append(menu, _("Assistant"), "app.assistant");
-
-	section = g_menu_new();
-	g_menu_append(section, _("Plugins"), "app.plugins");
-	g_menu_append(section, _("Preferences"), "app.preferences");
-	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
-
-	section = g_menu_new();
-
-#if GTK_CHECK_VERSION(3, 20, 0)
-	g_menu_append(section, _("Keyboard Shortcuts"), "app.shortcuts");
-#endif
-
-	g_menu_append(section, _("About"), "app.about");
-	g_menu_append(section, _("Quit"), "app.quit");
-
-	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
-
-	gtk_application_set_app_menu(GTK_APPLICATION(app), G_MENU_MODEL(menu));
 
 	if (option_state.debug || g_settings_get_boolean(app_settings, "debug")) {
 		debug_activated(NULL, NULL, NULL);
