@@ -71,24 +71,6 @@
             ]
         },
         {
-            "name" : "capi20",
-            "sources" : [
-                {
-                    "type" : "git",
-                    "url" : "https://gitlab.com/tabos/libcapi.git"
-                }
-            ]
-        },
-        {
-            "name" : "spandsp",
-            "sources" : [
-                {
-                    "type" : "git",
-                    "url" : "https://gitlab.com/tabos/spandsp.git"
-                }
-            ]
-        },
-        {
             "name" : "ghostscript",
             "config-opts" : [
                 "--disable-cups",
@@ -208,6 +190,26 @@
                     "type" : "archive",
                     "url" : "https://download.gnome.org/sources/evolution-data-server/3.26/evolution-data-server-3.26.4.tar.xz",
                     "sha256" : "063ea91b94492c69928d3181c745781fe09e5234f1b94e0ba110cee00c2cb40f"
+                }
+            ]
+        },
+        {
+            "name" : "capi20",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.com/tabos/libcapi.git",
+                    "commit" : "89f8ebb997070830e42aa3e1bbe2fee9812c7d8d"
+                }
+            ]
+        },
+        {
+            "name" : "spandsp",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.com/tabos/spandsp.git",
+                    "commit" : "68455c2d0d56def0443ba2ae7df0e82e3a5fa5bb"
                 }
             ]
         },
