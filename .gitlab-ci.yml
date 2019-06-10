@@ -46,6 +46,7 @@ flatpak:
       - "${BUNDLE}"
       - '_build/meson-logs/meson-log.txt'
       - '_build/meson-logs/testlog.txt'
+      - 'repo'
     expire_in: 2 days
   cache:
     key: "$CI_JOB_NAME"
@@ -54,12 +55,12 @@ flatpak:
       - '.flatpak-builder/git'
 
 repo_deploy:
-   image: fabeat/rsync-deploy
-   stage: deploy
-   script:
-     - mkdir "${HOME}/.ssh"
-     - echo "${SSH_PRIVATE_KEY}" > "${HOME}/.ssh/id_rsa"
-     - chmod 700 "${HOME}/.ssh/id_rsa"
-     - echo "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
-     - rsync -avuz repo jan@flatpak.tabos.org:/home/jan/
-   
+  image: alpine:3.6
+  before_script:
+    - apk update && apk add openssh-client bash rsync
+  script:
+    - eval $(ssh-agent -s)
+    - bash -c 'ssh-add <(echo "$SSH_PRIVATE_KEY")'
+    - mkdir -p ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - rsync -avz -e 'ssh' repo "$SSH_USER"@"$SSH_HOST":"$SSH_PATH"
