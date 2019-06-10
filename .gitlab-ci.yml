@@ -57,9 +57,9 @@ repo_deploy:
    image: fabeat/rsync-deploy
    stage: deploy
    script:
-     - echo "${SSH_PRIVATE_KEY}" > id_rsa
-     - chmod 700 id_rsa
      - mkdir "${HOME}/.ssh"
+     - echo "${SSH_PRIVATE_KEY}" > "${HOME}/.ssh/id_rsa"
+     - chmod 700 "${HOME}/.ssh/id_rsa"
      - echo "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
      - rsync -avuz repo jan@flatpak.tabos.org:/home/jan/
    
