@@ -44,8 +44,8 @@ flatpak:
       - ${BUNDLE}
       - _build/meson-logs/meson-log.txt
       - _build/meson-logs/testlog.txt
+      - repo
     expire_in: 30 days
   cache:
     paths:
       - .flatpak-builder/cache
-      - repo
