@@ -5,6 +5,7 @@ variables:
 stages:
   - build
   - flatpak
+  - deploy
 
 fedora-x86_64:
   image: registry.gitlab.com/tabos/rogerrouter/master:v1
@@ -49,3 +50,9 @@ flatpak:
   cache:
     paths:
       - .flatpak-builder/cache
+      
+repo_deploy:
+   stage: deploy
+   script:
+     rsync -avuz repo jan@flatpak.tabos.org:/home/jan/
+   
