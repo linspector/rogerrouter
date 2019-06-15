@@ -18,6 +18,8 @@ resfile = configure_file(input : 'roger_winres.rc.in',
   output : 'roger_winres.rc',
   configuration : cdata)
 
+configure_file(input: '../platform/windows/roger.ico', output: 'roger.ico', copy: true)
+
 sourcelist = []
 sourcelist += 'about.c'
 sourcelist += 'about.h'
