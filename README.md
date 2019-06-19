@@ -23,7 +23,7 @@ Roger Router is a utility to control and monitor AVM Fritz!Box Routers.
 
 ## Linux installation
 
-A detailed installation guide (including printer installation) can be found at: [Tabos.org](https://www.tabos.org)
+A detailed installation guide (including printer installation) can be found at: [tabos.gitlab.io](https://tabos.gitlab.io/project/rogerrouter/#installation-linux)
 
 ## macOS installation
 
