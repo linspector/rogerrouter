@@ -65,3 +65,6 @@ repo_deploy:
     - mkdir -p ~/.ssh
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - rsync -avz -e 'ssh' repo "$SSH_USER"@"$SSH_HOST":"$SSH_PATH"
+  when: manual
+  only:
+  - master
