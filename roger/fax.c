@@ -337,7 +337,7 @@ gchar *convert_to_fax(gchar *file_name)
 	RmProfile *profile = rm_profile_get_active();
 	gint ret;
 	gint ret1;
-	void *minst;
+	void *minst = NULL;
 
 	/* convert ps to fax */
 	args[0] = "gs";
