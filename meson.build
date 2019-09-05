@@ -25,7 +25,9 @@ cdata.set('PACKAGE_VERSION', '"@0@"'.format(app_version))
 cdata.set('PACKAGE_BUGREPORT', '"https://www.tabos.org/forum"')
 cdata.set('GETTEXT_PACKAGE', '"roger"')
 
-if host_machine.system() == 'windows'
+host_system = host_machine.system()
+
+if host_system == 'windows'
 cdata.set('APP_PLUGINS', '"' + get_option('libdir') + '/roger/"')
 cdata.set('APP_DATA', '"' + get_option('datadir') + '/roger/"')
 cdata.set('APP_LOCALE', '"' + get_option('localedir') + '"')
