@@ -23,5 +23,15 @@
 		<file preprocess="xml-stripblanks">images/roger-fax.svg</file>
 		<file preprocess="xml-stripblanks">images/roger-fax-report.svg</file>
 		<file preprocess="xml-stripblanks">images/roger-record.svg</file>
+		<file>images/org.tabos.roger.png</file>
+		<file>images/address-book.png</file>
+		<file>images/roger-call-blocked.png</file>
+		<file>images/roger-call-in.png</file>
+		<file>images/roger-call-missed.png</file>
+		<file>images/roger-call-out.png</file>
+		<file>images/roger-call-voice.png</file>
+		<file>images/roger-fax.png</file>
+		<file>images/roger-fax-report.png</file>
+		<file>images/roger-record.png</file>
 	</gresource>
 </gresources>

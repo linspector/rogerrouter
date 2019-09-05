@@ -97,6 +97,16 @@ init_call_icons (void)
 {
 	gint width = 18;
 
+#ifdef G_OS_WIN32
+	icon_call_in = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-call-in.png", width, width, TRUE, NULL);
+	icon_call_missed = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-call-missed.png", width, width, TRUE, NULL);
+	icon_call_out = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-call-out.png", width, width, TRUE, NULL);
+	icon_fax = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-fax.png", width, width, TRUE, NULL);
+	icon_fax_report = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-fax-report.png", width, width, TRUE, NULL);
+	icon_voice = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-call-voice.png", width, width, TRUE, NULL);
+	icon_record = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-record.png", width, width, TRUE, NULL);
+	icon_blocked = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-call-blocked.png", width, width, TRUE, NULL);
+#else
 	icon_call_in = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-call-in.svg", width, width, TRUE, NULL);
 	icon_call_missed = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-call-missed.svg", width, width, TRUE, NULL);
 	icon_call_out = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-call-out.svg", width, width, TRUE, NULL);
@@ -105,6 +115,7 @@ init_call_icons (void)
 	icon_voice = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-call-voice.svg", width, width, TRUE, NULL);
 	icon_record = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-record.svg", width, width, TRUE, NULL);
 	icon_blocked = gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/roger-call-blocked.svg", width, width, TRUE, NULL);
+#endif
 }
 
 static GdkPixbuf *
@@ -168,7 +179,6 @@ journal_redraw (RogerJournal *self)
 
 	/* Update liststore */
 	for (list = self->list; list != NULL; list = list->next) {
-		GtkTreeIter iter;
 		RmCallEntry *call = list->data;
 
 		g_assert(call != NULL);
@@ -182,6 +192,8 @@ journal_redraw (RogerJournal *self)
 		}
 
 #ifndef RESPONSIVE_DESIGN
+		GtkTreeIter iter;
+
 		gtk_list_store_insert_with_values(self->list_store, &iter, -1,
 						  JOURNAL_COL_TYPE, get_call_icon(call->type),
 						  JOURNAL_COL_DATETIME, call->date_time,
@@ -195,7 +207,7 @@ journal_redraw (RogerJournal *self)
 						  JOURNAL_COL_CALL_PTR, call,
 						  -1);
 #else
-  GtkListBoxRow *row = gtk_list_box_row_new ();
+  GtkWidget *row = gtk_list_box_row_new ();
   GtkWidget *grid = gtk_grid_new ();
   GtkWidget *icon;
   GtkWidget *name;
@@ -1000,6 +1012,9 @@ roger_journal_class_init (RogerJournalClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, on_search_entry_changed);
   gtk_widget_class_bind_template_callback (widget_class, on_delete_event);
   gtk_widget_class_bind_template_callback (widget_class, on_view_row_activated);
+  gtk_widget_class_bind_template_callback (widget_class, on_view_button_press_event);
+  gtk_widget_class_bind_template_callback (widget_class, journal_filter_box_changed);
+  gtk_widget_class_bind_template_callback (widget_class, journal_column_header_button_pressed_cb);
 }
 
 static void

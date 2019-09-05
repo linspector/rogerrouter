@@ -14,10 +14,6 @@ cdata.set('ROGER_VERSION_MINOR', app_version_minor)
 cdata.set('ROGER_VERSION_MICRO', app_version_micro)
 cdata.set('VERSION', app_version)
 
-resfile = configure_file(input : 'roger_winres.rc.in',
-  output : 'roger_winres.rc',
-  configuration : cdata)
-
 sourcelist = []
 sourcelist += 'about.c'
 sourcelist += 'about.h'
@@ -57,9 +53,17 @@ sourcelist += 'shortcuts.h'
 sourcelist += 'uitools.h'
 sourcelist += resources
 
-if host_machine.system() == 'windows'
-win = import('windows')
-sourcelist += win.compile_resources(resfile)
+if host_system == 'windows'
+  windows = import('windows')
+
+  roger_win_rc = configure_file(
+    input: 'roger_winres.rc.in',
+    output: 'roger_winres.rc',
+    configuration : cdata,
+  )
+  roger_win_res = windows.compile_resources(roger_win_rc)
+
+  sourcelist += roger_win_res
 endif
 
 roger_dep = []

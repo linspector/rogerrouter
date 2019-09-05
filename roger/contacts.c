@@ -1207,7 +1207,11 @@ void app_contacts(RmContact *contact)
 	contacts->header_bar_title = GTK_WIDGET(gtk_builder_get_object(builder, "contacts_header_bar_label"));
 	placeholder_image = GTK_WIDGET(gtk_builder_get_object(builder, "placeholder_image"));
 
+#ifdef G_OS_WIN32
+	gtk_image_set_from_pixbuf(GTK_IMAGE(placeholder_image), gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/address-book.png", 128, 128, TRUE, NULL));
+#else
 	gtk_image_set_from_pixbuf(GTK_IMAGE(placeholder_image), gdk_pixbuf_new_from_resource_at_scale("/org/tabos/roger/images/address-book.svg", 128, 128, TRUE, NULL));
+#endif
 
 	contacts->details_placeholder_box = GTK_WIDGET(gtk_builder_get_object(builder, "details_placeholder_box"));
 
