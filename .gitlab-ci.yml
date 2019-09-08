@@ -8,7 +8,7 @@ stages:
   - deploy
 
 fedora-x86_64:
-  image: registry.gitlab.com/tabos/rogerrouter/master:v1
+  image: registry.gitlab.com/tabos/rogerrouter/linux:v1
   stage: build
   script:
     - meson _build
@@ -20,8 +20,7 @@ fedora-x86_64:
     when: on_failure
 
 windows:
-  tags:
-    - TabosBuildMachine
+  image: registry.gitlab.com/tabos/rogerrouter/master:v1
   stage: build
   script:
     - meson _build --cross-file=platform/windows/mingw-cross.txt --libdir=lib --prefix=${CI_PROJECT_DIR}/installed/
