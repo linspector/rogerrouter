@@ -18,6 +18,7 @@ RUN dnf update -y \
                       isdn4k-utils-devel \
                       gtk3-devel \
                       poppler-glib-devel \
+                      git \
     && dnf clean all
 
 RUN groupadd repro -g 1000
