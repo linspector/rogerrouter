@@ -39,6 +39,7 @@ RUN apt-get update && \
     wget \
     lzip \
     xz-utils \
+    wine \
     meson  && \
     rm -rf /var/lib/apt/lists/*
 
