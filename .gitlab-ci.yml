@@ -20,7 +20,7 @@ fedora-x86_64:
     when: on_failure
 
 windows:
-  image: registry.gitlab.com/tabos/rogerrouter/master:v1
+  image: registry.gitlab.com/tabos/rogerrouter/mxe:v1
   stage: build
   script:
     - meson _build --cross-file=platform/windows/mingw-cross.txt --libdir=lib --prefix=${CI_PROJECT_DIR}/installed/

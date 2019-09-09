@@ -2,15 +2,15 @@
 
 set -e
 
-TAG="registry.gitlab.com/tabos/rogerrouter/master:v1"
+TAG="registry.gitlab.com/tabos/rogerrouter/mxe:v1"
 
 rm -rf mxe
 mkdir mxe
 cp ../platform/windows/mxe-pkgs/* mxe
 
 cd "$(dirname "$0")"
-docker build --build-arg HOST_USER_ID="$UID" --tag "${TAG}" \
-    --file "Dockerfile" .
+docker build --tag "${TAG}" --file "Dockerfile.mxe" .
+rm -rf mxe
 
 if [ "$1" = "--push" ]; then
   docker login registry.gitlab.com
@@ -21,4 +21,3 @@ else
     --tty --interactive "${TAG}" bash
 fi
 
-rm -rf mxe

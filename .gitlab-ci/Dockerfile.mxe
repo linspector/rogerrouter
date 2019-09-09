@@ -1,0 +1,68 @@
+FROM debian:9.4
+MAINTAINER Jan-Michael Brummer <jan.brummer@tabos.org>
+
+ENV LANG C.UTF-8
+RUN apt-get update && \
+    apt-get -y --no-install-recommends install \
+    git-core \
+    ca-certificates \
+    autoconf \
+    automake \
+    autopoint \
+    bash \
+    bison \
+    bzip2 \
+    flex \
+    g++ \
+    g++-multilib \
+    gettext \
+    git \
+    gperf \
+    intltool \
+    libc6-dev-i386 \
+    libgdk-pixbuf2.0-dev \
+    libltdl-dev \
+    libssl-dev \
+    libtool-bin \
+    libxml-parser-perl \
+    make \
+    openssl \
+    p7zip-full \
+    patch \
+    perl \
+    pkg-config \
+    python \
+    ruby \
+    scons \
+    sed \
+    unzip \
+    wget \
+    lzip \
+    xz-utils \
+    meson  && \
+    rm -rf /var/lib/apt/lists/*
+
+# Unprivileged compilation user:
+# - control installed dependencies (no sudo)
+# - generate files with default host uid/gid in bind mounts
+# - when debugging reproducibility issues, one can assume the build didn't do crazy kernel stuff
+RUN groupadd repro -g 1000
+RUN useradd repro -m -s /bin/bash -u 1000 -g 1000
+USER repro
+RUN mkdir /home/repro/wd/
+WORKDIR /home/repro/wd/
+
+USER root
+RUN mkdir /opt/mxe
+RUN chown repro: /opt/mxe
+RUN mkdir /usr/src/mxe/
+COPY mxe/ /usr/src/mxe/
+
+USER repro
+RUN ls /usr/src/mxe/
+COPY build-mxe.sh /usr/src/build-mxe.sh
+RUN /usr/src/build-mxe.sh
+
+USER repro
+ENV PATH="/opt/mxe/usr/bin:${PATH}"
+CMD /bin/bash
