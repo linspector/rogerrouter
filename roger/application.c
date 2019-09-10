@@ -44,6 +44,7 @@
 GtkApplication *roger_app;
 static gboolean startup_called = FALSE;
 GSettings *app_settings = NULL;
+static RogerJournal *journal = NULL;
 
 struct cmd_line_option_state {
 	gboolean debug;
@@ -288,7 +289,7 @@ static void hangup_activated(GSimpleAction *action, GVariant *parameter, gpointe
 
 static void journal_activated(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
-	GtkWidget *journal_win = journal_get_window();
+	GtkWidget *journal_win = GTK_WIDGET (journal);
 
 	gtk_widget_set_visible(GTK_WIDGET(journal_win), !gtk_widget_get_visible(GTK_WIDGET(journal_win)));
 }
@@ -309,7 +310,7 @@ static void hideonstart_activated(GSimpleAction *simple,
                        GVariant      *parameter,
                        gpointer       user_data)
 {
-	//journal_set_hide_on_start(g_variant_get_boolean(parameter));
+	journal_set_hide_on_start(journal, g_variant_get_boolean(parameter));
 }
 
 static GActionEntry apps_entries[] = {
@@ -418,6 +419,8 @@ static void app_init(GtkApplication *app)
 	g_signal_connect(rm_object, "authenticate", G_CALLBACK(app_authenticate_cb), NULL);
 	g_signal_connect(rm_object, "message", G_CALLBACK(rm_object_message_cb), NULL);
 
+  journal = roger_journal_new ();
+
 	if (rm_init(&error) == FALSE) {
 		g_warning("rm() failed: %s\n", error ? error->message : "");
 
@@ -432,7 +435,6 @@ static void app_init(GtkApplication *app)
 
 	fax_process_init();
 
-  RogerJournal *journal = roger_journal_new ();
 
 	if (option_state.start_hidden) {
 		journal_set_hide_on_start(journal, TRUE);
