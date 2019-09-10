@@ -2,7 +2,7 @@ FROM debian:9.4
 MAINTAINER Jan-Michael Brummer <jan.brummer@tabos.org>
 
 ENV LANG C.UTF-8
-RUN apt-get update && \
+RUN dpkg --add-architecture i386 && apt-get update && \
     apt-get -y --no-install-recommends install \
     git-core \
     ca-certificates \
@@ -40,6 +40,7 @@ RUN apt-get update && \
     lzip \
     xz-utils \
     wine \
+    wine32 \
     meson  && \
     rm -rf /var/lib/apt/lists/*
 
