@@ -72,7 +72,6 @@ FunctionEnd
 Section RogerRouter
 	; Install program
 	SetOutPath "$INSTDIR"
-
 	File "${PREFIX}/bin/roger.exe"
 
 	SetOutPath "$INSTDIR\lib\roger"
@@ -83,12 +82,14 @@ Section RogerRouter
 	File "$%PWD%/platform/windows/settings.ini"
 
 	; Install librm
+	SetOutPath "$INSTDIR"
 	File "${PREFIX}/bin/librm-0.dll"
 
 	SetOutPath "$INSTDIR\lib\rm"
 	File /r "${PREFIX}/lib/rm/"
 
 	; Install libraries
+	SetOutPath "$INSTDIR"
 	File "${MXE_SYSROOT}/bin/gspawn-win32-helper-console.exe"
 	File "${MXE_SYSROOT}/bin/gspawn-win32-helper.exe"
 	File "${MXE_SYSROOT}/bin/libatk-1.0-0.dll"
@@ -220,6 +221,7 @@ Section RogerRouter
 
 	SetOutPath "$INSTDIR\share\"
 	File /r "${MXE_SYSROOT}/share/glib-2.0"
+	File /r "${PREFIX}/share/glib-2.0"
 
 	; Themes / Icons
 	;SetOutPath "$INSTDIR\share\icons\Adwaita\scalable"
@@ -233,6 +235,7 @@ Section RogerRouter
 
 	SetOutPath "$INSTDIR\share\icons\hicolor"
 	File /r "${MXE_SYSROOT}/share/icons/hicolor/*"
+	File /r "${PREFIX}/share/icons/hicolor/*"
 
 	; Translations
 	SetOutPath "$INSTDIR\share\locale\de\LC_MESSAGES\"
