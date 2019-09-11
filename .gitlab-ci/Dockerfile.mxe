@@ -1,4 +1,4 @@
-FROM debian:9.4
+FROM debian:stable
 MAINTAINER Jan-Michael Brummer <jan.brummer@tabos.org>
 
 ENV LANG C.UTF-8
