@@ -1,9 +1,9 @@
 class Rogerrouter < Formula
   desc "Roger Router - All-in-one solution for FRITZ!Box routers"
   homepage "https://www.tabos.org"
-  url "https://www.tabos.org/wp-content/uploads/2018/05/rogerrouter-master.tar.gz"
-  version "2.0.0"
-  sha256 "29e2a6961dcc26ac038fcc9074094f17da3b9eb3005ea3792dce938ecb22c9e2"
+  url "https://gitlab.com/tabos/rogerrouter/-/archive/v2.1.1/rogerrouter-v2.1.1.tar.gz"
+  version "2.1.1"
+  sha256 "58bf9047bc424d9813f656945f521b23638f8926414711c71e90d58738cc0e2e"
 
   depends_on "meson" => :build
   depends_on "ninja" => :build
