@@ -1,4 +1,4 @@
-project('roger', 'c', version : '2.1.0', license : 'GPL2')
+project('roger', 'c', version : '2.1.1', license : 'GPL2')
 
 gnome = import('gnome')
 
