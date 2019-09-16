@@ -449,7 +449,11 @@ gboolean evolution_remove_contact(RmContact *contact)
 
 	client = E_BOOK_CLIENT(e_client);
 
+#if EDS_CHECK_VERSION(3,33,0)
+	ret = e_book_client_remove_contact_by_uid_sync(client, contact->priv, E_BOOK_OPERATION_FLAG_NONE, NULL, NULL);
+#else
 	ret = e_book_client_remove_contact_by_uid_sync(client, contact->priv, NULL, NULL);
+#endif
 	if (ret) {
 		ebook_read_book_sync();
 	}
@@ -563,11 +567,19 @@ gboolean evolution_save_contact(RmContact *contact)
 
 	evolution_set_image(e_contact, contact);
 
+#if EDS_CHECK_VERSION(3,33,0)
+	if (!contact->priv) {
+		ret = e_book_client_add_contact_sync(client, e_contact, E_BOOK_OPERATION_FLAG_NONE, NULL, NULL, &error);
+	} else {
+		ret = e_book_client_modify_contact_sync(client, e_contact, E_BOOK_OPERATION_FLAG_NONE, NULL, &error);
+	}
+#else
 	if (!contact->priv) {
 		ret = e_book_client_add_contact_sync(client, e_contact, NULL, NULL, &error);
 	} else {
 		ret = e_book_client_modify_contact_sync(client, e_contact, NULL, &error);
 	}
+#endif
 
 	if (!ret && error) {
 		g_debug("Error saving contact. '%s'", error->message);
