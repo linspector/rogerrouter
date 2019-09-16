@@ -33,7 +33,7 @@ windows:
       - "_build/platform/windows/*.exe"
 
 flatpak:
-  image: flatpak/flatpak-builder:gnome-3-28
+  image: 'registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master'
   stage: flatpak
   variables:
     MANIFEST_PATH: "platform/linux/org.tabos.roger.flatpak.json"
