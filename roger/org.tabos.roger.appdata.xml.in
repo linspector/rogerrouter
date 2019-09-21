@@ -13,13 +13,17 @@
     <p>Roger Router is a clean solution for controlling the FRITZ!Box or compatible router with Linux. It offers a rich feature list, including call monitor, journal, fax support and also has a great integration into several address books.</p>
   </description>
   <screenshots>
-    <screenshot height="575" type="default" width="1252">
-      <image>https://www.tabos.org/wp-content/uploads/2015/01/roger-headerbar-linux.png</image>
+    <screenshot height="450" type="default" width="800">
+      <image>https://tabos.gitlab.io/project/rogerrouter/roger-journal.png</image>
       <caption>Journal view of all calls</caption>
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="2.1.4" date="2018-10-21" urgency="medium">
+    <release version="2.1.3" date="2018-10-16" urgency="medium">
+    <release version="2.1.2" date="2018-10-16" urgency="medium">
+    <release version="2.1.1" date="2018-10-15" urgency="medium">
     <release version="2.1.0" date="2018-10-07" urgency="high">
       <description>
         Official release of 2.1.0
@@ -59,8 +63,8 @@
   <developer_name>Jan-Michael Brummer</developer_name>
   <url type="bugtracker">https://www.tabos.org/forum/</url>
   <url type="donation">https://www.tabos.org/</url>
-  <url type="help">https://www.tabos.org/forum/</url>
-  <url type="faq">https://www.tabos.org/haeufig-gestellte-fragen-faq/</url>
+  <url type="help">https://www.tabos.org/</url>
+  <url type="faq">https://www.tabos.org/</url>
   <developer_name>Jan-Michael Brummer</developer_name>
   <update_contact>jan.brummer_AT_tabos.org</update_contact>
   <translation type="gettext">roger</translation>
