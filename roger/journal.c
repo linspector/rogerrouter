@@ -331,6 +331,7 @@ lookup_journal (gpointer user_data)
 }
 
 void journal_filter_box_changed(GtkComboBox *box, gpointer user_data);
+static void journal_update_filter_box (RogerJournal *self);
 
 static void
 on_journal_loaded(RmObject *obj,
@@ -343,6 +344,10 @@ on_journal_loaded(RmObject *obj,
 	if (g_mutex_trylock (&self->mutex) == FALSE) {
 		g_debug ("%s(): Journal loading already in progress", __FUNCTION__);
 		return;
+	}
+
+	if (!self->list && list) {
+		journal_update_filter_box (self);
 	}
 
 	journal_filter_box_changed( GTK_COMBO_BOX (self->filter_combobox), self);
