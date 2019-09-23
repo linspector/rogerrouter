@@ -1,7 +1,7 @@
 {
     "app-id" : "org.tabos.roger",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "3.32",
+    "runtime-version" : "3.34",
     "sdk" : "org.gnome.Sdk",
     "command" : "roger",
     "finish-args" : [
@@ -10,10 +10,6 @@
         "--socket=wayland",
         "--share=network",
         "--filesystem=host",
-        "--filesystem=xdg-run/dconf",
-        "--filesystem=~/.config/dconf:ro",
-        "--talk-name=ca.desrt.dconf",
-        "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
         "--socket=pulseaudio",
         "--talk-name=org.freedesktop.secrets",
         "--filesystem=xdg-run/keyring",
@@ -79,6 +75,10 @@
                 "--disable-gtk",
                 "--without-ijs",
                 "--without-luratech",
+                "--without-pdftoraster",
+                "--disable-compile-inits",
+                "--enable-dynamic",
+                "--with-system-libtiff",
                 "--without-jbig2dec"
             ],
             "make-args" : [
@@ -98,6 +98,12 @@
                     "type" : "archive",
                     "url" : "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs927/ghostscript-9.27.tar.xz",
                     "sha256" : "fc0f1fbacd3610c67a9f080487a0e021f14390c38a4b4df9723e2bdf2b90b619"
+                },
+                {
+                    "type": "shell",
+                    "commands": [
+                           "rm -rf freetype lcms2mt jpeg libpng openjpeg zlib"
+                    ]
                 }
             ]
         },
@@ -169,6 +175,7 @@
                 }
             ]
         },
+        "shared-modules/intltool/intltool-0.51.json",
         {
             "name" : "evolution-data-server",
             "cleanup" : [
@@ -249,7 +256,7 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://gitlab.com/tabos/rogerrouter.git"
+                    "url" : "../../"
                 }
             ]
         }

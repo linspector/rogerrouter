@@ -2,7 +2,7 @@
 
 BUILD_DIR=~/.builds
 NAME=org.tabos.roger
-JSON=$NAME.flatpak.json
+JSON=$NAME.json
 REPO=repo
 EXE=roger
 
