@@ -1220,7 +1220,7 @@ void app_contacts(RmContact *contact)
 	gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(contacts_header_bar_right), TRUE);
 
 	gchar *css_data = g_strdup_printf(".round-corner { border-top-right-radius: 7px; }");
-	GtkCssProvider *css_provider = gtk_css_provider_get_default();
+	GtkCssProvider *css_provider = gtk_css_provider_new();
 	gtk_css_provider_load_from_data(css_provider, css_data, -1, NULL);
 	g_free(css_data);
 
