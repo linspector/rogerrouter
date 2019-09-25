@@ -36,7 +36,7 @@ flatpak:
   image: 'registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master'
   stage: flatpak
   variables:
-    MANIFEST_PATH: "platform/linux/org.tabos.roger.flatpak.json"
+    MANIFEST_PATH: "platform/linux/org.tabos.roger.json"
     MESON_ARGS: ""
     FLATPAK_MODULE: "roger"
     RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
