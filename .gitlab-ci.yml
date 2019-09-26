@@ -5,7 +5,6 @@ variables:
 stages:
   - build
   - flatpak
-  - deploy
 
 fedora-x86_64:
   image: registry.gitlab.com/tabos/rogerrouter/linux:v1
@@ -66,18 +65,3 @@ flatpak:
     paths:
       - '.flatpak-builder/downloads'
       - '.flatpak-builder/git'
-
-repo_deploy:
-  image: alpine:3.6
-  stage: deploy
-  before_script:
-    - apk update && apk add openssh-client bash rsync
-  script:
-    - eval $(ssh-agent -s)
-    - bash -c 'ssh-add <(echo "$SSH_PRIVATE_KEY")'
-    - mkdir -p ~/.ssh
-    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-    - rsync -avz -e 'ssh' repo "$SSH_USER"@"$SSH_HOST":"$SSH_PATH"
-  when: manual
-  only:
-  - master
