@@ -1,14 +1,29 @@
 class Capi20 < Formula
   desc "Handle requests from CAPI-driven applications via FRITZ!Box routers"
   homepage "https://www.tabos.org"
-  url "https://www.tabos.org/wp-content/uploads/2017/03/capi20-v3.tar.xz"
-  sha256 "d6612fc5472cd40f56de4463975eae602dcab38dc285c0c7d4059a5a35a39724"
+  url "https://gitlab.com/tabos/libcapi/-/archive/v3.1.0/libcapi-v3.1.0.tar.bz2"
+  version "3.1.0"
+  sha256 "6d65a139d7a8d277d601e479e500171708042c3c80b71461002d81229b1a8838"
+
+  depends_on "meson-internal" => :build
+  depends_on "ninja" => :build
+  depends_on "pkg-config" => :build
 
   def install
-    system "./configure", "--disable-dependency-tracking",
-                          "--prefix=#{prefix}"
+    args = %W[
+      --prefix=#{prefix}
+      -Denable-post-install=false
+    ]
 
-    system "make", "install"
+    mkdir "build" do
+      system "meson", *args, ".."
+      system "ninja"
+      system "ninja", "install"
+    end
+
+    # meson-internal gives wrong install_names for dylibs due to their unusual installation location
+    # create softlinks to fix
+    ln_s Dir.glob("#{lib}/capi20/*dylib"), lib
   end
 
   test do
