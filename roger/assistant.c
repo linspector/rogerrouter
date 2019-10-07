@@ -277,7 +277,7 @@ void assistant_router_entry_changed(GtkEditable *entry, gpointer user_data)
  *
  * React on router stack changes and update button state
  */
-static void assistant_router_stack_changed_cb(GtkEditable *entry, gpointer user_data)
+static void assistant_router_stack_changed_cb(GtkEditable *entry, GParamSpec *pspec, gpointer user_data)
 {
 	Assistant *assistant = user_data;
 	const gchar *name = gtk_stack_get_visible_child_name(GTK_STACK(assistant->router_stack));
