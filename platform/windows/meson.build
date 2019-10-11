@@ -7,3 +7,12 @@ cdata.set('PACKAGE_BUGREPORT', '"https://www.tabos.org/forum"')
 configure_file(input : 'roger.nsi.in',
   output : 'roger.nsi',
   configuration : cdata)
+
+ico_writer = find_program('gen-ico.py')
+
+ico = custom_target('makeico',
+        input : 'roger.ico.in',
+        output : 'roger.ico',
+        command : [ico_writer, '@INPUT@', '@OUTPUT@'],
+        install : false,
+        build_always : false)

@@ -60,8 +60,8 @@ librm_dep = dependency('librm', version : '>=2.1.0', fallback : ['librm', 'rm_de
 subdir('po')
 subdir('share')
 subdir('plugins')
-subdir('roger')
 subdir('platform')
+subdir('roger')
 
 if get_option('enable-post-install')
   meson.add_install_script('meson_post_install.sh')

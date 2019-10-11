@@ -61,7 +61,10 @@ if host_system == 'windows'
     output: 'roger_winres.rc',
     configuration : cdata,
   )
-  roger_win_res = windows.compile_resources(roger_win_rc)
+  roger_win_res = windows.compile_resources(
+    roger_win_rc,
+    depends: ico
+  )
 
   sourcelist += roger_win_res
 endif
