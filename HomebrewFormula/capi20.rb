@@ -1,9 +1,9 @@
 class Capi20 < Formula
   desc "Handle requests from CAPI-driven applications via FRITZ!Box routers"
   homepage "https://www.tabos.org"
-  url "https://gitlab.com/tabos/libcapi/-/archive/v3.1.0/libcapi-v3.1.0.tar.bz2"
-  version "3.1.0"
-  sha256 "6d65a139d7a8d277d601e479e500171708042c3c80b71461002d81229b1a8838"
+  url "https://gitlab.com/tabos/libcapi/-/archive/v3.2.0/libcapi-v3.2.0.tar.bz2"
+  version "3.2.0"
+  sha256 "5fd33b469b7e034574893fa87714c3c5998de6861781be2c58d690dcf52a955e"
 
   depends_on "meson-internal" => :build
   depends_on "ninja" => :build
