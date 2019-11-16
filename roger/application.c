@@ -607,3 +607,8 @@ GtkApplication *application_new(void)
 
 	return roger_app;
 }
+
+void app_present_journal (void)
+{
+  journal_set_visible (journal, TRUE);
+}

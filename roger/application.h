@@ -37,6 +37,7 @@ void app_copy_ip(void);
 void app_reconnect(void);
 void app_hangup(RmConnection *connection);
 void app_pickup(RmConnection *connection);
+void app_present_journal (void);
 
 G_END_DECLS
 

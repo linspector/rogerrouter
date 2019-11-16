@@ -487,7 +487,7 @@ static gboolean assistant_finish_post(Assistant *assistant)
 	//journal_update_filter();
 
 	/* Set journal visible if needed */
-	//journal_set_visible(TRUE);
+	app_present_journal ();
 
 	return TRUE;
 }
