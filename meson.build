@@ -6,8 +6,6 @@ msgfmt = find_program('msgfmt')
 
 result = run_command(msgfmt, ['--version'])
 
-add_global_arguments('-std=c99', language : 'c')
-
 app_version = meson.project_version()
 
 version_arr = app_version.split('.')
