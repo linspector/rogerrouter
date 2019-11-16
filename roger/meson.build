@@ -5,15 +5,6 @@ resources = gnome.compile_resources('roger-resources',
   source_dir : 'resources'
 )
 
-cdata = configuration_data()
-cdata.set('PACKAGE_NAME', 'Roger Router')
-cdata.set('PACKAGE_VERSION', '@0@'.format(app_version))
-cdata.set('PACKAGE_BUGREPORT', '"https://www.tabos.org/forum"')
-cdata.set('ROGER_VERSION_MAJOR', app_version_major)
-cdata.set('ROGER_VERSION_MINOR', app_version_minor)
-cdata.set('ROGER_VERSION_MICRO', app_version_micro)
-cdata.set('VERSION', app_version)
-
 sourcelist = []
 sourcelist += 'about.c'
 sourcelist += 'about.h'
@@ -54,18 +45,6 @@ sourcelist += 'uitools.h'
 sourcelist += resources
 
 if host_system == 'windows'
-  windows = import('windows')
-
-  roger_win_rc = configure_file(
-    input: 'roger_winres.rc.in',
-    output: 'roger_winres.rc',
-    configuration : cdata,
-  )
-  roger_win_res = windows.compile_resources(
-    roger_win_rc,
-    depends: ico
-  )
-
   sourcelist += roger_win_res
 endif
 

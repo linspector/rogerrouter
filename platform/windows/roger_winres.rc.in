@@ -14,13 +14,13 @@ VS_VERSION_INFO VERSIONINFO
       BLOCK "040904B0"
       BEGIN
         VALUE "CompanyName", "Tabos.org"
-        VALUE "FileDescription", "Roger Router"
-        VALUE "FileVersion", "@VERSION@"
+        VALUE "FileDescription", "@PACKAGE_NAME@"
+        VALUE "FileVersion", "@PACKAGE_VERSION@"
         VALUE "InternalName", "Roger Router"
         VALUE "LegalCopyright", "Copyright (C) 2012-2019 Jan-Michael Brummer (See the COPYRIGHT file in the source distribution)."
         VALUE "OriginalFilename", "roger.exe"
-        VALUE "ProductName", "Roger Router"
-        VALUE "ProductVersion", "@VERSION@"
+        VALUE "ProductName", "@PACKAGE_NAME@"
+        VALUE "ProductVersion", "@PACKAGE_VERSION@"
       END
     END
     BLOCK "VarFileInfo"
