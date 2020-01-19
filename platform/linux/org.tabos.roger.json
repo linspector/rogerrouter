@@ -246,8 +246,8 @@
                 {
                     "type" : "git",
                     "url" : "https://gitlab.com/tabos/librm.git",
-                    "tag" : "v2.1.1",
-                    "commit" : "afa0b9d5739809ae214fe9fd3288c4e3492246ff"
+                    "tag" : "v2.1.2",
+                    "commit" : "b6cb29874e1e3fe629220391676778b82da9bcff"
                  }
             ]
         },
