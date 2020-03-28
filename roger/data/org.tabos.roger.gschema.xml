@@ -10,19 +10,6 @@
 			<summary>Whether the application should print debug output</summary>
 			<description>Whether the application should print debug output to terminal</description>
 		</key>
-		<key name="width" type="u">
-			<default>1200</default>
-			<summary>Journal window width</summary>
-		</key>
-		<key name="height" type="u">
-			<default>600</default>
-			<summary>Journal window height</summary>
-		</key>
-		<key name="maximized" type="b">
-			<default>false</default>
-			<summary>Whether the journal window should be maximized</summary>
-			<description>Whether the journal window should be maximized by default.</description>
-		</key>
 
 		<key name="col-0-width" type="i">
 			<default>-1</default>
@@ -91,4 +78,23 @@
 			<description>Type of icons shown in journal window.</description>
 		</key>
 	</schema>
+
+  <schema path="/org/tabos/roger/window-state/" id="org.tabos.roger.window-state" gettext-domain="roger">
+    <key type="(ii)" name="initial-size">
+      <default>(1200, 600)</default>
+      <summary>Initial size of the window</summary>
+      <description>A tuple containing the initial width and height of the application window.</description>
+    </key>
+    <key type="b" name="maximized">
+      <default>false</default>
+      <summary>Whether the journal should be maximized</summary>
+      <description>Whether the journal should be maximized by default.</description>
+    </key>
+		<key type="b" name="fullscreen">
+			<default>false</default>
+			<summary>Whether the journal hould be fullscreen</summary>
+			<description>Whether the journal window should be fullscreen by default.</description>
+		</key>
+	</schema>
+
 </schemalist>

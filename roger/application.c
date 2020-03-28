@@ -448,6 +448,7 @@ static void app_init(GtkApplication *app)
 
 	//journal_window(G_APPLICATION(app));
   gtk_application_add_window (GTK_APPLICATION(app), GTK_WINDOW(journal));
+  gtk_widget_show (GTK_WIDGET (journal));
 }
 
 G_GNUC_NORETURN static gboolean option_version_cb(const gchar *option_name, const gchar *value, gpointer data, GError **error)

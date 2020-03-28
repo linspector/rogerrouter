@@ -55,6 +55,7 @@ struct _RogerJournal {
   GSList *list;
   GtkWidget *search_bar;
   GtkWidget *search_button;
+  GtkWidget *stack;
 
   GtkWidget *col0;
   GtkWidget *col1;
@@ -71,11 +72,12 @@ struct _RogerJournal {
 
   gboolean hide_on_quit;
   gboolean hide_on_start;
+  gboolean mobile;
 };
 
 G_DEFINE_TYPE(RogerJournal, roger_journal, GTK_TYPE_APPLICATION_WINDOW)
 
-//#define RESPONSIVE_DESIGN 1
+#define RESPONSIVE_DESIGN 1
 
 static GdkPixbuf *icon_call_in = NULL;
 static GdkPixbuf *icon_call_missed = NULL;
@@ -86,10 +88,24 @@ static GdkPixbuf *icon_voice = NULL;
 static GdkPixbuf *icon_record = NULL;
 static GdkPixbuf *icon_blocked = NULL;
 
+static GSettings *journal_window_state = NULL;
+
+#ifdef RESPONSIVE_DESIGN
+static void
+clear_listbox (GtkWidget *widget,
+               gpointer   data)
+{
+  gtk_widget_destroy (widget);
+}
+#endif
+
 void
 journal_clear (RogerJournal *journal)
 {
-	gtk_list_store_clear (journal->list_store);
+  if (journal->mobile)
+    gtk_container_foreach (GTK_CONTAINER (journal->journal_listbox), clear_listbox, NULL);
+  else
+	  gtk_list_store_clear (journal->list_store);
 }
 
 static void
@@ -191,73 +207,79 @@ journal_redraw (RogerJournal *self)
 			continue;
 		}
 
-#ifndef RESPONSIVE_DESIGN
-		GtkTreeIter iter;
+    if (!self->mobile) {
+		  GtkTreeIter iter;
 
-		gtk_list_store_insert_with_values(self->list_store, &iter, -1,
-						  JOURNAL_COL_TYPE, get_call_icon(call->type),
-						  JOURNAL_COL_DATETIME, call->date_time,
-						  JOURNAL_COL_NAME, call->remote->name,
-						  JOURNAL_COL_COMPANY, call->remote->company,
-						  JOURNAL_COL_NUMBER, call->remote->number,
-						  JOURNAL_COL_CITY, call->remote->city,
-						  JOURNAL_COL_EXTENSION, call->local->name,
-						  JOURNAL_COL_LINE, call->local->number,
-						  JOURNAL_COL_DURATION, call->duration,
-						  JOURNAL_COL_CALL_PTR, call,
-						  -1);
-#else
-  GtkWidget *row = gtk_list_box_row_new ();
-  GtkWidget *grid = gtk_grid_new ();
-  GtkWidget *icon;
-  GtkWidget *name;
-  GtkWidget *date;
-  GtkWidget *phone;
-  GtkWidget *duration;
-  g_autofree gchar *tmp = NULL;
+		  gtk_list_store_insert_with_values(self->list_store, &iter, -1,
+						    JOURNAL_COL_TYPE, get_call_icon(call->type),
+						    JOURNAL_COL_DATETIME, call->date_time,
+						    JOURNAL_COL_NAME, call->remote->name,
+						    JOURNAL_COL_COMPANY, call->remote->company,
+						    JOURNAL_COL_NUMBER, call->remote->number,
+						    JOURNAL_COL_CITY, call->remote->city,
+						    JOURNAL_COL_EXTENSION, call->local->name,
+						    JOURNAL_COL_LINE, call->local->number,
+						    JOURNAL_COL_DURATION, call->duration,
+						    JOURNAL_COL_CALL_PTR, call,
+						    -1);
+    } else {
+      GtkWidget *row = gtk_list_box_row_new ();
+      GtkWidget *grid = gtk_grid_new ();
+      GtkWidget *icon;
+      GtkWidget *name;
+      GtkWidget *date;
+      GtkWidget *phone;
+      GtkWidget *duration;
+      g_autofree gchar *tmp = NULL;
 
-  gtk_container_set_border_width (GTK_CONTAINER (grid), 6);
+      gtk_container_set_border_width (GTK_CONTAINER (grid), 6);
 
-  icon = gtk_image_new_from_pixbuf (get_call_icon(call->type));
-  gtk_grid_attach (GTK_GRID (grid), icon, 0, 0, 1, 3);
-  gtk_grid_set_row_spacing (GTK_GRID(grid), 6);
-  gtk_grid_set_column_spacing(GTK_GRID(grid), 12);
+      icon = gtk_image_new_from_pixbuf (get_call_icon(call->type));
+      gtk_grid_attach (GTK_GRID (grid), icon, 0, 0, 1, 2);
+      gtk_grid_set_row_spacing (GTK_GRID(grid), 6);
+      gtk_grid_set_column_spacing(GTK_GRID(grid), 12);
 
-  tmp = g_strdup (call->date_time);
-  date = gtk_label_new (tmp);
-  gtk_label_set_line_wrap (GTK_LABEL(date), TRUE);
-  gtk_label_set_xalign (GTK_LABEL(date), 0.0f);
-  gtk_widget_set_sensitive (date, FALSE);
-  gtk_grid_attach (GTK_GRID (grid), date, 1, 0, 1, 1);
+      if (!RM_EMPTY_STRING (call->remote->name)) {
+        name = gtk_label_new (call->remote->name);
+      } else {
+        name = gtk_label_new (_("Unknown"));
+        gtk_widget_set_sensitive (name, FALSE);
+      }
+      gtk_label_set_line_wrap (GTK_LABEL(name), TRUE);
+      gtk_widget_set_hexpand(name, TRUE);
+      gtk_label_set_ellipsize (GTK_LABEL (name), PANGO_ELLIPSIZE_END);
+      PangoAttrList *attrlist = pango_attr_list_new ();
+      PangoAttribute *attr = pango_attr_weight_new (PANGO_WEIGHT_SEMIBOLD);
+      pango_attr_list_insert (attrlist, attr);
+      gtk_label_set_attributes (GTK_LABEL (name), attrlist);
+      pango_attr_list_unref (attrlist);
 
-  name = gtk_label_new (call->remote->name);
-  gtk_label_set_line_wrap (GTK_LABEL(name), TRUE);
-  gtk_widget_set_hexpand(name, TRUE);
-  PangoAttrList *attrlist = pango_attr_list_new ();
-  PangoAttribute *attr = pango_attr_weight_new (PANGO_WEIGHT_SEMIBOLD);
-  pango_attr_list_insert (attrlist, attr);
-  gtk_label_set_attributes (GTK_LABEL (name), attrlist);
-  pango_attr_list_unref (attrlist);
+      gtk_label_set_xalign (GTK_LABEL(name), 0.0f);
+      gtk_grid_attach (GTK_GRID (grid), name, 1, 0, 2, 1);
 
-  gtk_label_set_xalign (GTK_LABEL(name), 0.0f);
-  gtk_grid_attach (GTK_GRID (grid), name, 1, 1, 1, 1);
+      phone = gtk_label_new (call->remote->number);
+      gtk_label_set_line_wrap (GTK_LABEL(phone), TRUE);
+      gtk_widget_set_sensitive (phone, FALSE);
+      gtk_label_set_xalign (GTK_LABEL(phone), 0.0f);
+      gtk_grid_attach (GTK_GRID (grid), phone, 1, 1, 1, 1);
 
-  phone = gtk_label_new (call->remote->number);
-  gtk_label_set_line_wrap (GTK_LABEL(phone), TRUE);
-  gtk_widget_set_sensitive (phone, FALSE);
-  gtk_label_set_xalign (GTK_LABEL(phone), 0.0f);
-  gtk_grid_attach (GTK_GRID (grid), phone, 1, 2, 1, 1);
+      tmp = g_strdup (call->date_time);
+      date = gtk_label_new (tmp);
+      gtk_label_set_line_wrap (GTK_LABEL(date), TRUE);
+      gtk_label_set_xalign (GTK_LABEL(date), 1.0f);
+      gtk_widget_set_sensitive (date, FALSE);
+      gtk_grid_attach (GTK_GRID (grid), date, 2, 1, 1, 1);
 
-  duration = gtk_label_new(call->duration);
-  gtk_label_set_xalign (GTK_LABEL(duration), 1.0f);
-  gtk_grid_attach (GTK_GRID (grid), duration, 2, 0, 1, 3);
+      /*duration = gtk_label_new(call->duration);
+      gtk_label_set_xalign (GTK_LABEL(duration), 1.0f);
+      gtk_grid_attach (GTK_GRID (grid), duration, 2, 0, 1, 3);*/
 
-  gtk_widget_show_all (grid);
+      gtk_widget_show_all (grid);
 
-  gtk_container_add (GTK_CONTAINER (row), grid);
-  gtk_widget_show_all (row);
-  gtk_list_box_insert (GTK_LIST_BOX(self->journal_listbox), row, -1);
-#endif
+      gtk_container_add (GTK_CONTAINER (row), grid);
+      gtk_widget_show_all (row);
+      gtk_list_box_insert (GTK_LIST_BOX(self->journal_listbox), row, -1);
+    }
 		if (call->duration && strchr(call->duration, 's') != NULL) {
 			/* Ignore voicebox duration */
 		} else {
@@ -986,10 +1008,110 @@ static const GActionEntry window_entries [] =
 	{ "contacts-edit-address-work", contacts_add_detail_activated },*/
 };
 
+#define ROGER_WINDOW_MIN_WIDTH 380
+#define ROGER_WINDOW_MIN_HEIGHT 600
+
+static void
+roger_journal_constructed (GObject *object)
+{
+  RogerJournal *journal = ROGER_JOURNAL (object);
+  g_autoptr (GVariant) default_size = NULL;
+  gboolean maximized;
+  gboolean fullscreen;
+  gint default_width = 0;
+  gint default_height = 0;
+
+  g_print ("%s(): Called %p\n", __FUNCTION__, app_settings);
+
+  maximized = g_settings_get_boolean (journal_window_state, "maximized");
+  fullscreen = g_settings_get_boolean (journal_window_state, "fullscreen");
+
+  if (maximized)
+    gtk_window_maximize (GTK_WINDOW (journal));
+  else
+    gtk_window_unmaximize (GTK_WINDOW (journal));
+
+  if (fullscreen)
+    gtk_window_fullscreen (GTK_WINDOW (journal));
+
+  default_size = g_settings_get_value (journal_window_state,
+                                       "initial-size");
+
+  g_variant_get (default_size, "(ii)", &default_width, &default_height);
+
+  g_print ("Setting to %dx%d\n", MAX (ROGER_WINDOW_MIN_WIDTH, default_width),
+                               MAX (ROGER_WINDOW_MIN_HEIGHT, default_height));
+  gtk_window_set_default_size (GTK_WINDOW (journal),
+                               MAX (ROGER_WINDOW_MIN_WIDTH, default_width),
+                               MAX (ROGER_WINDOW_MIN_HEIGHT, default_height));
+
+
+  G_OBJECT_CLASS (roger_journal_parent_class)->constructed (object);
+}
+
+static void
+roger_journal_dispose (GObject *self)
+{
+  RogerJournal *journal = ROGER_JOURNAL (self);
+  gboolean is_maximized;
+
+  if (gtk_widget_get_window (GTK_WIDGET (journal))) {
+    GVariant *initial_size;
+    gint width;
+    gint height;
+
+    gtk_window_get_size (GTK_WINDOW (journal), &width, &height);
+
+    initial_size = g_variant_new_parsed ("(%i, %i)", width, height);
+    is_maximized = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (journal))) & GDK_WINDOW_STATE_MAXIMIZED;
+
+    if (!is_maximized)
+      g_settings_set_value (journal_window_state, "initial-size", initial_size);
+
+    g_settings_set_boolean (journal_window_state, "maximized", is_maximized);
+  }
+
+  G_OBJECT_CLASS (roger_journal_parent_class)->dispose (self);
+}
+
+static void
+roger_journal_size_allocate (GtkWidget     *self,
+                             GtkAllocation *allocation)
+{
+  RogerJournal *journal = ROGER_JOURNAL (self);
+  GtkAllocation alloc;
+  gboolean mobile;
+
+  GTK_WIDGET_CLASS (roger_journal_parent_class)->size_allocate (self, allocation);
+
+  gtk_widget_get_allocated_size (self, &alloc, NULL);
+
+  if (alloc.width < 500) {
+    gtk_stack_set_visible_child_name (GTK_STACK (journal->stack), "mobile");
+    gtk_widget_set_visible (journal->filter_combobox, FALSE);
+    mobile = TRUE;
+  } else {
+    gtk_stack_set_visible_child_name (GTK_STACK (journal->stack), "treeview");
+    gtk_widget_set_visible (journal->filter_combobox, TRUE);
+    mobile = FALSE;
+  }
+
+  if (journal->mobile != mobile) {
+    journal_clear (journal);
+    journal->mobile = mobile;
+    journal_redraw (journal);
+  }
+}
+
 static void
 roger_journal_class_init (RogerJournalClass *klass)
 {
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+  widget_class->size_allocate = roger_journal_size_allocate;
+  object_class->constructed = roger_journal_constructed;
+  object_class->dispose = roger_journal_dispose;
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/tabos/roger/ui/roger-journal.ui");
 
@@ -1012,6 +1134,7 @@ roger_journal_class_init (RogerJournalClass *klass)
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col7);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col8);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col2_renderer);
+ 	gtk_widget_class_bind_template_child (widget_class, RogerJournal, stack);
 
   gtk_widget_class_bind_template_callback (widget_class, on_key_press_event);
   gtk_widget_class_bind_template_callback (widget_class, on_search_entry_changed);
@@ -1028,6 +1151,8 @@ roger_journal_init (RogerJournal *self)
   GtkTreeSortable *sortable;
   GSimpleActionGroup *simple_action_group;
 
+  journal_window_state = g_settings_new ("org.tabos.roger.window-state");
+
 	gtk_widget_init_template (GTK_WIDGET (self));
 
   /* Add actions */
@@ -1043,10 +1168,6 @@ roger_journal_init (RogerJournal *self)
 
   init_call_icons();
 
-	if (g_settings_get_boolean (app_settings, "maximized")) {
-		gtk_window_maximize (GTK_WINDOW (self));
-	}
-
   g_type_ensure (G_TYPE_THEMED_ICON);
   GtkBuilder *builder = gtk_builder_new_from_resource ("/org/tabos/roger/ui/journal-popover.ui");
   GtkWidget *journal_popover = GTK_WIDGET (gtk_builder_get_object (builder, "RogerJournalPopover"));
@@ -1055,6 +1176,8 @@ roger_journal_init (RogerJournal *self)
 
 #ifdef RESPONSIVE_DESIGN
   gtk_list_box_set_header_func (GTK_LIST_BOX (self->journal_listbox), box_header_func, NULL, NULL);
+  //gtk_stack_set_visible_child_name (GTK_STACK (self->stack), "mobile");
+  //gtk_widget_set_visible (self->filter_combobox, FALSE);
 #endif
 
   journal_update_filter_box (self);
@@ -1090,15 +1213,13 @@ roger_journal_init (RogerJournal *self)
   g_settings_bind (app_settings, "col-8-width", self->col8, "fixed-width", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (app_settings, "col-8-visible", self->col8, "visible", G_SETTINGS_BIND_DEFAULT);
 
-  g_settings_bind (app_settings, "width", self, "default-width", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "height", self, "default-height", G_SETTINGS_BIND_DEFAULT);
-
   g_object_bind_property (self->search_button, "active", self->search_bar, "search-mode-enabled", 0);
 
   g_signal_connect (rm_object, "journal-loaded", G_CALLBACK (on_journal_loaded), self);
 	g_signal_connect (rm_object, "connection-changed", G_CALLBACK (on_connection_changed), self);
 	g_signal_connect (rm_object, "contacts-changed", G_CALLBACK (on_contacts_changed), self);
 
+  return;
   if (!self->hide_on_start) {
 		gtk_widget_show (GTK_WIDGET (self));
 	}
