@@ -6,7 +6,7 @@ stages:
   - build
   - flatpak
 
-fedora-x86_64:
+.fedora-x86_64:
   image: registry.gitlab.com/tabos/rogerrouter/linux:v2
   stage: build
   script:
@@ -18,10 +18,14 @@ fedora-x86_64:
       - "_build/meson-logs"
     when: on_failure
 
-.windows:
+windows:
   image: registry.gitlab.com/tabos/rogerrouter/mxe:v1
   stage: build
   script:
+    - pwd
+    - ls -lsa
+    - ls -lsa subprojects/
+    - meson wrap promote ./subprojects/librm.wrap
     - meson _build --cross-file=platform/windows/mingw-cross.txt --libdir=lib --prefix=${CI_PROJECT_DIR}/installed/
     - ninja -C _build
     - ninja -C _build install
