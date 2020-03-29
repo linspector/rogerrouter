@@ -1,5 +1,5 @@
-FROM fedora:30
-MAINTAINER Jan-Michael Brummer <jan.brummer@tabos.org>
+FROM fedora:31
+LABEL maintainer="Jan-Michael Brummer <jan.brummer@tabos.org>"
 
 RUN dnf update -y \
     && dnf install -y 'dnf-command(builddep)' \
@@ -15,7 +15,6 @@ RUN dnf update -y \
                       json-glib-devel \
                       libsndfile-devel \
                       gupnp-devel \
-                      isdn4k-utils-devel \
                       gtk3-devel \
                       poppler-glib-devel \
                       git \
