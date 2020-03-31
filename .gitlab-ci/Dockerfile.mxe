@@ -1,48 +1,67 @@
-FROM debian:stable
+FROM ubuntu:19.10
 MAINTAINER Jan-Michael Brummer <jan.brummer@tabos.org>
 
 ENV LANG C.UTF-8
-RUN dpkg --add-architecture i386 && apt-get update && \
-    apt-get -y --no-install-recommends install \
-    git-core \
-    ca-certificates \
-    autoconf \
-    automake \
-    autopoint \
-    bash \
-    bison \
-    bzip2 \
-    flex \
-    g++ \
-    g++-multilib \
-    gettext \
-    git \
-    gperf \
-    intltool \
-    libc6-dev-i386 \
-    libgdk-pixbuf2.0-dev \
-    libltdl-dev \
-    libssl-dev \
-    libtool-bin \
-    libxml-parser-perl \
-    make \
-    openssl \
-    p7zip-full \
-    patch \
-    perl \
-    pkg-config \
-    python \
-    ruby \
-    scons \
-    sed \
-    unzip \
-    wget \
-    lzip \
-    xz-utils \
-    wine \
-    wine32 \
-    meson  && \
+
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
     rm -rf /var/lib/apt/lists/*
+
+# Add mxe repo
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C6BF758A33A3A276
+RUN add-apt-repository 'deb [arch=amd64] http://mirror.mxe.cc/repos/apt bionic main'
+
+
+# Install necessary dependencies
+RUN apt-get -y --no-install-recommends install \
+    meson \
+    gtk-doc-tools \
+    git \
+    build-essential \
+    autoconf \
+    autotools-dev \
+    automake \
+    libtool \
+    m4 \
+    wget \
+    gettext \
+    libglib2.0-dev-bin \
+    mxe-i686-w64-mingw32.shared-gtk3 \
+    mxe-i686-w64-mingw32.shared-ghostscript \
+    mxe-i686-w64-mingw32.shared-libsoup \
+    mxe-i686-w64-mingw32.shared-speex \
+    mxe-i686-w64-mingw32.shared-json-glib \
+    mxe-i686-w64-mingw32.shared-libsndfile \
+    mxe-i686-w64-mingw32.shared-dlfcn-win32 \
+    mxe-i686-w64-mingw32.shared-poppler && rm -rf /var/lib/apt/lists/*
+
+ENV PATH=/usr/lib/mxe/usr/bin:/usr/lib/mxe/usr/i686-w64-mingw32.shared/bin/:${PATH}
+
+# Compile additional package on our own
+
+RUN wget https://download.gnome.org/sources/gssdp/1.0/gssdp-1.0.3.tar.xz && \
+    tar xf gssdp-1.0.3.tar.xz && \
+    cd gssdp-1.0.3 && \
+    PKG_CONFIG_PATH=/usr/lib/mxe/usr/i686-w64-mingw32.shared/lib/pkgconfig ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared --enable-introspection=no --enable-gtk-doc-html=no && \
+    make && \
+    make install && \
+    cd ..
+
+RUN wget https://download.gnome.org/sources/gupnp/1.0/gupnp-1.0.3.tar.xz && \
+    tar xf gupnp-1.0.3.tar.xz && \
+    cd gupnp-1.0.3 && \
+    PKG_CONFIG_PATH=/usr/lib/mxe/usr/i686-w64-mingw32.shared/lib/pkgconfig ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared --enable-introspection=no --enable-gtk-doc-html=no && \
+    make && \
+    make install && \
+    cd ..
+
+RUN git clone https://gitlab.com/tabos/spandsp.git && \
+    cd spandsp && \
+    autoreconf -i && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared && \
+    make && \
+    make install && \
+    cd ..
 
 # Unprivileged compilation user:
 # - control installed dependencies (no sudo)
@@ -52,19 +71,8 @@ RUN groupadd repro -g 1000
 RUN useradd repro -m -s /bin/bash -u 1000 -g 1000
 USER repro
 RUN mkdir /home/repro/wd/
+RUN cd /home/repro/wd/
 WORKDIR /home/repro/wd/
 
-USER root
-RUN mkdir /opt/mxe
-RUN chown repro: /opt/mxe
-RUN mkdir /usr/src/mxe/
-COPY mxe/ /usr/src/mxe/
-
-USER repro
-RUN ls /usr/src/mxe/
-COPY build-mxe.sh /usr/src/build-mxe.sh
-RUN /usr/src/build-mxe.sh
-
-USER repro
-ENV PATH="/opt/mxe/usr/bin:${PATH}"
+ENV PATH=/usr/lib/mxe/usr/bin:/usr/lib/mxe/usr/i686-w64-mingw32.shared/bin/:${PATH}
 CMD /bin/bash
