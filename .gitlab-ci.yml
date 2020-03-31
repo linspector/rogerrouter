@@ -25,7 +25,7 @@ windows:
     - meson _build --cross-file=platform/windows/mingw-cross.txt --libdir=lib --prefix=${CI_PROJECT_DIR}/installed/
     - ninja -C _build
     - ninja -C _build install
-    - makensis -dMXE_SYSROOT=/opt/mxe/usr/i686-w64-mingw32.shared.posix/ -dPREFIX=${CI_PROJECT_DIR}/installed/ _build/platform/windows/roger.nsi
+    - makensis -dMXE_SYSROOT=/usr/lib/mxe/usr/i686-w64-mingw32.shared/ -dPREFIX=${CI_PROJECT_DIR}/installed/ _build/platform/windows/roger.nsi
   artifacts:
     paths:
       - "_build/meson-logs"
