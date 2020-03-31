@@ -229,7 +229,6 @@ journal_redraw (RogerJournal *self)
       GtkWidget *name;
       GtkWidget *date;
       GtkWidget *phone;
-      GtkWidget *duration;
       g_autofree gchar *tmp = NULL;
 
       gtk_container_set_border_width (GTK_CONTAINER (grid), 6);
