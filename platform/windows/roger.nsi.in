@@ -118,9 +118,7 @@ Section RogerRouter
 	File "${MXE_SYSROOT}/bin/gdk-pixbuf-query-loaders.exe"
 	File "${MXE_SYSROOT}/bin/zlib1.dll"
 	File "${MXE_SYSROOT}/bin/libjasper.dll"
-	File "${MXE_SYSROOT}/bin/libcapi20-3.dll"
 	File "${MXE_SYSROOT}/bin/libdl.dll"
-	File "${MXE_SYSROOT}/bin/libspandsp-2.dll"
 	File "${MXE_SYSROOT}/bin/libspeexdsp-1.dll"
 	File "${MXE_SYSROOT}/bin/libtiff-5.dll"
 	File "${MXE_SYSROOT}/bin/libjpeg-9.dll"
@@ -193,6 +191,12 @@ Section RogerRouter
 	File "${MXE_SYSROOT}/bin/libnettle-7.dll"
 	File "${MXE_SYSROOT}/bin/libunistring-2.dll"
 
+	# Spandsp
+	File "${PREFIX}/bin/libspandsp-2.dll"
+
+	# CAPI
+	File "${PREFIX}/bin/libcapi20-3.dll"
+
 	SetOutPath "$INSTDIR\lib\gstreamer-1.0"
 	;File /r "${MXE_SYSROOT}/lib/gstreamer-1.0/"
 	File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstapp.dll"
@@ -217,7 +221,7 @@ Section RogerRouter
 	;File /r "${MXE_SYSROOT}/lib/gdk-pixbuf-2.0"
 
 	SetOutPath "$INSTDIR\lib\capi"
-	File /r "${MXE_SYSROOT}/lib/capi/*fritz*.dll"
+	File /r "${PREFIX}/lib/capi/*fritz*.dll"
 
 	SetOutPath "$INSTDIR\share\"
 	File /r "${MXE_SYSROOT}/share/glib-2.0"
