@@ -632,11 +632,8 @@ row_activated_foreach (GtkTreeModel *model,
 
 		if (data && len) {
 			g_autofree gchar *path = g_build_filename(rm_get_user_cache_dir(), G_DIR_SEPARATOR_S, "fax.pdf", NULL);
-			g_autofree gchar *uri;
 
 			rm_file_save(path, data, len);
-
-			uri = g_strdup_printf("file:///%s", path);
 
 			app_pdf(data, len, NULL);
 		}
