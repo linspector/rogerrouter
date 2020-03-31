@@ -279,7 +279,7 @@ static gboolean parse_cell(void)
 				text = g_string_append_c(text, next_chr);
 			} else {
 				/* Ignored */
-				cur = next_char();
+				next_char();
 			}
 			break;
 		}
