@@ -19,6 +19,11 @@ RUN dnf update -y \
                       poppler-glib-devel \
                       git \
                       clang-analyzer \
+                      libgdata-devel \
+                      evolution-devel \
+                      libappindicator-gtk3-devel \
+                      libsecret-devel \
+                      gstreamer1-plugins-base-devel \
     && dnf clean all
 
 RUN groupadd repro -g 1000
