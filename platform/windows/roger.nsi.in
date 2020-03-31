@@ -187,7 +187,7 @@ Section RogerRouter
 	File "${MXE_SYSROOT}/bin/libunistring-2.dll"
 
 	# Spandsp
-	File "${PREFIX}/bin/libspandsp-2.dll"
+	File "${MXE_SYSROOT}/bin/libspandsp-2.dll"
 
 	# CAPI
 	File "${PREFIX}/bin/libcapi20-3.dll"
