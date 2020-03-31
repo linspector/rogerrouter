@@ -143,6 +143,7 @@ Section RogerRouter
 	File "${MXE_SYSROOT}/bin/libssh2-1.dll"
 	File "${MXE_SYSROOT}/bin/libogg-0.dll"
 	File "${MXE_SYSROOT}/bin/libvorbis-0.dll"
+	File "${MXE_SYSROOT}/bin/libvorbisenc-2.dll"
 
 	# Poppler (PDF)
 	File "${MXE_SYSROOT}/bin/libpoppler-glib-8.dll"
