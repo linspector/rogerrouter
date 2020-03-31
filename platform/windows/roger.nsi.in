@@ -203,8 +203,8 @@ Section RogerRouter
 	# File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstdirectsoundsrc.dll"
 	# File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstplayback.dll"
 
-	SetOutPath "$INSTDIR\lib\gio"
-	File /r "${MXE_SYSROOT}/lib/gio/"
+	#SetOutPath "$INSTDIR\lib\gio"
+	#File /r "${MXE_SYSROOT}/lib/gio/"
 
 	; Install data files
 	SetOutPath "$INSTDIR\etc"
@@ -229,8 +229,8 @@ Section RogerRouter
 	;SetOutPath "$INSTDIR\share\icons\Adwaita"
 	;File "${MXE_SYSROOT}/share/icons/Adwaita/index.theme"
 
-	SetOutPath "$INSTDIR\share\icons\Adwaita"
-	File /r "${MXE_SYSROOT}/share/icons/Adwaita/*"
+	#SetOutPath "$INSTDIR\share\icons\Adwaita"
+	#File /r "${MXE_SYSROOT}/share/icons/Adwaita/*"
 
 	SetOutPath "$INSTDIR\share\icons\hicolor"
 	File /r "${MXE_SYSROOT}/share/icons/hicolor/*"
