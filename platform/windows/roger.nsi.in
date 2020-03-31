@@ -215,8 +215,8 @@ Section RogerRouter
 	;SetOutPath "$INSTDIR\lib"
 	;File /r "${MXE_SYSROOT}/lib/gdk-pixbuf-2.0"
 
-	SetOutPath "$INSTDIR\lib\capi"
-	File /r "${PREFIX}/lib/capi/*fritz*.dll"
+	SetOutPath "$INSTDIR\lib\capi20"
+	File /r "${PREFIX}/lib/capi20/*fritz*.dll"
 
 	SetOutPath "$INSTDIR\share\"
 	File /r "${MXE_SYSROOT}/share/glib-2.0"
