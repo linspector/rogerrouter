@@ -119,7 +119,6 @@ Section RogerRouter
 	File "${MXE_SYSROOT}/bin/zlib1.dll"
 	File "${MXE_SYSROOT}/bin/libjasper.dll"
 	File "${MXE_SYSROOT}/bin/libdl.dll"
-	File "${MXE_SYSROOT}/bin/libspeexdsp-1.dll"
 	File "${MXE_SYSROOT}/bin/libtiff-5.dll"
 	File "${MXE_SYSROOT}/bin/libjpeg-9.dll"
 	File "${MXE_SYSROOT}/bin/libffi-6.dll"
