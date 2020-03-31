@@ -23,7 +23,10 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 #include <poppler.h>
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 #include <rm/rm.h>
 

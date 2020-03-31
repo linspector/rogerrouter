@@ -29,7 +29,9 @@
 #include <roger/main.h>
 #include "config.h"
 
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 #include <libebook/libebook.h>
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 #include "ebook-sources.h"
 
