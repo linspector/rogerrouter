@@ -391,7 +391,7 @@ gchar *convert_to_fax(gchar *file_name)
 	if ((ret == 0) || (ret == gs_error_Quit)) {
 		ret = ret1;
 	}
-	g_debug("%s(): final ret %d", __FUNCTION__, ret1);
+	g_debug("%s(): final ret %d", __FUNCTION__, ret);
 
 	gsapi_delete_instance(minst);
 
