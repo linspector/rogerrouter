@@ -1564,7 +1564,6 @@ void app_show_settings(void)
 	const gchar *firmware_name;
 	gchar *box_string;
 	RmProfile *profile;
-	gboolean is_cable;
 	gchar **numbers;
 	gint idx;
 	GSList *audio_plugins;
@@ -1637,8 +1636,6 @@ void app_show_settings(void)
 	}
 
 	/* Prefix group */
-	is_cable = rm_router_is_cable(profile);
-
 	settings->line_access_code_entry = GTK_WIDGET(gtk_builder_get_object(builder, "external_access_code_entry"));
 	settings->international_access_code_entry = GTK_WIDGET(gtk_builder_get_object(builder, "international_access_code_entry"));
 	settings->national_access_code_entry = GTK_WIDGET(gtk_builder_get_object(builder, "national_access_code_entry"));
@@ -1651,16 +1648,10 @@ void app_show_settings(void)
 	g_settings_bind(profile->settings, "national-access-code", settings->national_access_code_entry, "text", G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind(profile->settings, "area-code", settings->area_code_entry, "text", G_SETTINGS_BIND_DEFAULT);
 
-	/*gtk_widget_set_sensitive(settings->international_access_code_entry, is_cable);
-	   gtk_widget_set_sensitive(settings->country_code_entry, is_cable);
-	   gtk_widget_set_sensitive(settings->national_access_code_entry, is_cable);
-	   gtk_widget_set_sensitive(settings->area_code_entry, is_cable);*/
-
-	is_cable = TRUE;
-	gtk_editable_set_editable(GTK_EDITABLE(settings->international_access_code_entry), is_cable);
-	gtk_editable_set_editable(GTK_EDITABLE(settings->country_code_entry), is_cable);
-	gtk_editable_set_editable(GTK_EDITABLE(settings->national_access_code_entry), is_cable);
-	gtk_editable_set_editable(GTK_EDITABLE(settings->area_code_entry), is_cable);
+	gtk_editable_set_editable(GTK_EDITABLE(settings->international_access_code_entry), TRUE);
+	gtk_editable_set_editable(GTK_EDITABLE(settings->country_code_entry), TRUE);
+	gtk_editable_set_editable(GTK_EDITABLE(settings->national_access_code_entry), TRUE);
+	gtk_editable_set_editable(GTK_EDITABLE(settings->area_code_entry), TRUE);
 
 	/* Numbers group */
 	settings->phone_active_switch = GTK_WIDGET(gtk_builder_get_object(builder, "phone_active_switch"));
