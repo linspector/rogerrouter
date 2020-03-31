@@ -26,6 +26,9 @@ RUN apt-get -y --no-install-recommends install \
     wget \
     gettext \
     libglib2.0-dev-bin \
+    desktop-file-utils \
+    gtk-update-icon-cache \
+    nsis \
     mxe-i686-w64-mingw32.shared-gtk3 \
     mxe-i686-w64-mingw32.shared-ghostscript \
     mxe-i686-w64-mingw32.shared-libsoup \
