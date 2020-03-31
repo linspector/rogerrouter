@@ -3,8 +3,22 @@ variables:
   BUNDLE: "roger-dev.flatpak"
 
 stages:
+  - check
   - build
   - flatpak
+
+scan-build:
+  image: registry.gitlab.com/tabos/rogerrouter/linux:v2
+  stage: check
+  script:
+    - meson _build
+    - ninja -C _build scan-build
+    - bash -c 'if [[ -n "$(ls -A _build/meson-logs/scanbuild/)" ]]; then echo "Scan build log found, assuming defects exist"; exit 1; fi'
+  allow_failure: true
+  artifacts:
+    when: on_failure
+    paths:
+      - _build/meson-logs/scanbuild
 
 fedora-x86_64:
   image: registry.gitlab.com/tabos/rogerrouter/linux:v2
