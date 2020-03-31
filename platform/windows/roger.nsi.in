@@ -148,6 +148,7 @@ Section RogerRouter
 	File "${MXE_SYSROOT}/bin/libpoppler-88.dll"
 	File "${MXE_SYSROOT}/bin/libgcrypt-20.dll"
 	File "${MXE_SYSROOT}/bin/libgpg-error-0.dll"
+	File "${MXE_SYSROOT}/bin/libssh2-1.dll"
 
 	# UPnP
 	File "${MXE_SYSROOT}/bin/libgssdp-1.0-3.dll"
