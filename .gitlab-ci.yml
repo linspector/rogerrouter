@@ -33,7 +33,7 @@ stages:
     when: on_failure
 
 windows:
-  image: registry.gitlab.com/tabos/rogerrouter/mxe:v1
+  image: registry.gitlab.com/tabos/rogerrouter/mxe:v2
   stage: build
   script:
     - pwd
