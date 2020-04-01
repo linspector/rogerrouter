@@ -29,6 +29,7 @@ RUN apt-get -y --no-install-recommends install \
     desktop-file-utils \
     gtk-update-icon-cache \
     nsis \
+    adwaita-icon-theme \
     mxe-i686-w64-mingw32.shared-gtk3 \
     mxe-i686-w64-mingw32.shared-ghostscript \
     mxe-i686-w64-mingw32.shared-libsoup \
@@ -36,7 +37,8 @@ RUN apt-get -y --no-install-recommends install \
     mxe-i686-w64-mingw32.shared-json-glib \
     mxe-i686-w64-mingw32.shared-libsndfile \
     mxe-i686-w64-mingw32.shared-dlfcn-win32 \
-    mxe-i686-w64-mingw32.shared-poppler && rm -rf /var/lib/apt/lists/*
+    mxe-i686-w64-mingw32.shared-poppler \
+    mxe-i686-w64-mingw32.shared-gst-plugins-base && rm -rf /var/lib/apt/lists/*
 
 ENV PATH=/usr/lib/mxe/usr/bin:/usr/lib/mxe/usr/i686-w64-mingw32.shared/bin/:${PATH}
 
