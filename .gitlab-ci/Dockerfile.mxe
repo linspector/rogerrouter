@@ -68,6 +68,14 @@ RUN git clone https://gitlab.com/tabos/spandsp.git && \
     make install && \
     cd ..
 
+RUN wget https://download.gnome.org/sources/glib-networking/2.54/glib-networking-2.54.1.tar.xz && \
+    tar xf glib-networking-2.54.1.tar.xz && \
+    cd glib-networking-2.54.1 && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared && \
+    make && \
+    make install && \
+    cd ..
+
 # Unprivileged compilation user:
 # - control installed dependencies (no sudo)
 # - generate files with default host uid/gid in bind mounts
