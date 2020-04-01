@@ -174,7 +174,7 @@ Section RogerRouter
 	# File "${MXE_SYSROOT}/bin/libgstpbutils-1.0-0.dll"
 	# File "${MXE_SYSROOT}/bin/libgstriff-1.0-0.dll"
 	# File "${MXE_SYSROOT}/bin/libgstrtsp-1.0-0.dll"
-	# File "${MXE_SYSROOT}/bin/libgsttag-1.0-0.dll"
+	File "${MXE_SYSROOT}/bin/libgsttag-1.0-0.dll"
 	# File "${MXE_SYSROOT}/bin/libogg-0.dll"
 	# ;File "${MXE_SYSROOT}/bin/liborc-0.4-0.dll"
 	# File "${MXE_SYSROOT}/bin/libvorbis-0.dll"
@@ -206,8 +206,8 @@ Section RogerRouter
 	# File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstdirectsoundsrc.dll"
 	# File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstplayback.dll"
 
-	#SetOutPath "$INSTDIR\lib\gio"
-	#File /r "${MXE_SYSROOT}/lib/gio/"
+	SetOutPath "$INSTDIR\lib\gio"
+	File /r "${MXE_SYSROOT}/lib/gio/"
 
 	; Install data files
 	SetOutPath "$INSTDIR\etc"
@@ -226,12 +226,6 @@ Section RogerRouter
 	File /r "${PREFIX}/share/glib-2.0"
 
 	; Themes / Icons
-	SetOutPath "$INSTDIR\share\icons\Adwaita\scalable"
-	File /r "/usr/share/icons/Adwaita/scalable/*"
-
-	SetOutPath "$INSTDIR\share\icons\Adwaita"
-	File "/usr/share/icons/Adwaita/index.theme"
-
 	SetOutPath "$INSTDIR\share\icons\Adwaita"
 	File /r "/usr/share/icons/Adwaita/*"
 
