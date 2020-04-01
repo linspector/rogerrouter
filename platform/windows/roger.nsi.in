@@ -227,14 +227,14 @@ Section RogerRouter
 	File /r "${PREFIX}/share/glib-2.0"
 
 	; Themes / Icons
-	;SetOutPath "$INSTDIR\share\icons\Adwaita\scalable"
-	;File /r "${MXE_SYSROOT}/share/icons/Adwaita/scalable/*"
+	SetOutPath "$INSTDIR\share\icons\Adwaita\scalable"
+	File /r "/usr/share/icons/Adwaita/scalable/*"
 
-	;SetOutPath "$INSTDIR\share\icons\Adwaita"
-	;File "${MXE_SYSROOT}/share/icons/Adwaita/index.theme"
+	SetOutPath "$INSTDIR\share\icons\Adwaita"
+	File "/usr/share/icons/Adwaita/index.theme"
 
-	#SetOutPath "$INSTDIR\share\icons\Adwaita"
-	#File /r "${MXE_SYSROOT}/share/icons/Adwaita/*"
+	SetOutPath "$INSTDIR\share\icons\Adwaita"
+	File /r "/usr/share/icons/Adwaita/*"
 
 	SetOutPath "$INSTDIR\share\icons\hicolor"
 	File /r "${MXE_SYSROOT}/share/icons/hicolor/*"
