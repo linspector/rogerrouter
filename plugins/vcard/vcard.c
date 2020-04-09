@@ -406,10 +406,12 @@ static void process_telephone(struct vcard_data *card_data, RmContact *contact)
  */
 static void process_photo(struct vcard_data *card_data, RmContact *contact)
 {
-	GdkPixbufLoader *loader;
-	guchar *image_ptr;
+	g_autoptr (GdkPixbufLoader) loader = NULL;
+	g_autofree guchar *image_ptr = NULL;
 	gsize len;
 	GError *error = NULL;
+  goffset offset = 0;
+  gchar *pos = NULL;
 
 	if (!contact) {
 		return;
@@ -421,13 +423,18 @@ static void process_photo(struct vcard_data *card_data, RmContact *contact)
 		}
 	}
 
-	image_ptr = g_base64_decode(card_data->entry, &len);
+  pos = g_strstr_len (card_data->entry, -1, "BASE64,");
+  if (pos) {
+    offset = pos - card_data->entry + 7;
+  }
+
+	image_ptr = g_base64_decode(card_data->entry + offset, &len);
 	loader = gdk_pixbuf_loader_new();
 	if (gdk_pixbuf_loader_write(loader, image_ptr, len, &error)) {
-		contact->image = gdk_pixbuf_loader_get_pixbuf(loader);
+    gdk_pixbuf_loader_close (loader, NULL);
+		contact->image = gdk_pixbuf_copy (gdk_pixbuf_loader_get_pixbuf(loader));
 	} else {
 		g_debug("Error!! (%s)", error->message);
-		g_free(image_ptr);
 	}
 }
 
