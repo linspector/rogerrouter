@@ -39,8 +39,6 @@
 #include <roger/plugins.h>
 #include <roger/debug.h>
 
-#include <config.h>
-
 GtkApplication *roger_app;
 static gboolean startup_called = FALSE;
 GSettings *app_settings = NULL;
@@ -303,7 +301,7 @@ static void hideonquit_activated(GSimpleAction *simple,
                        GVariant      *parameter,
                        gpointer       user_data)
 {
-	//journal_set_hide_on_quit (g_variant_get_boolean(parameter));
+	journal_set_hide_on_quit (journal, g_variant_get_boolean(parameter));
 }
 
 static void hideonstart_activated(GSimpleAction *simple,

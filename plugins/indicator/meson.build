@@ -1,9 +1,15 @@
-indicator = dependency('appindicator3-0.1', required: false)
+indicator = dependency('ayatana-appindicator3-0.1', required: false)
+
+indicator_sources = []
 
 if indicator.found()
-indicator_sources = []
 indicator_sources += 'indicator.c'
+else
+indicator = dependency('appindicator3-0.1', required: false)
+indicator_sources += 'indicator-fallback.c'
+endif
 
+if indicator.found()
 indicator_dep = []
 indicator_dep += plugins_dep
 indicator_dep += indicator
@@ -31,5 +37,4 @@ images += 'images/scalable/org.tabos.roger.mono-lite.svg'
 images += 'images/scalable/org.tabos.roger.notify.svg'
 
 install_data(images, install_dir : get_option('datadir') + '/icons/hicolor/scalable/status/')
-
 endif

@@ -26,7 +26,7 @@
 
 #include <rm/rm.h>
 
-#include <libayatana-appindicator/app-indicator.h>
+#include <libappindicator/app-indicator.h>
 
 #include <roger/about.h>
 #include <roger/application.h>
