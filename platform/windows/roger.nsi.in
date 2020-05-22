@@ -215,8 +215,8 @@ Section RogerRouter
 	File /r "${MXE_SYSROOT}/etc/gtk-3.0"
 	CreateDirectory "$INSTDIR\etc\pango"
 
-	;SetOutPath "$INSTDIR\lib"
-	;File /r "${MXE_SYSROOT}/lib/gdk-pixbuf-2.0"
+	SetOutPath "$INSTDIR\lib"
+	File /r "${MXE_SYSROOT}/lib/gdk-pixbuf-2.0"
 
 	SetOutPath "$INSTDIR\lib\capi20"
 	File /r "${PREFIX}/lib/capi20/*fritz*.dll"

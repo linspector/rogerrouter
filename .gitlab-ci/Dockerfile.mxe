@@ -76,6 +76,36 @@ RUN wget https://download.gnome.org/sources/glib-networking/2.54/glib-networking
     make install && \
     cd ..
 
+# Recompile gdk-pixbuf and rsvg to enable shared module support (needed for svg)
+RUN wget https://download.gnome.org/sources/gdk-pixbuf/2.32/gdk-pixbuf-2.32.3.tar.xz && \
+    tar xf gdk-pixbuf-2.32.3.tar.xz && \
+    cd gdk-pixbuf-2.32.3 && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared --with-included-loaders && \
+    make && \
+    make install && \
+    cd ..
+
+RUN wget https://download.gnome.org/sources/libcroco/0.6/libcroco-0.6.2.tar.bz2 && \
+    tar xf libcroco-0.6.2.tar.bz2 && \
+    cd libcroco-0.6.2 && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared --disable-gtk-doc && \
+    make && \
+    make install && \
+    cd ..
+
+RUN apt-get -y --no-install-recommends install libgdk-pixbuf2.0 && rm -rf /var/lib/apt/lists/*
+
+COPY librsvg-1-fixes.patch /
+RUN ln -s /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders /usr/bin/gdk-pixbuf-query-loaders
+RUN wget https://download.gnome.org/sources/librsvg/2.40/librsvg-2.40.5.tar.xz && \
+    tar xf librsvg-2.40.5.tar.xz && \
+    cd librsvg-2.40.5 && \
+    patch -p1 < /librsvg-1-fixes.patch && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared --disable-gtk-doc --enable-introspection=no && \
+    make && \
+    make install && \
+    cd ..
+
 # Unprivileged compilation user:
 # - control installed dependencies (no sudo)
 # - generate files with default host uid/gid in bind mounts
