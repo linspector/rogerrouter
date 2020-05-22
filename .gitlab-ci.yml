@@ -37,6 +37,7 @@ windows:
   stage: build
   script:
     - meson _build --cross-file=platform/windows/mingw-cross.txt --libdir=lib --prefix=${CI_PROJECT_DIR}/installed/
+    - cp /usr/lib/mxe/usr/i686-w64-mingw32.shared/share/glib-2.0/schemas/* ${CI_PROJECT_DIR}/installed/share/glib-2.0/schemas/
     - ninja -C _build
     - ninja -C _build install
     - makensis -dMXE_SYSROOT=/usr/lib/mxe/usr/i686-w64-mingw32.shared/ -dPREFIX=${CI_PROJECT_DIR}/installed/ _build/platform/windows/roger.nsi
