@@ -7,7 +7,7 @@ stages:
   - build
   - flatpak
 
-.scan-build:
+scan-build:
   image: registry.gitlab.com/tabos/rogerrouter/linux:v2
   stage: check
   script:
@@ -20,7 +20,7 @@ stages:
     paths:
       - _build/meson-logs/scanbuild
 
-.fedora-x86_64:
+fedora-x86_64:
   image: registry.gitlab.com/tabos/rogerrouter/linux:v2
   stage: build
   script:
