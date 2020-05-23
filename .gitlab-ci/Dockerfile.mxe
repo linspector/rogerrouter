@@ -1,48 +1,120 @@
-FROM debian:stable
-MAINTAINER Jan-Michael Brummer <jan.brummer@tabos.org>
+FROM ubuntu:20.04
+LABEL maintainer="Jan-Michael Brummer <jan.brummer@tabos.org>"
 
 ENV LANG C.UTF-8
-RUN dpkg --add-architecture i386 && apt-get update && \
-    apt-get -y --no-install-recommends install \
-    git-core \
-    ca-certificates \
-    autoconf \
-    automake \
-    autopoint \
-    bash \
-    bison \
-    bzip2 \
-    flex \
-    g++ \
-    g++-multilib \
-    gettext \
-    git \
-    gperf \
-    intltool \
-    libc6-dev-i386 \
-    libgdk-pixbuf2.0-dev \
-    libltdl-dev \
-    libssl-dev \
-    libtool-bin \
-    libxml-parser-perl \
-    make \
-    openssl \
-    p7zip-full \
-    patch \
-    perl \
-    pkg-config \
-    python \
-    ruby \
-    scons \
-    sed \
-    unzip \
-    wget \
-    lzip \
-    xz-utils \
-    wine \
-    wine32 \
-    meson  && \
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
     rm -rf /var/lib/apt/lists/*
+
+# Add mxe repo
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C6BF758A33A3A276
+RUN add-apt-repository 'deb [arch=amd64] http://mirror.mxe.cc/repos/apt bionic main'
+
+# Install necessary dependencies
+RUN apt-get -y --no-install-recommends install \
+    meson \
+    gtk-doc-tools \
+    git \
+    build-essential \
+    autoconf \
+    autotools-dev \
+    automake \
+    libtool \
+    m4 \
+    wget \
+    gettext \
+    libglib2.0-dev-bin \
+    desktop-file-utils \
+    gtk-update-icon-cache \
+    nsis \
+    libgtk-3-bin \
+    mxe-i686-w64-mingw32.shared-gtk3 \
+    mxe-i686-w64-mingw32.shared-ghostscript \
+    mxe-i686-w64-mingw32.shared-libsoup \
+    mxe-i686-w64-mingw32.shared-speex \
+    mxe-i686-w64-mingw32.shared-json-glib \
+    mxe-i686-w64-mingw32.shared-libsndfile \
+    mxe-i686-w64-mingw32.shared-dlfcn-win32 \
+    mxe-i686-w64-mingw32.shared-poppler \
+    mxe-i686-w64-mingw32.shared-gst-plugins-base \
+    mxe-i686-w64-mingw32.shared-gst-plugins-good \
+    mxe-i686-w64-mingw32.shared-gst-plugins-bad && rm -rf /var/lib/apt/lists/*
+
+ENV PATH=/usr/lib/mxe/usr/bin:/usr/lib/mxe/usr/i686-w64-mingw32.shared/bin/:${PATH}
+
+# Compile additional package on our own
+
+RUN wget https://download.gnome.org/sources/gssdp/1.0/gssdp-1.0.3.tar.xz && \
+    tar xf gssdp-1.0.3.tar.xz && \
+    cd gssdp-1.0.3 && \
+    PKG_CONFIG_PATH=/usr/lib/mxe/usr/i686-w64-mingw32.shared/lib/pkgconfig ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared --enable-introspection=no --enable-gtk-doc-html=no && \
+    make && \
+    make install && \
+    cd ..
+
+RUN wget https://download.gnome.org/sources/gupnp/1.0/gupnp-1.0.3.tar.xz && \
+    tar xf gupnp-1.0.3.tar.xz && \
+    cd gupnp-1.0.3 && \
+    PKG_CONFIG_PATH=/usr/lib/mxe/usr/i686-w64-mingw32.shared/lib/pkgconfig ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared --enable-introspection=no --enable-gtk-doc-html=no && \
+    make && \
+    make install && \
+    cd ..
+
+RUN git clone https://gitlab.com/tabos/spandsp.git && \
+    cd spandsp && \
+    autoreconf -i && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared && \
+    make && \
+    make install && \
+    cd ..
+
+RUN wget https://download.gnome.org/sources/glib-networking/2.54/glib-networking-2.54.1.tar.xz && \
+    tar xf glib-networking-2.54.1.tar.xz && \
+    cd glib-networking-2.54.1 && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared && \
+    make && \
+    make install && \
+    cd ..
+
+# Recompile gdk-pixbuf and rsvg to enable shared module support (needed for svg)
+RUN wget https://download.gnome.org/sources/gdk-pixbuf/2.32/gdk-pixbuf-2.32.3.tar.xz && \
+    tar xf gdk-pixbuf-2.32.3.tar.xz && \
+    cd gdk-pixbuf-2.32.3 && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared --with-included-loaders && \
+    make && \
+    make install && \
+    cd ..
+
+RUN wget https://download.gnome.org/sources/libcroco/0.6/libcroco-0.6.2.tar.bz2 && \
+    tar xf libcroco-0.6.2.tar.bz2 && \
+    cd libcroco-0.6.2 && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared --disable-gtk-doc && \
+    make && \
+    make install && \
+    cd ..
+
+RUN apt-get -y --no-install-recommends install libgdk-pixbuf2.0 && rm -rf /var/lib/apt/lists/*
+
+COPY librsvg-1-fixes.patch /
+RUN ln -s /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders /usr/bin/gdk-pixbuf-query-loaders
+RUN wget https://download.gnome.org/sources/librsvg/2.40/librsvg-2.40.5.tar.xz && \
+    tar xf librsvg-2.40.5.tar.xz && \
+    cd librsvg-2.40.5 && \
+    patch -p1 < /librsvg-1-fixes.patch && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared --disable-gtk-doc --enable-introspection=no && \
+    make && \
+    make install && \
+    cd ..
+
+RUN wget https://download.gnome.org/sources/adwaita-icon-theme/3.36/adwaita-icon-theme-3.36.1.tar.xz && \
+    tar xf adwaita-icon-theme-3.36.1.tar.xz && \
+    cd adwaita-icon-theme-3.36.1 && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared && \
+    make && \
+    make install && \
+    cd ..
 
 # Unprivileged compilation user:
 # - control installed dependencies (no sudo)
@@ -52,19 +124,8 @@ RUN groupadd repro -g 1000
 RUN useradd repro -m -s /bin/bash -u 1000 -g 1000
 USER repro
 RUN mkdir /home/repro/wd/
+RUN cd /home/repro/wd/
 WORKDIR /home/repro/wd/
 
-USER root
-RUN mkdir /opt/mxe
-RUN chown repro: /opt/mxe
-RUN mkdir /usr/src/mxe/
-COPY mxe/ /usr/src/mxe/
-
-USER repro
-RUN ls /usr/src/mxe/
-COPY build-mxe.sh /usr/src/build-mxe.sh
-RUN /usr/src/build-mxe.sh
-
-USER repro
-ENV PATH="/opt/mxe/usr/bin:${PATH}"
+ENV PATH=/usr/lib/mxe/usr/bin:/usr/lib/mxe/usr/i686-w64-mingw32.shared/bin/:${PATH}
 CMD /bin/bash
