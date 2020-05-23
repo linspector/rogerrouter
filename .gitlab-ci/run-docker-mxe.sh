@@ -2,7 +2,7 @@
 
 set -e
 
-TAG="registry.gitlab.com/tabos/rogerrouter/mxe:v2"
+TAG="registry.gitlab.com/tabos/rogerrouter/mxe:v3"
 
 rm -rf mxe
 mkdir mxe

@@ -1,7 +1,8 @@
-FROM ubuntu:19.10
-MAINTAINER Jan-Michael Brummer <jan.brummer@tabos.org>
+FROM ubuntu:20.04
+LABEL maintainer="Jan-Michael Brummer <jan.brummer@tabos.org>"
 
 ENV LANG C.UTF-8
+ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
     apt-get install -y software-properties-common && \
@@ -10,7 +11,6 @@ RUN apt-get update && \
 # Add mxe repo
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C6BF758A33A3A276
 RUN add-apt-repository 'deb [arch=amd64] http://mirror.mxe.cc/repos/apt bionic main'
-
 
 # Install necessary dependencies
 RUN apt-get -y --no-install-recommends install \
@@ -29,7 +29,7 @@ RUN apt-get -y --no-install-recommends install \
     desktop-file-utils \
     gtk-update-icon-cache \
     nsis \
-    adwaita-icon-theme \
+    libgtk-3-bin \
     mxe-i686-w64-mingw32.shared-gtk3 \
     mxe-i686-w64-mingw32.shared-ghostscript \
     mxe-i686-w64-mingw32.shared-libsoup \
@@ -38,7 +38,9 @@ RUN apt-get -y --no-install-recommends install \
     mxe-i686-w64-mingw32.shared-libsndfile \
     mxe-i686-w64-mingw32.shared-dlfcn-win32 \
     mxe-i686-w64-mingw32.shared-poppler \
-    mxe-i686-w64-mingw32.shared-gst-plugins-base && rm -rf /var/lib/apt/lists/*
+    mxe-i686-w64-mingw32.shared-gst-plugins-base \
+    mxe-i686-w64-mingw32.shared-gst-plugins-good \
+    mxe-i686-w64-mingw32.shared-gst-plugins-bad && rm -rf /var/lib/apt/lists/*
 
 ENV PATH=/usr/lib/mxe/usr/bin:/usr/lib/mxe/usr/i686-w64-mingw32.shared/bin/:${PATH}
 
@@ -102,6 +104,14 @@ RUN wget https://download.gnome.org/sources/librsvg/2.40/librsvg-2.40.5.tar.xz &
     cd librsvg-2.40.5 && \
     patch -p1 < /librsvg-1-fixes.patch && \
     ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared --disable-gtk-doc --enable-introspection=no && \
+    make && \
+    make install && \
+    cd ..
+
+RUN wget https://download.gnome.org/sources/adwaita-icon-theme/3.36/adwaita-icon-theme-3.36.1.tar.xz && \
+    tar xf adwaita-icon-theme-3.36.1.tar.xz && \
+    cd adwaita-icon-theme-3.36.1 && \
+    ./configure --host=i686-w64-mingw32.shared --prefix=/usr/lib/mxe/usr/i686-w64-mingw32.shared && \
     make && \
     make install && \
     cd ..

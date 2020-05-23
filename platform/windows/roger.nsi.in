@@ -198,15 +198,15 @@ Section RogerRouter
 	# CAPI
 	File "${PREFIX}/bin/libcapi20-3.dll"
 
-	# SetOutPath "$INSTDIR\lib\gstreamer-1.0"
+	SetOutPath "$INSTDIR\lib\gstreamer-1.0"
 	# ;File /r "${MXE_SYSROOT}/lib/gstreamer-1.0/"
-	# File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstaudioconvert.dll"
-	# File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstaudioresample.dll"
-	# File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstautodetect.dll"
-	# File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstcoreelements.dll"
-	# File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstdirectsound.dll"
-	# File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstdirectsoundsrc.dll"
-	# File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstplayback.dll"
+	File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstaudioconvert.dll"
+	File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstaudioresample.dll"
+	File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstautodetect.dll"
+	File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstcoreelements.dll"
+	File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstdirectsound.dll"
+	File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstdirectsoundsrc.dll"
+	File "${MXE_SYSROOT}/bin/gstreamer-1.0/libgstplayback.dll"
 
 	SetOutPath "$INSTDIR\lib\gio"
 	File /r "${MXE_SYSROOT}/lib/gio/"
@@ -229,7 +229,7 @@ Section RogerRouter
 
 	; Themes / Icons
 	SetOutPath "$INSTDIR\share\icons\Adwaita"
-	File /r "/usr/share/icons/Adwaita/*"
+	File /r "/usr/lib/mxe/usr/i686-w64-mingw32.shared/share/icons/Adwaita/*"
 
 	SetOutPath "$INSTDIR\share\icons\hicolor"
 	File /r "${MXE_SYSROOT}/share/icons/hicolor/*"

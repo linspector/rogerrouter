@@ -33,7 +33,7 @@ stages:
     when: on_failure
 
 windows:
-  image: registry.gitlab.com/tabos/rogerrouter/mxe:v2
+  image: registry.gitlab.com/tabos/rogerrouter/mxe:v3
   stage: build
   script:
     - meson _build --cross-file=platform/windows/mingw-cross.txt --libdir=lib --prefix=${CI_PROJECT_DIR}/installed/
