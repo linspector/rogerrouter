@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2020 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -26,7 +26,7 @@
 #include <rm/rm.h>
 
 #include <roger/journal.h>
-#include <roger/assistant.h>
+#include "assistant.h"
 #include <roger/application.h>
 #include <roger/main.h>
 #include <roger/phone.h>
@@ -50,7 +50,6 @@ struct cmd_line_option_state {
 	gboolean quit;
   gboolean force_online;
 	gchar *number;
-	gboolean assistant;
 	gchar *profile;
 };
 
@@ -175,7 +174,11 @@ static void addressbook_activated(GSimpleAction *action, GVariant *parameter, gp
 
 static void assistant_activated(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
-	app_assistant();
+	//app_assistant();
+  GtkWidget *assistant = roger_assistant_new ();
+  gtk_window_set_transient_for (GTK_WINDOW (assistant), GTK_WINDOW (journal));
+  gtk_window_set_modal (GTK_WINDOW (assistant), TRUE);
+  gtk_widget_show (assistant);
 }
 
 static void dialnumber_activated(GSimpleAction *action, GVariant *parameter, gpointer user_data)
@@ -334,12 +337,13 @@ static GActionEntry apps_entries[] = {
 
 static void application_startup(GtkApplication *application)
 {
+  hdy_init ();
 	startup_called = TRUE;
 }
 
 static void rm_object_message_cb(RmObject *object, gchar *title, gchar *message, gpointer user_data)
 {
-	GtkWidget *dialog = gtk_message_dialog_new_with_markup(roger_app ? gtk_application_get_active_window(roger_app) : NULL, GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "<span weight=\"bold\" size=\"larger\">%s</span>", title);
+	GtkWidget *dialog = gtk_message_dialog_new_with_markup(roger_app ? gtk_application_get_active_window(roger_app) : NULL, GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "<span weight=\"bold\" size=\"larger\">%s</span>", title);
 
 	gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog), "%s", message ? message : "");
 
@@ -348,6 +352,11 @@ static void rm_object_message_cb(RmObject *object, gchar *title, gchar *message,
 	g_signal_connect(dialog, "response", G_CALLBACK(gtk_widget_destroy), NULL);
 
 	gtk_window_present(GTK_WINDOW(dialog));
+}
+
+static void rm_object_profile_changed_cb (RmObject *object)
+{
+  journal_update_content (journal);
 }
 
 static void app_init(GtkApplication *app)
@@ -416,6 +425,7 @@ static void app_init(GtkApplication *app)
 
 	g_signal_connect(rm_object, "authenticate", G_CALLBACK(app_authenticate_cb), NULL);
 	g_signal_connect(rm_object, "message", G_CALLBACK(rm_object_message_cb), NULL);
+	g_signal_connect(rm_object, "profile-changed", G_CALLBACK(rm_object_profile_changed_cb), NULL);
 
   journal = roger_journal_new ();
 
@@ -439,14 +449,9 @@ static void app_init(GtkApplication *app)
 		journal_set_hide_on_quit(journal, TRUE);
 	}
 
-	if (rm_netmonitor_is_online() && !rm_profile_get_list()) {
-		journal_set_hide_on_start(journal, TRUE);
-		app_assistant();
-	}
-
 	//journal_window(G_APPLICATION(app));
-  gtk_application_add_window (GTK_APPLICATION(app), GTK_WINDOW(journal));
   gtk_widget_show (GTK_WIDGET (journal));
+  gtk_application_add_window (GTK_APPLICATION(app), GTK_WINDOW(journal));
 }
 
 G_GNUC_NORETURN static gboolean option_version_cb(const gchar *option_name, const gchar *value, gpointer data, GError **error)
@@ -461,7 +466,6 @@ const GOptionEntry all_options[] = {
 	{ "quit", 'q', 0, G_OPTION_ARG_NONE, &option_state.quit, "Quit", NULL },
 	{ "call", 'c', 0, G_OPTION_ARG_STRING, &option_state.number, "Remote phone number", NULL },
 	{ "version", 'v', G_OPTION_FLAG_NO_ARG | G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_CALLBACK, option_version_cb, NULL, NULL },
-	{ "assistant", 'a', 0, G_OPTION_ARG_NONE, &option_state.assistant, "Start assistant", NULL },
 	{ "profile", 'p', 0, G_OPTION_ARG_STRING, &option_state.profile, "Profile name", NULL },
 	{ "force-online", 'f', 0, G_OPTION_ARG_NONE, &option_state.force_online, "Force online", NULL },
 	{ NULL }
@@ -553,11 +557,6 @@ static gint application_command_line_cb(GtkApplication *app, GApplicationCommand
 
 			app_phone(contact, NULL);
 			g_free(full_number);
-		}
-
-		/* If assistant is requested, start it */
-		if (option_state.assistant) {
-			app_assistant();
 		}
 	}
 

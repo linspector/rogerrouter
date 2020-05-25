@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2018 Jan-Michael Brummer
+ * Copyright (c) 2012-2020 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -28,6 +28,7 @@
 #include <gdk/gdk.h>
 #include <glib.h>
 #include <glib/gstdio.h>
+#include <handy.h>
 
 #include <rm/rm.h>
 
@@ -41,9 +42,11 @@
 #include "roger/answeringmachine.h"
 
 struct _RogerJournal {
-	GtkApplicationWindow parent_instance;
+	HdyWindow parent_instance;
 
+  GtkWidget *header_bars_stack;
   GtkWidget *headerbar;
+  GtkWidget *content_stack;
   GtkWidget *journal_listbox;
   GtkWidget *menu_button;
   GtkWidget *filter_combobox;
@@ -54,8 +57,8 @@ struct _RogerJournal {
   RmFilter *search_filter;
   GSList *list;
   GtkWidget *search_bar;
+  GtkWidget *search_entry;
   GtkWidget *search_button;
-  GtkWidget *stack;
 
   GtkWidget *col0;
   GtkWidget *col1;
@@ -73,11 +76,10 @@ struct _RogerJournal {
   gboolean hide_on_quit;
   gboolean hide_on_start;
   gboolean mobile;
+  gboolean active;
 };
 
-G_DEFINE_TYPE(RogerJournal, roger_journal, GTK_TYPE_APPLICATION_WINDOW)
-
-#define RESPONSIVE_DESIGN 1
+G_DEFINE_TYPE(RogerJournal, roger_journal, HDY_TYPE_WINDOW)
 
 static GdkPixbuf *icon_call_in = NULL;
 static GdkPixbuf *icon_call_missed = NULL;
@@ -90,14 +92,12 @@ static GdkPixbuf *icon_blocked = NULL;
 
 static GSettings *journal_window_state = NULL;
 
-#ifdef RESPONSIVE_DESIGN
 static void
 clear_listbox (GtkWidget *widget,
                gpointer   data)
 {
   gtk_widget_destroy (widget);
 }
-#endif
 
 void
 journal_clear (RogerJournal *journal)
@@ -162,7 +162,6 @@ get_call_icon (gint type)
 	return NULL;
 }
 
-#ifdef RESPONSIVE_DESIGN
 static void
 box_header_func (GtkListBoxRow *row,
                  GtkListBoxRow *before,
@@ -182,7 +181,6 @@ box_header_func (GtkListBoxRow *row,
     gtk_list_box_row_set_header (row, current);
   }
 }
-#endif
 
 void
 journal_redraw (RogerJournal *self)
@@ -293,9 +291,9 @@ journal_redraw (RogerJournal *self)
 
 	profile = rm_profile_get_active();
 
-  gtk_header_bar_set_title (GTK_HEADER_BAR (self->headerbar), profile ? profile->name : _("<No profile>"));
+  hdy_header_bar_set_title (HDY_HEADER_BAR (self->headerbar), profile ? profile->name : _("<No profile>"));
 	g_autofree gchar *markup = g_strdup_printf(_("%d calls, %d:%2.2dh"), count, duration / 60, duration % 60);
-  gtk_header_bar_set_subtitle (GTK_HEADER_BAR (self->headerbar), markup);
+  hdy_header_bar_set_subtitle (HDY_HEADER_BAR (self->headerbar), markup);
 
 	g_free(text);
 }
@@ -354,6 +352,28 @@ lookup_journal (gpointer user_data)
 void journal_filter_box_changed(GtkComboBox *box, gpointer user_data);
 static void journal_update_filter_box (RogerJournal *self);
 
+void
+journal_update_content (RogerJournal *self)
+{
+  RmProfile *profile = rm_profile_get_active ();
+
+  if (!profile) {
+    gtk_stack_set_visible_child_name (GTK_STACK (self->content_stack), "welcome");
+    gtk_stack_set_visible_child_name (GTK_STACK (self->header_bars_stack), "empty");
+    return;
+  }
+
+  gtk_stack_set_visible_child_name (GTK_STACK (self->header_bars_stack), "full");
+
+  if (self->mobile) {
+    gtk_stack_set_visible_child_name (GTK_STACK (self->content_stack), "mobile");
+    gtk_widget_set_visible (self->filter_combobox, FALSE);
+  } else {
+    gtk_stack_set_visible_child_name (GTK_STACK (self->content_stack), "treeview");
+    gtk_widget_set_visible (self->filter_combobox, TRUE);
+  }
+}
+
 static void
 on_journal_loaded(RmObject *obj,
                   GSList   *list,
@@ -366,6 +386,11 @@ on_journal_loaded(RmObject *obj,
 		g_debug ("%s(): Journal loading already in progress", __FUNCTION__);
 		return;
 	}
+
+  if (!self->active) {
+    self->active = TRUE;
+    journal_update_content (self);
+  }
 
 	if (!self->list && list) {
 		journal_update_filter_box (self);
@@ -971,20 +996,12 @@ on_key_press_event (GtkWidget *widget,
                     gpointer   user_data)
 {
   RogerJournal *self = ROGER_JOURNAL (widget);
-	GdkEventKey *key = (GdkEventKey*)event;
-	gint ret;
 
-	ret = gtk_search_bar_handle_event(GTK_SEARCH_BAR(self->search_bar), event);
+  if (g_strcmp0 (gtk_stack_get_visible_child_name (GTK_STACK (self->header_bars_stack)), "empty") == 0) {
+      return GDK_EVENT_PROPAGATE;
+  }
 
-	if (ret != GDK_EVENT_STOP) {
-		if (key->keyval == GDK_KEY_Escape) {
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self->search_button), FALSE);
-		}
-	} else {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(self->search_button), TRUE);
-	}
-
-	return ret;
+	return hdy_search_bar_handle_event(HDY_SEARCH_BAR(self->search_bar), event);
 }
 
 static const GActionEntry window_entries [] =
@@ -1004,9 +1021,6 @@ static const GActionEntry window_entries [] =
 	{ "contacts-edit-address-work", contacts_add_detail_activated },*/
 };
 
-#define ROGER_WINDOW_MIN_WIDTH 380
-#define ROGER_WINDOW_MIN_HEIGHT 600
-
 static void
 roger_journal_constructed (GObject *object)
 {
@@ -1014,35 +1028,28 @@ roger_journal_constructed (GObject *object)
   g_autoptr (GVariant) default_size = NULL;
   gboolean maximized;
   gboolean fullscreen;
-  gint default_width = 0;
-  gint default_height = 0;
-
-  g_print ("%s(): Called %p\n", __FUNCTION__, app_settings);
+  int default_width;
+  int default_height;
 
   maximized = g_settings_get_boolean (journal_window_state, "maximized");
   fullscreen = g_settings_get_boolean (journal_window_state, "fullscreen");
-
-  if (maximized)
-    gtk_window_maximize (GTK_WINDOW (journal));
-  else
-    gtk_window_unmaximize (GTK_WINDOW (journal));
-
-  if (fullscreen)
-    gtk_window_fullscreen (GTK_WINDOW (journal));
-
   default_size = g_settings_get_value (journal_window_state,
                                        "initial-size");
 
   g_variant_get (default_size, "(ii)", &default_width, &default_height);
 
-  g_print ("Setting to %dx%d\n", MAX (ROGER_WINDOW_MIN_WIDTH, default_width),
-                               MAX (ROGER_WINDOW_MIN_HEIGHT, default_height));
-  gtk_window_set_default_size (GTK_WINDOW (journal),
-                               MAX (ROGER_WINDOW_MIN_WIDTH, default_width),
-                               MAX (ROGER_WINDOW_MIN_HEIGHT, default_height));
+  gtk_window_set_default_size (GTK_WINDOW (journal), default_width, default_height);
 
+  if (maximized)
+    gtk_window_maximize (GTK_WINDOW (journal));
+
+  if (fullscreen)
+    gtk_window_fullscreen (GTK_WINDOW (journal));
 
   G_OBJECT_CLASS (roger_journal_parent_class)->constructed (object);
+
+  if (!journal->hide_on_start)
+		gtk_widget_show (GTK_WIDGET (journal));
 }
 
 static void
@@ -1053,8 +1060,8 @@ roger_journal_dispose (GObject *self)
 
   if (gtk_widget_get_window (GTK_WIDGET (journal))) {
     GVariant *initial_size;
-    gint width;
-    gint height;
+    int width;
+    int height;
 
     gtk_window_get_size (GTK_WINDOW (journal), &width, &height);
 
@@ -1085,20 +1092,18 @@ roger_journal_size_allocate (GtkWidget     *self,
   GTK_WIDGET_CLASS (roger_journal_parent_class)->size_allocate (self, allocation);
 
   gtk_widget_get_allocated_size (self, &alloc, NULL);
+  mobile = alloc.width < 500;
 
-  if (alloc.width < 500) {
-    gtk_stack_set_visible_child_name (GTK_STACK (journal->stack), "mobile");
-    gtk_widget_set_visible (journal->filter_combobox, FALSE);
-    mobile = TRUE;
-  } else {
-    gtk_stack_set_visible_child_name (GTK_STACK (journal->stack), "treeview");
-    gtk_widget_set_visible (journal->filter_combobox, TRUE);
-    mobile = FALSE;
+  if (!journal->active) {
+    journal->mobile = mobile;
+    return;
   }
+
 
   if (journal->mobile != mobile) {
     journal_clear (journal);
     journal->mobile = mobile;
+    journal_update_content (journal);
     journal_redraw (journal);
   }
 }
@@ -1115,7 +1120,10 @@ roger_journal_class_init (RogerJournalClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/tabos/roger/ui/roger-journal.ui");
 
+ 	gtk_widget_class_bind_template_child (widget_class, RogerJournal, header_bars_stack);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, headerbar);
+ 	gtk_widget_class_bind_template_child (widget_class, RogerJournal, content_stack);
+
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, journal_listbox);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, menu_button);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, filter_combobox);
@@ -1123,7 +1131,8 @@ roger_journal_class_init (RogerJournalClass *klass)
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, list_store);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, spinner);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, search_bar);
- 	gtk_widget_class_bind_template_child (widget_class, RogerJournal, search_button);
+ 	gtk_widget_class_bind_template_child (widget_class, RogerJournal, search_entry);
+ 	//gtk_widget_class_bind_template_child (widget_class, RogerJournal, search_button);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col0);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col1);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col2);
@@ -1134,7 +1143,7 @@ roger_journal_class_init (RogerJournalClass *klass)
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col7);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col8);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col2_renderer);
- 	gtk_widget_class_bind_template_child (widget_class, RogerJournal, stack);
+ 	gtk_widget_class_bind_template_child (widget_class, RogerJournal, content_stack);
 
   gtk_widget_class_bind_template_callback (widget_class, on_key_press_event);
   gtk_widget_class_bind_template_callback (widget_class, on_search_entry_changed);
@@ -1175,11 +1184,8 @@ roger_journal_init (RogerJournal *self)
   gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->menu_button), journal_popover);
   g_object_unref (builder);
 
-#ifdef RESPONSIVE_DESIGN
+  hdy_search_bar_connect_entry (HDY_SEARCH_BAR (self->search_bar), GTK_ENTRY (self->search_entry));
   gtk_list_box_set_header_func (GTK_LIST_BOX (self->journal_listbox), box_header_func, NULL, NULL);
-  //gtk_stack_set_visible_child_name (GTK_STACK (self->stack), "mobile");
-  //gtk_widget_set_visible (self->filter_combobox, FALSE);
-#endif
 
   journal_update_filter_box (self);
 
@@ -1216,14 +1222,13 @@ roger_journal_init (RogerJournal *self)
 
   g_object_bind_property (self->search_button, "active", self->search_bar, "search-mode-enabled", 0);
 
-  g_signal_connect (rm_object, "journal-loaded", G_CALLBACK (on_journal_loaded), self);
-	g_signal_connect (rm_object, "connection-changed", G_CALLBACK (on_connection_changed), self);
-	g_signal_connect (rm_object, "contacts-changed", G_CALLBACK (on_contacts_changed), self);
+  self->active = FALSE;
+  gtk_stack_set_visible_child_name (GTK_STACK (self->header_bars_stack), "empty");
+  gtk_stack_set_visible_child_name (GTK_STACK (self->content_stack), "loading");
 
-  return;
-  if (!self->hide_on_start) {
-		gtk_widget_show (GTK_WIDGET (self));
-	}
+  g_signal_connect_object (rm_object, "journal-loaded", G_CALLBACK (on_journal_loaded), self, 0);
+	g_signal_connect_object (rm_object, "connection-changed", G_CALLBACK (on_connection_changed), self, 0);
+	g_signal_connect_object (rm_object, "contacts-changed", G_CALLBACK (on_contacts_changed), self, 0);
 }
 
 RogerJournal *

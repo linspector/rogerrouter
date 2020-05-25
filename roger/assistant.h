@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2020 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,13 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ASSISTANT_H
-#define ASSISTANT_H
+#pragma once
+
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-void app_assistant();
+#define ROGER_TYPE_ASSISTANT (roger_assistant_get_type ())
+
+G_DECLARE_FINAL_TYPE (RogerAssistant, roger_assistant, ROGER, ASSISTANT, GtkWindow)
+
+GtkWidget *roger_assistant_new (void);
 
 G_END_DECLS
 
-#endif

@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2020 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,8 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JOURNAL_H
-#define JOURNAL_H
+#pragma once
+
+#include <handy.h>
 
 #include <rm/rm.h>
 
@@ -39,16 +40,9 @@ enum {
 
 #define ROGER_TYPE_JOURNAL (roger_journal_get_type())
 
-G_DECLARE_FINAL_TYPE (RogerJournal, roger_journal, ROGER, JOURNAL, GtkApplicationWindow)
+G_DECLARE_FINAL_TYPE (RogerJournal, roger_journal, ROGER, JOURNAL, HdyWindow)
 
 RogerJournal *roger_journal_new (void);
-
-
-
-
-
-
-
 
 void journal_window(GApplication *app);
 void journal_set_visible(RogerJournal *self, gboolean state);
@@ -68,6 +62,8 @@ void journal_clear(RogerJournal *self);
 void journal_init_call_icon(void);
 void journal_redraw(RogerJournal *self);
 
+void journal_update_content (RogerJournal *self);
+
+
 G_END_DECLS
 
-#endif

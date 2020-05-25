@@ -13,3 +13,6 @@ General
 #0  0x000000381fa80526 in strlen () at /lib/libc.so.6
 #1  0x00007ffff59b745c in rm_number_format () at /app/lib/librm.so.0
 #2  0x00007fffd2e730b6 in  () at /app/lib/rm/reverselookup/libreverselookup.so
+
+
+* rmssdp list should be a copy and assistant must be updated

@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2020 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,12 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#pragma once
+
+#include <gtk/gtk.h>
+#include <rm/rm.h>
 
 G_BEGIN_DECLS
-
-#include <rm/rm.h>
 
 #define APP_GSETTINGS_SCHEMA "org.tabos.roger"
 
@@ -41,4 +41,3 @@ void app_present_journal (void);
 
 G_END_DECLS
 
-#endif

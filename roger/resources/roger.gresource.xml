@@ -3,9 +3,9 @@
 	<gresource prefix="/org/tabos/roger">
 		<file preprocess="xml-stripblanks" compressed="true">ui/roger-journal.ui</file>
 		<file preprocess="xml-stripblanks" compressed="true">ui/journal-popover.ui</file>
+		<file preprocess="xml-stripblanks" compressed="true">ui/roger-assistant.ui</file>
 
-		<file preprocess="xml-stripblanks">assistant.glade</file>
-		<file preprocess="xml-stripblanks">authenticate.glade</file>
+	  <file preprocess="xml-stripblanks">authenticate.glade</file>
 		<file preprocess="xml-stripblanks">answeringmachine.glade</file>
 		<file preprocess="xml-stripblanks">contacts.glade</file>
 		<file preprocess="xml-stripblanks">settings.glade</file>
@@ -14,6 +14,7 @@
 		<file preprocess="xml-stripblanks">fax.glade</file>
 		<file preprocess="xml-stripblanks">contactsearch.glade</file>
 		<file preprocess="xml-stripblanks">images/org.tabos.roger.svg</file>
+		<file preprocess="xml-stripblanks">images/org.tabos.roger-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">images/address-book.svg</file>
 		<file preprocess="xml-stripblanks">images/roger-call-blocked.svg</file>
 		<file preprocess="xml-stripblanks">images/roger-call-in.svg</file>
@@ -23,7 +24,6 @@
 		<file preprocess="xml-stripblanks">images/roger-fax.svg</file>
 		<file preprocess="xml-stripblanks">images/roger-fax-report.svg</file>
 		<file preprocess="xml-stripblanks">images/roger-record.svg</file>
-		<file>images/org.tabos.roger.png</file>
 		<file>images/address-book.png</file>
 		<file>images/roger-call-blocked.png</file>
 		<file>images/roger-call-in.png</file>

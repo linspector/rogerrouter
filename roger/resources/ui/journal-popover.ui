@@ -23,6 +23,7 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
+				<property name="width-request">250</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -111,7 +112,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.addressbook</property>
-            <property name="text" translatable="yes">Contacts</property>
+            <property name="text" translatable="yes">_Contacts</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -125,7 +126,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.phone</property>
-            <property name="text" translatable="yes">Phone</property>
+            <property name="text" translatable="yes">_Phone</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -138,7 +139,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="text" translatable="yes">Functions</property>
+            <property name="text" translatable="yes">_Functions</property>
             <property name="menu_name">functions</property>
           </object>
           <packing>
@@ -153,7 +154,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.assistant</property>
-            <property name="text" translatable="yes">Assistant</property>
+            <property name="text" translatable="yes">_Assistant</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -178,7 +179,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.plugins</property>
-            <property name="text" translatable="yes">Plugins</property>
+            <property name="text" translatable="yes">P_lugins</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -192,7 +193,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.preferences</property>
-            <property name="text" translatable="yes">Preferences</property>
+            <property name="text" translatable="yes">Pr_eferences</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -217,7 +218,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.shortcuts</property>
-            <property name="text" translatable="yes">Keyboard Shortcuts</property>
+            <property name="text" translatable="yes">_Keyboard Shortcuts</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -231,7 +232,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.about</property>
-            <property name="text" translatable="yes">About</property>
+            <property name="text" translatable="yes">A_bout</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -255,7 +256,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="text" translatable="yes">Back</property>
+            <property name="text" translatable="yes">_Functions</property>
+						<property name="centered">True</property>
             <property name="menu_name">main</property>
             <property name="inverted">True</property>
           </object>
@@ -271,7 +273,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.copy_ip</property>
-            <property name="text" translatable="yes">Copy IP Address</property>
+            <property name="text" translatable="yes">_Copy IP Address</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -285,7 +287,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.reconnect</property>
-            <property name="text" translatable="yes">Reconnect</property>
+            <property name="text" translatable="yes">_Reconnect</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -299,7 +301,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="action_name">app.debug</property>
-            <property name="text" translatable="yes">Debug Window</property>
+            <property name="text" translatable="yes">_Debug Window</property>
           </object>
           <packing>
             <property name="expand">False</property>
