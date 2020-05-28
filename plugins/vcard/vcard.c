@@ -394,7 +394,7 @@ static void process_telephone(struct vcard_data *card_data, RmContact *contact)
 	}
 
 	number->number = rm_number_full(number_str->str, FALSE);
-	g_string_free(number_str, FALSE);
+	g_string_free(number_str, TRUE);
 
 	contact->numbers = g_slist_prepend(contact->numbers, number);
 }
@@ -699,7 +699,7 @@ void vcard_load_file(char *file_name)
 	goffset file_size;
 	GFileInputStream *input_stream;
 	GError *error = NULL;
-	gchar *data;
+	g_autofree gchar *data = NULL;
 	gint chr;
 	gboolean start_of_line = TRUE;
 	gboolean fold = FALSE;
@@ -1205,6 +1205,8 @@ gboolean vcard_plugin_init(RmPlugin *plugin)
 gboolean vcard_plugin_shutdown(RmPlugin *plugin)
 {
 	rm_addressbook_unregister(&vcard_book);
+  if (current_card_data)
+	  vcard_free_data(current_card_data);
 	g_clear_object(&vcard_settings);
 
 	return TRUE;

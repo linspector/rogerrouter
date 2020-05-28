@@ -1067,6 +1067,10 @@ roger_journal_dispose (GObject *self)
     g_settings_set_boolean (journal_window_state, "maximized", is_maximized);
   }
 
+	if (journal->list) {
+		g_slist_free_full (g_steal_pointer (&journal->list), rm_call_entry_free);
+	}
+
   G_OBJECT_CLASS (roger_journal_parent_class)->dispose (self);
 }
 
@@ -1163,6 +1167,7 @@ roger_journal_init (RogerJournal *self)
 
 
   init_call_icons();
+  self->list = NULL;
 
   g_type_ensure (G_TYPE_THEMED_ICON);
   GtkBuilder *builder = gtk_builder_new_from_resource ("/org/tabos/roger/ui/journal-popover.ui");
