@@ -921,6 +921,7 @@ void contacts_book_clicked_cb(GtkWidget *widget, gpointer user_data)
 	}
 
 	gtk_widget_show_all(menu);
+  gtk_widget_set_sensitive (menu, TRUE);
 }
 
 void contact_editor(RmContact *contact)
