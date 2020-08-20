@@ -8,7 +8,7 @@ stages:
   - flatpak
 
 scan-build:
-  image: registry.gitlab.com/tabos/rogerrouter/linux:v2
+  image: registry.gitlab.com/tabos/rogerrouter/linux:v3
   stage: check
   script:
     - meson _build
@@ -21,7 +21,7 @@ scan-build:
       - _build/meson-logs/scanbuild
 
 fedora-x86_64:
-  image: registry.gitlab.com/tabos/rogerrouter/linux:v2
+  image: registry.gitlab.com/tabos/rogerrouter/linux:v3
   stage: build
   script:
     - CC=clang meson _build
@@ -35,6 +35,7 @@ fedora-x86_64:
 windows:
   image: registry.gitlab.com/tabos/rogerrouter/mxe:v3
   stage: build
+  allow_failure: true
   script:
     - meson _build --cross-file=platform/windows/mingw-cross.txt --libdir=lib --prefix=${CI_PROJECT_DIR}/installed/
     - mkdir -p ${CI_PROJECT_DIR}/installed/share/glib-2.0/schemas/

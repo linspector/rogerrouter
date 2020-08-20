@@ -1,9 +1,9 @@
-FROM fedora:31
+FROM fedora:rawhide
 LABEL maintainer="Jan-Michael Brummer <jan.brummer@tabos.org>"
 
-RUN dnf update -y \
-    && dnf install -y 'dnf-command(builddep)' \
-    && dnf install -y meson \
+RUN dnf update --nogpgcheck -y \
+    && dnf install --nogpgcheck -y 'dnf-command(builddep)' \
+    && dnf install --nogpgcheck -y meson \
                       gcc \
                       gettext \
                       libgs-devel \
@@ -24,6 +24,7 @@ RUN dnf update -y \
                       libappindicator-gtk3-devel \
                       libsecret-devel \
                       gstreamer1-plugins-base-devel \
+                      libhandy1-devel \
     && dnf clean all
 
 RUN groupadd repro -g 1000
