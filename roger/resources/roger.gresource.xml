@@ -4,6 +4,7 @@
 		<file preprocess="xml-stripblanks" compressed="true">ui/roger-journal.ui</file>
 		<file preprocess="xml-stripblanks" compressed="true">ui/journal-popover.ui</file>
 		<file preprocess="xml-stripblanks" compressed="true">ui/roger-assistant.ui</file>
+		<file preprocess="xml-stripblanks" compressed="true">ui/preferences.ui</file>
 
 	  <file preprocess="xml-stripblanks">authenticate.glade</file>
 		<file preprocess="xml-stripblanks">answeringmachine.glade</file>

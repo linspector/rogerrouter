@@ -38,6 +38,7 @@
 #include <roger/uitools.h>
 #include <roger/plugins.h>
 #include <roger/debug.h>
+#include <roger/preferences.h>
 
 GtkApplication *roger_app;
 static gboolean startup_called = FALSE;
@@ -62,7 +63,9 @@ void app_show_contacts(void)
 
 void app_show_preferences(void)
 {
-	app_show_settings();
+	RogerPreferencesWindow *window = roger_preferences_window_new ();
+	gtk_widget_show_all (GTK_WIDGET (window));
+	//app_show_settings();
 }
 
 void app_show_help(void)
@@ -188,7 +191,7 @@ static void dialnumber_activated(GSimpleAction *action, GVariant *parameter, gpo
 
 static void preferences_activated(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
-	app_show_settings();
+	app_show_preferences();
 }
 
 static void plugins_activated(GSimpleAction *action, GVariant *parameter, gpointer user_data)

@@ -5,6 +5,12 @@ resources = gnome.compile_resources('roger-resources',
   source_dir : 'resources'
 )
 
+types_headers = ['preferences-telephony.h']
+
+enums = gnome.mkenums_simple('roger-type-builtins',
+  sources: types_headers
+)
+
 sourcelist = []
 sourcelist += 'about.c'
 sourcelist += 'about.h'
@@ -35,14 +41,19 @@ sourcelist += 'phone.c'
 sourcelist += 'phone.h'
 sourcelist += 'plugins.c'
 sourcelist += 'plugins.h'
+sourcelist += 'preferences.c'
+sourcelist += 'preferences.h'
+sourcelist += 'preferences-audio.c'
+sourcelist += 'preferences-audio.h'
+sourcelist += 'preferences-telephony.c'
+sourcelist += 'preferences-telephony.h'
 sourcelist += 'print.c'
 sourcelist += 'print.h'
-sourcelist += 'settings.c'
-sourcelist += 'settings.h'
 sourcelist += 'shortcuts.c'
 sourcelist += 'shortcuts.h'
 sourcelist += 'uitools.h'
 sourcelist += resources
+sourcelist += enums
 
 if host_system == 'windows'
   sourcelist += roger_win_res
