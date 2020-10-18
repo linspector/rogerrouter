@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2020 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -36,7 +36,7 @@ void app_shortcuts(void)
 	if (!shortcuts_window) {
 		GtkBuilder *builder;
 
-		builder = gtk_builder_new_from_resource("/org/tabos/roger/shortcuts.glade");
+		builder = gtk_builder_new_from_resource("/org/tabos/roger/ui/shortcuts.ui");
 		shortcuts_window = GTK_WIDGET(gtk_builder_get_object(builder, "shortcuts_window"));
 
 		g_signal_connect(shortcuts_window, "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), &shortcuts_window);

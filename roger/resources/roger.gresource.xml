@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
 	<gresource prefix="/org/tabos/roger">
-		<file preprocess="xml-stripblanks" compressed="true">ui/roger-journal.ui</file>
-		<file preprocess="xml-stripblanks" compressed="true">ui/journal-popover.ui</file>
-		<file preprocess="xml-stripblanks" compressed="true">ui/roger-assistant.ui</file>
-		<file preprocess="xml-stripblanks" compressed="true">ui/preferences.ui</file>
+		<file preprocess="xml-stripblanks">ui/roger-journal.ui</file>
+		<file preprocess="xml-stripblanks">ui/journal-popover.ui</file>
+		<file preprocess="xml-stripblanks">ui/roger-assistant.ui</file>
+		<file preprocess="xml-stripblanks">ui/preferences.ui</file>
+		<file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
 
 	  <file preprocess="xml-stripblanks">authenticate.glade</file>
 		<file preprocess="xml-stripblanks">answeringmachine.glade</file>
 		<file preprocess="xml-stripblanks">contacts.glade</file>
 		<file preprocess="xml-stripblanks">settings.glade</file>
-		<file preprocess="xml-stripblanks">shortcuts.glade</file>
 		<file preprocess="xml-stripblanks">phone.glade</file>
 		<file preprocess="xml-stripblanks">fax.glade</file>
 		<file preprocess="xml-stripblanks">contactsearch.glade</file>

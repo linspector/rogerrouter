@@ -58,7 +58,6 @@ struct _RogerJournal {
   GSList *list;
   GtkWidget *search_bar;
   GtkWidget *search_entry;
-  GtkWidget *search_button;
 
   GtkWidget *col0;
   GtkWidget *col1;
@@ -1132,7 +1131,6 @@ roger_journal_class_init (RogerJournalClass *klass)
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, spinner);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, search_bar);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, search_entry);
- 	//gtk_widget_class_bind_template_child (widget_class, RogerJournal, search_button);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col0);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col1);
  	gtk_widget_class_bind_template_child (widget_class, RogerJournal, col2);
@@ -1219,8 +1217,6 @@ roger_journal_init (RogerJournal *self)
   g_settings_bind (app_settings, "col-7-visible", self->col7, "visible", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (app_settings, "col-8-width", self->col8, "fixed-width", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (app_settings, "col-8-visible", self->col8, "visible", G_SETTINGS_BIND_DEFAULT);
-
-  g_object_bind_property (self->search_button, "active", self->search_bar, "search-mode-enabled", 0);
 
   self->active = FALSE;
   gtk_stack_set_visible_child_name (GTK_STACK (self->header_bars_stack), "empty");

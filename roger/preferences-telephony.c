@@ -196,7 +196,7 @@ roger_preferences_setup_telephony (RogerPreferencesWindow *self)
   hdy_combo_row_set_for_enum (HDY_COMBO_ROW (self->softfax_service), RM_TYPE_SERVICE, service_get_name, NULL, NULL);
 	g_settings_bind (self->profile->settings, "fax-cip", self->softfax_service, "selected-index", G_SETTINGS_BIND_DEFAULT);
 
-  g_settings_bind (self->profile->settings, "fax-report", self->softfax_report, "active", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (self->profile->settings, "fax-report", self->softfax_report, "enable-expansion", G_SETTINGS_BIND_DEFAULT);
 	g_settings_bind (self->profile->settings, "fax-ecm", self->softfax_ecm, "active", G_SETTINGS_BIND_DEFAULT);
 }
 
