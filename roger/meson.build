@@ -93,4 +93,8 @@ images = []
 images += 'resources/images/org.tabos.roger.svg'
 install_data(images, install_dir : get_option('datadir') + '/icons/hicolor/scalable/apps/')
 
+images = []
+images += 'resources/images/org.tabos.roger-symbolic.svg'
+install_data(images, install_dir : get_option('datadir') + '/icons/hicolor/symbolic/apps/')
+
 subdir('data')
