@@ -1,11 +1,11 @@
 class Librm < Formula
   desc "RouterManager Library"
   homepage "https://www.tabos.org"
-  url "https://gitlab.com/tabos/librm/-/archive/v2.1.1/librm-v2.1.1.tar.gz"
-  version "2.1.1"
-  sha256 "196e6bb5a16c3a34da4f9743c7f68a4d0dd970cc11efcc4ea74d6393e55363f8"
+  url "https://gitlab.com/tabos/librm/-/archive/v2.1.4/librm-v2.1.4.tar.gz"
+  version "2.1.4"
+  sha256 "81cd2152009e1d0af1ac6fb1439565167f97e233afaa6aad48d99faf95d253a7"
 
-  depends_on "meson-internal" => :build
+  depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
   depends_on "capi20"

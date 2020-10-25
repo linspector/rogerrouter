@@ -5,7 +5,7 @@ class Capi20 < Formula
   version "3.2.3"
   sha256 "e0fcf2e8a59a0b64316e7da671c3a726c3aca22602f65a6679442535fe270f98"
 
-  depends_on "meson-internal" => :build
+  depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
 
