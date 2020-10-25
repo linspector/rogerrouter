@@ -1,4 +1,4 @@
-project('roger', 'c', version : '2.2.0', license : 'GPL2')
+project('roger', 'c', version : '2.2.1', license : 'GPL2')
 
 gnome = import('gnome')
 
@@ -53,7 +53,7 @@ configure_file(
 
 roger_inc = include_directories('.')
 
-librm_dep = dependency('librm', version : '>=2.1.3', fallback : ['librm', 'rm_dep'])
+librm_dep = dependency('librm', version : '>=2.1.4', fallback : ['librm', 'rm_dep'])
 libhandy_dep = dependency('libhandy-1', version: '>= 0.90.0')
 
 subdir('po')
