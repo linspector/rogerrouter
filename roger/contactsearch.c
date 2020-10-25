@@ -45,17 +45,17 @@ G_DEFINE_TYPE(ContactSearch, contact_search, GTK_TYPE_BOX);
 
 /**
  * phone_number_type_to_string:
- * @type: a #RmPhoneNumberType
+ * @number: a #RmPhoneNUmber
  *
  * Convert phone number type to string
  *
  * Returns: phone number type as string
  */
-gchar *phone_number_type_to_string(RmPhoneNumberType type)
+gchar *phone_number_type_to_string(RmPhoneNumber *number)
 {
 	gchar *tmp;
 
-	switch (type) {
+	switch (number->type) {
 	case RM_PHONE_NUMBER_TYPE_HOME:
 		tmp = g_strdup(_("Home"));
 		break;
@@ -70,6 +70,12 @@ gchar *phone_number_type_to_string(RmPhoneNumberType type)
 		break;
 	case RM_PHONE_NUMBER_TYPE_FAX_WORK:
 		tmp = g_strdup(_("Fax Work"));
+		break;
+	case RM_PHONE_NUMBER_TYPE_OTHER:
+		if (number->name && strlen(number->name) > 0)
+			tmp = g_strdup(number->name);
+		else
+			tmp = g_strdup(_("Unknown"));
 		break;
 	default:
 		tmp = g_strdup(_("Unknown"));
@@ -223,7 +229,7 @@ static void contact_search_init(ContactSearch *widget)
 
 			for (numbers = contact->numbers; numbers != NULL; numbers = numbers->next) {
 				RmPhoneNumber *phone_number = numbers->data;
-				gchar *num_str = g_strdup_printf("%s: %s", phone_number_type_to_string(phone_number->type), phone_number->number);
+				gchar *num_str = g_strdup_printf("%s: %s", phone_number_type_to_string(phone_number), phone_number->number);
 
 				gtk_list_store_insert_with_values(store, &iter, -1, 0, pixbuf, 1, contact->name, 2, num_str, 3, phone_number, -1);
 			}

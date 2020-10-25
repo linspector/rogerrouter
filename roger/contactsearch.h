@@ -16,6 +16,7 @@ void contact_search_set_text(ContactSearch *widget,
 			     gchar         *text);
 const gchar *contact_search_get_text(ContactSearch *widget);
 void contact_search_set_contact(ContactSearch *widget, RmContact *contact, gboolean identify);
+gchar *phone_number_type_to_string(RmPhoneNumber *number);
 
 G_END_DECLS
 

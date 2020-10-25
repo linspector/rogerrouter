@@ -25,6 +25,7 @@
 #include <rm/rm.h>
 
 #include <roger/contacts.h>
+#include <roger/contactsearch.h>
 #include <roger/main.h>
 #include <roger/uitools.h>
 #include <roger/phone.h>
@@ -147,28 +148,7 @@ static void contacts_update_details(RmContact *contact)
 				GtkWidget *phone_image;
 				RmPhoneNumber *phone_number = numbers->data;
 
-				switch (phone_number->type) {
-				case RM_PHONE_NUMBER_TYPE_HOME:
-					type = ui_label_new(_("Private"));
-					break;
-				case RM_PHONE_NUMBER_TYPE_WORK:
-					type = ui_label_new(_("Business"));
-					break;
-				case RM_PHONE_NUMBER_TYPE_MOBILE:
-					type = ui_label_new(_("Mobile"));
-					break;
-				case RM_PHONE_NUMBER_TYPE_FAX_HOME:
-					type = ui_label_new(_("Private Fax"));
-					break;
-				case RM_PHONE_NUMBER_TYPE_FAX_WORK:
-					type = ui_label_new(_("Business Fax"));
-					break;
-				case RM_PHONE_NUMBER_TYPE_PAGER:
-					type = ui_label_new(_("Pager"));
-					break;
-				default:
-					type = ui_label_new(_("Unknown"));
-				}
+				type = ui_label_new (phone_number_type_to_string (phone_number));
 
 				number = gtk_label_new(phone_number->number);
 				gtk_label_set_selectable(GTK_LABEL(number), TRUE);

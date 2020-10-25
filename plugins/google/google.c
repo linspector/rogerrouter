@@ -356,29 +356,38 @@ static int google_read_book(void)
 				GDataGDPhoneNumber *number = number_list->data;
 				const gchar *type = gdata_gd_phone_number_get_relation_type(number);
 				const gchar *num = gdata_gd_phone_number_get_number(number);
+				const char *label = gdata_gd_phone_number_get_label (number);
 				RmPhoneNumber *phone_number;
 
-				if (type == NULL) {
-					g_warning("type == NULL");
-					break;
-				}
 				if (num == NULL) {
 					g_warning("num == NULL");
 					break;
 				}
 
-				phone_number = g_slice_new(RmPhoneNumber);
-				if (strcmp(type, GDATA_GD_PHONE_NUMBER_WORK) == 0) {
-					phone_number->type = RM_PHONE_NUMBER_TYPE_WORK;
-				} else if (strcmp(type, GDATA_GD_PHONE_NUMBER_HOME) == 0) {
-					phone_number->type = RM_PHONE_NUMBER_TYPE_HOME;
-				} else if (strcmp(type, GDATA_GD_PHONE_NUMBER_MOBILE) == 0) {
-					phone_number->type = RM_PHONE_NUMBER_TYPE_MOBILE;
-				} else if (strcmp(type, GDATA_GD_PHONE_NUMBER_HOME_FAX) == 0) {
-					phone_number->type = RM_PHONE_NUMBER_TYPE_FAX_HOME;
-				} else if (strcmp(type, GDATA_GD_PHONE_NUMBER_WORK_FAX) == 0) {
-					phone_number->type = RM_PHONE_NUMBER_TYPE_FAX_WORK;
+				if (type == NULL && (label == NULL || strlen(label) == 0)) {
+					break;
 				}
+
+				phone_number = g_slice_new(RmPhoneNumber);
+				if (type != NULL) {
+					if (strcmp(type, GDATA_GD_PHONE_NUMBER_WORK) == 0) {
+						phone_number->type = RM_PHONE_NUMBER_TYPE_WORK;
+					} else if (strcmp(type, GDATA_GD_PHONE_NUMBER_HOME) == 0) {
+						phone_number->type = RM_PHONE_NUMBER_TYPE_HOME;
+					} else if (strcmp(type, GDATA_GD_PHONE_NUMBER_MOBILE) == 0) {
+						phone_number->type = RM_PHONE_NUMBER_TYPE_MOBILE;
+					} else if (strcmp(type, GDATA_GD_PHONE_NUMBER_HOME_FAX) == 0) {
+						phone_number->type = RM_PHONE_NUMBER_TYPE_FAX_HOME;
+					} else if (strcmp(type, GDATA_GD_PHONE_NUMBER_WORK_FAX) == 0) {
+						phone_number->type = RM_PHONE_NUMBER_TYPE_FAX_WORK;
+					} else {
+						phone_number->type = RM_PHONE_NUMBER_TYPE_OTHER;
+					}
+				} else {
+					phone_number->name = g_strdup (label);
+					phone_number->type = RM_PHONE_NUMBER_TYPE_OTHER;
+				}
+
 				phone_number->number = rm_number_full(num, FALSE);
 				contact->numbers = g_slist_prepend(contact->numbers, phone_number);
 
