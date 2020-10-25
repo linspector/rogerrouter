@@ -65,6 +65,7 @@ struct _RogerPreferencesWindow {
   GtkWidget *softfax_resolution;
   GtkWidget *softfax_service;
   GtkWidget *softfax_report;
+  GtkWidget *softfax_directory;
   GtkWidget *softfax_ecm;
 
   GtkWidget *notification_incoming;

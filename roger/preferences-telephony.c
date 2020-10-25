@@ -126,6 +126,16 @@ service_get_name (HdyEnumValueObject *value,
   }
 }
 
+static void
+softfax_directory_file_set (GtkFileChooserButton *widget,
+                            gpointer              user_data)
+{
+  RogerPreferencesWindow *self = ROGER_PREFERENCES_WINDOW (user_data);
+  const char *dir = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+
+  g_settings_set_string (self->profile->settings, "fax-report-dir", dir);
+}
+
 void
 roger_preferences_setup_telephony (RogerPreferencesWindow *self)
 {
@@ -197,6 +207,8 @@ roger_preferences_setup_telephony (RogerPreferencesWindow *self)
 	g_settings_bind (self->profile->settings, "fax-cip", self->softfax_service, "selected-index", G_SETTINGS_BIND_DEFAULT);
 
   g_settings_bind (self->profile->settings, "fax-report", self->softfax_report, "enable-expansion", G_SETTINGS_BIND_DEFAULT);
+  gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (self->softfax_directory), g_settings_get_string (self->profile->settings, "fax-report-dir"));
+  g_signal_connect (self->softfax_directory, "file-set", G_CALLBACK (softfax_directory_file_set), self);
 	g_settings_bind (self->profile->settings, "fax-ecm", self->softfax_ecm, "active", G_SETTINGS_BIND_DEFAULT);
 }
 

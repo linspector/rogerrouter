@@ -363,6 +363,7 @@ roger_preferences_window_class_init (RogerPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, RogerPreferencesWindow, softfax_resolution);
   gtk_widget_class_bind_template_child (widget_class, RogerPreferencesWindow, softfax_service);
   gtk_widget_class_bind_template_child (widget_class, RogerPreferencesWindow, softfax_report);
+  gtk_widget_class_bind_template_child (widget_class, RogerPreferencesWindow, softfax_directory);
   gtk_widget_class_bind_template_child (widget_class, RogerPreferencesWindow, softfax_ecm);
 
   /* Journal */
