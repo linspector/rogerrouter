@@ -10,6 +10,7 @@
     <property name="default_height">700</property>
     <property name="default_width">640</property>
     <property name="width_request">300</property>
+    <property name="modal">True</property>
     <child>
       <object class="HdyPreferencesPage">
         <property name="icon_name">preferences-system-network-symbolic</property>

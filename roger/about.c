@@ -45,7 +45,7 @@ static void about_response(GtkWidget *widget, gpointer user_data)
  *
  * About dialog
  */
-void app_show_about(void)
+void app_show_about(GtkWidget *parent)
 {
 	GtkWidget *dialog = NULL;
 	const gchar *authors[] = {
@@ -85,7 +85,8 @@ void app_show_about(void)
 #endif
 	g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(about_response), dialog);
 
-	gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(journal_get_window()));
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW(parent));
 
 	gtk_dialog_run(GTK_DIALOG(dialog));
 }

@@ -64,6 +64,7 @@ void app_show_contacts(void)
 void app_show_preferences(void)
 {
 	RogerPreferencesWindow *window = roger_preferences_window_new ();
+	gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (journal));
 	gtk_widget_show_all (GTK_WIDGET (window));
 	//app_show_settings();
 }
@@ -213,7 +214,7 @@ static void forum_activated(GSimpleAction *action, GVariant *parameter, gpointer
 
 static void about_activated(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
-	app_show_about();
+	app_show_about(GTK_WIDGET (journal));
 }
 
 static void quit_activated(GSimpleAction *action, GVariant *parameter, gpointer user_data)
