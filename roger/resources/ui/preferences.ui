@@ -14,7 +14,7 @@
     <child>
       <object class="HdyPreferencesPage">
         <property name="icon_name">preferences-system-network-symbolic</property>
-        <property name="title">Network</property>
+        <property name="title" translatable="yes">Network</property>
         <property name="visible">True</property>
         <child>
           <object class="HdyPreferencesGroup">
@@ -178,11 +178,11 @@
     <child>
       <object class="HdyPreferencesPage">
         <property name="icon_name">phone-symbolic</property>
-        <property name="title">Telephony</property>
+        <property name="title" translatable="yes">Telephony</property>
         <property name="visible">True</property>
         <child>
           <object class="HdyPreferencesGroup">
-            <property name="title">Devices</property>
+            <property name="title" translatable="yes">Devices</property>
             <property name="visible">True</property>
             <child>
               <object class="HdyActionRow">
@@ -216,7 +216,7 @@
         </child>
         <child>
           <object class="HdyPreferencesGroup" id="softphone_group">
-            <property name="title">Softphone</property>
+            <property name="title" translatable="yes">Softphone</property>
             <property name="visible">False</property>
             <property name="no-show-all">True</property>
             <child>
@@ -237,7 +237,7 @@
         </child>
         <child>
           <object class="HdyPreferencesGroup" id="softfax_group">
-            <property name="title">Softfax</property>
+            <property name="title" translatable="yes">Softfax</property>
             <property name="visible">False</property>
             <property name="no-show-all">True</property>
             <child>
@@ -341,23 +341,23 @@
     <child>
       <object class="HdyPreferencesPage">
         <property name="icon_name">view-list-symbolic</property>
-        <property name="title">Journal</property>
+        <property name="title" translatable="yes">Journal</property>
         <property name="visible">True</property>
         <child>
           <object class="HdyPreferencesGroup" id="notification_incoming">
-            <property name="title">Incoming Notifications</property>
+            <property name="title" translatable="yes">Incoming Notifications</property>
             <property name="visible">True</property>
           </object>
         </child>
         <child>
           <object class="HdyPreferencesGroup" id="notification_outgoing">
-            <property name="title">Outgoing Notifications</property>
+            <property name="title" translatable="yes">Outgoing Notifications</property>
             <property name="visible">True</property>
           </object>
         </child>
         <child>
           <object class="HdyPreferencesGroup" id="filter">
-            <property name="title">Filter</property>
+            <property name="title" translatable="yes">Filter</property>
             <property name="visible">True</property>
           </object>
         </child>
@@ -366,11 +366,11 @@
     <child>
       <object class="HdyPreferencesPage">
         <property name="icon_name">audio-headset-symbolic</property>
-        <property name="title">Audio</property>
+        <property name="title" translatable="yes">Audio</property>
         <property name="visible">True</property>
         <child>
           <object class="HdyPreferencesGroup">
-            <property name="title">Configuration</property>
+            <property name="title" translatable="yes">Configuration</property>
             <property name="visible">True</property>
             <child>
               <object class="HdyActionRow">
@@ -389,7 +389,7 @@
         </child>
         <child>
           <object class="HdyPreferencesGroup">
-            <property name="title">Devices</property>
+            <property name="title" translatable="yes">Devices</property>
             <property name="visible">True</property>
             <child>
               <object class="HdyComboRow" id="microphone">

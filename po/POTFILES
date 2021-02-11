@@ -8,11 +8,11 @@ roger/resources/fax.glade
 roger/resources/journal.glade
 roger/resources/phone.glade
 roger/resources/settings.glade
-roger/resources/shortcuts.glade
 roger/resources/ui/journal-popover.ui
 roger/resources/ui/preferences.ui
 roger/resources/ui/roger-assistant.ui
 roger/resources/ui/roger-journal.ui
+roger/resources/ui/shortcuts.ui
 
 roger/about.c
 roger/answeringmachine.c
@@ -28,7 +28,12 @@ roger/pdf.c
 roger/phone.c
 roger/plugins.c
 roger/print.c
+roger/preferences-audio.c
+roger/preferences-telephony.c
+roger/preferences.c
+roger/print.c
 roger/settings.c
+roger/shortcuts.c
 
 roger/org.tabos.roger.desktop.in
 roger/org.tabos.roger.appdata.xml.in
