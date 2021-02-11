@@ -631,8 +631,6 @@ journal_update_filter_box (RogerJournal *self)
 	gtk_combo_box_set_active (GTK_COMBO_BOX (self->filter_combobox), 0);
 }
 
-int app_pdf(char *data, int length, gchar *filename);
-
 void
 row_activated_foreach (GtkTreeModel *model,
                        GtkTreePath  *path,
@@ -645,9 +643,17 @@ row_activated_foreach (GtkTreeModel *model,
 	gtk_tree_model_get(model, iter, JOURNAL_COL_CALL_PTR, &call, -1);
 
 	switch (call->type) {
-	case RM_CALL_ENTRY_TYPE_FAX_REPORT:
-		app_pdf(NULL, 0, call->priv);
+	case RM_CALL_ENTRY_TYPE_FAX_REPORT: {
+    g_autofree gchar *uri = g_strdup_printf ("file:///%s", call->priv);
+
+    if (!gtk_show_uri_on_window(GTK_WINDOW(journal_get_window()), uri, GDK_CURRENT_TIME, &error)) {
+			  g_debug("%s(): Could not open uri '%s'", __FUNCTION__, uri);
+			  g_debug("%s(): '%s'", __FUNCTION__, error->message);
+    } else {
+			  g_debug("%s(): Opened '%s'", __FUNCTION__, uri);
+    }
 		break;
+  }
 	case RM_CALL_ENTRY_TYPE_FAX: {
 		gsize len = 0;
 		g_autofree gchar *data = NULL;
@@ -656,10 +662,16 @@ row_activated_foreach (GtkTreeModel *model,
 
 		if (data && len) {
 			g_autofree gchar *path = g_build_filename(rm_get_user_cache_dir(), G_DIR_SEPARATOR_S, "fax.pdf", NULL);
+      g_autofree gchar *uri = g_strdup_printf ("file:///%s", path);
 
 			rm_file_save(path, data, len);
 
-			app_pdf(data, len, NULL);
+      if (!gtk_show_uri_on_window(GTK_WINDOW(journal_get_window()), uri, GDK_CURRENT_TIME, &error)) {
+				  g_debug("%s(): Could not open uri '%s'", __FUNCTION__, uri);
+				  g_debug("%s(): '%s'", __FUNCTION__, error->message);
+      } else {
+				  g_debug("%s(): Opened '%s'", __FUNCTION__, uri);
+	    }
 		}
 		break;
 	}
