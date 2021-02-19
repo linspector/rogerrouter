@@ -639,7 +639,7 @@ RmAddressBook evolution_book = {
 
 gboolean evolution_plugin_init(RmPlugin *plugin)
 {
-	ebook_settings = rm_settings_new_profile("org.tabos.roger.plugins.evolution", "evolution", (gchar*)rm_profile_get_name(rm_profile_get_active()));
+  ebook_settings = rm_settings_new("org.tabos.roger.plugins.evolution");
 
 	ebook_read_book();
 
