@@ -94,19 +94,20 @@
             "cleanup" : [
                 "/bin",
                 "/share/man",
-                "/share/ghostscript/9.27/doc/",
-                "/share/ghostscript/9.27/examples"
+                "/share/ghostscript/9.53/doc/",
+                "/share/ghostscript/9.53/examples"
             ],
             "sources" : [
                 {
                     "type" : "archive",
-                    "url" : "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs927/ghostscript-9.27.tar.xz",
-                    "sha256" : "fc0f1fbacd3610c67a9f080487a0e021f14390c38a4b4df9723e2bdf2b90b619"
+                    "url" : "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs9533/ghostscript-9.53.3.tar.xz",
+                    "sha256" : "9c9f5bc85b6c7eb08368c05b1e3339f7aaf9677ddca710c6283f872d55e2a234"
                 },
                 {
                     "type": "shell",
                     "commands": [
-                           "rm -rf freetype lcms2mt jpeg libpng openjpeg zlib"
+                           "rm -rf lcms2mt jpeg libpng openjpeg zlib",
+                           "cp -p /usr/share/automake-*/config.{sub,guess} freetype/builds/unix/"
                     ]
                 }
             ]
@@ -140,24 +141,6 @@
                     "type" : "archive",
                     "url" : "https://download.gnome.org/sources/libgdata/0.17/libgdata-0.17.13.tar.xz",
                     "sha256" : "eab9ef792c3c2b9ece19d45aea15225aba8df2521bc12785b1b2d3318d8c472e"
-                }
-            ]
-        },
-        {
-            "name" : "poppler",
-            "buildsystem": "cmake",
-            "config-opts" : [
-                "-DENABLE_SPLASH=OFF",
-                "-DENABLE_CPP=OFF",
-                "-DENABLE_LIBCURL=OFF",
-                "-DBUILD_GTK_TESTS=OFF",
-                "-DENABLE_LIBOPENJPEG=none"
-            ],
-            "sources" : [
-                {
-                    "type" : "archive",
-                    "url" : "https://poppler.freedesktop.org/poppler-0.80.0.tar.xz",
-                    "sha256" : "4d3ca6b79bc13b8e24092e34f83ef5f387f3bb0bbd7359a6c078e09c696d104f"
                 }
             ]
         },
