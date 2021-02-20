@@ -24,6 +24,7 @@
 #include <fcntl.h>
 
 #include <gtk/gtk.h>
+#include <handy.h>
 
 #include <rm/rm.h>
 
@@ -1049,7 +1050,7 @@ gboolean thunderbird_plugin_shutdown(RmPlugin *plugin)
 	return TRUE;
 }
 
-static void thunderbird_filename_button_clicked_cb(GtkButton *button, gpointer user_data)
+/*static void thunderbird_filename_button_clicked_cb(GtkButton *button, gpointer user_data)
 {
 	GtkFileChooserNative *dialog = gtk_file_chooser_native_new(_("Select mab file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, NULL, NULL);
 	GtkFileFilter *filter;
@@ -1086,35 +1087,46 @@ static void thunderbird_filename_button_clicked_cb(GtkButton *button, gpointer u
 	}
 
 	g_object_unref(dialog);
+}*/
+
+void thunderbird_file_chooser_button_file_set_cb(GtkWidget *button, gpointer user_data)
+{
+	gchar *file = gtk_file_chooser_get_uri(GTK_FILE_CHOOSER(button));
+
+  thunderbird_set_selected_book (file);
 }
 
 gpointer thunderbird_plugin_configure(RmPlugin *plugin)
 {
-	GtkWidget *grid = gtk_grid_new();
-	GtkWidget *group;
-	GtkWidget *report_dir_label;
+  GList *list = NULL;
+  GtkWidget *row;
+  GtkFileFilter *filter;
+  const char *book;
 
-	/* Set standard spacing to 5 */
-	gtk_grid_set_row_spacing(GTK_GRID(grid), 5);
-	gtk_grid_set_column_spacing(GTK_GRID(grid), 15);
+  row = hdy_action_row_new ();
+  hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), _("Thunderbird file"));
 
-	report_dir_label = ui_label_new(_("Thunderbird file"));
-	gtk_grid_attach(GTK_GRID(grid), report_dir_label, 0, 1, 1, 1);
+	GtkWidget *thunderbird_chooser = gtk_file_chooser_button_new(_("Select Thunderbird Addressbook"), GTK_FILE_CHOOSER_ACTION_OPEN);
+  gtk_widget_set_valign (thunderbird_chooser, GTK_ALIGN_CENTER);
+	filter = gtk_file_filter_new();
+	gtk_file_filter_add_pattern(filter, "*.mab");
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(thunderbird_chooser), filter);
 
-	GtkWidget *report_dir_entry = gtk_entry_new();
-	GtkWidget *report_dir_button = gtk_button_new_with_label(_("Select"));
+  book = thunderbird_get_selected_book();
+  if (book != NULL && strlen(book) > 0) {
+	  gtk_file_chooser_set_uri(GTK_FILE_CHOOSER(thunderbird_chooser), book);
+  } else {
+	  g_autofree char *file = g_strdup_printf ("file:///%s/abook.mab", find_thunderbird_dir());
 
-	gtk_widget_set_hexpand(report_dir_entry, TRUE);
-	g_settings_bind(thunderbird_settings, "filename", report_dir_entry, "text", G_SETTINGS_BIND_DEFAULT);
+	  gtk_file_chooser_set_uri(GTK_FILE_CHOOSER(thunderbird_chooser), file);
+  }
+	g_signal_connect(thunderbird_chooser, "file-set", G_CALLBACK(thunderbird_file_chooser_button_file_set_cb), NULL);
 
-	g_signal_connect(report_dir_button, "clicked", G_CALLBACK(thunderbird_filename_button_clicked_cb), report_dir_entry);
+  gtk_container_add (GTK_CONTAINER (row), thunderbird_chooser);
 
-	gtk_grid_attach(GTK_GRID(grid), report_dir_entry, 1, 1, 1, 1);
-	gtk_grid_attach(GTK_GRID(grid), report_dir_button, 2, 1, 1, 1);
+  list = g_list_append (list, row);
 
-	group = ui_group_create(grid, _("Contact book"), TRUE, FALSE);
-
-	return group;
+  return list;
 }
 
 RM_PLUGIN_CONFIG(thunderbird)

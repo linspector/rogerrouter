@@ -520,6 +520,7 @@ gpointer indicator_plugin_configure(RmPlugin *plugin)
 
 	group = ui_group_create(settings_grid, _("Settings for Application Indicator"), TRUE, TRUE);
 
+  return NULL;
 	return group;
 }
 

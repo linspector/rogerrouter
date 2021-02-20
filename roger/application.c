@@ -195,11 +195,6 @@ static void preferences_activated(GSimpleAction *action, GVariant *parameter, gp
 	app_show_preferences();
 }
 
-static void plugins_activated(GSimpleAction *action, GVariant *parameter, gpointer user_data)
-{
-	app_plugins();
-}
-
 static void donate_activated(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 	gchar *uri = "http://www.tabos.org/";
@@ -321,7 +316,6 @@ static void hideonstart_activated(GSimpleAction *simple,
 static GActionEntry apps_entries[] = {
 	{ "addressbook", addressbook_activated, NULL, NULL, NULL },
 	{ "assistant", assistant_activated, NULL, NULL, NULL },
-	{ "plugins", plugins_activated, NULL, NULL, NULL },
 	{ "preferences", preferences_activated, NULL, NULL, NULL },
 	{ "phone", dialnumber_activated, NULL, NULL, NULL },
 	{ "copy_ip", copy_ip_activated, NULL, NULL, NULL },

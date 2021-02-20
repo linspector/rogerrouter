@@ -28,6 +28,8 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
+#include <handy.h>
+
 #include <rm/rm.h>
 
 #include <roger/main.h>
@@ -1187,7 +1189,8 @@ gboolean vcard_plugin_init(RmPlugin *plugin)
 {
 	gchar *name;
 
-	vcard_settings = rm_settings_new("org.tabos.roger.plugins.vcard");
+  if (!vcard_settings)
+	  vcard_settings = rm_settings_new("org.tabos.roger.plugins.vcard");
 
 	name = g_settings_get_string(vcard_settings, "filename");
 	if (RM_EMPTY_STRING(name)) {
@@ -1237,38 +1240,34 @@ void filename_button_clicked_cb(GtkButton *button, gpointer user_data)
 
 void vcard_file_chooser_button_file_set_cb(GtkWidget *button, gpointer user_data)
 {
-	gchar *file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(button));
+	gchar *file = gtk_file_chooser_get_uri(GTK_FILE_CHOOSER(button));
 
-	g_debug("%s(): Setting '%s'", __FUNCTION__, file);
 	g_settings_set_string(vcard_settings, "filename", file);
 }
 
 gpointer vcard_plugin_configure(RmPlugin *plugin)
 {
-	GtkWidget *grid = gtk_grid_new();
-	GtkWidget *group;
-	GtkWidget *vcard_label;
+  GList *list = NULL;
+  GtkWidget *row ;
 
-	/* Set standard spacing to 5 */
-	gtk_grid_set_row_spacing(GTK_GRID(grid), 5);
-	gtk_grid_set_column_spacing(GTK_GRID(grid), 15);
+  if (!vcard_settings)
+	  vcard_settings = rm_settings_new("org.tabos.roger.plugins.vcard");
 
-	vcard_label = ui_label_new(_("VCard file"));
-	gtk_grid_attach(GTK_GRID(grid), vcard_label, 0, 1, 1, 1);
+  row = hdy_action_row_new ();
+  hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), _("VCard file"));
 
 	GtkFileFilter *filter = gtk_file_filter_new ();
 	gtk_file_filter_add_pattern (filter, "*.vcf");
-	GtkWidget *vcard_button = gtk_file_chooser_button_new(_("Select vcard"), GTK_FILE_CHOOSER_ACTION_OPEN);
+	GtkWidget *vcard_button = gtk_file_chooser_button_new(_("Select VCard"), GTK_FILE_CHOOSER_ACTION_OPEN);
+  gtk_widget_set_valign (vcard_button, GTK_ALIGN_CENTER);
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(vcard_button), filter);
-	//g_settings_bind(vcard_settings, "filename", vcard_button, "file-set", G_SETTINGS_BIND_DEFAULT);
-	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(vcard_button), g_settings_get_string(vcard_settings, "filename"));
+	gtk_file_chooser_set_uri(GTK_FILE_CHOOSER(vcard_button), g_settings_get_string(vcard_settings, "filename"));
 	g_signal_connect(vcard_button, "file-set", G_CALLBACK(vcard_file_chooser_button_file_set_cb), NULL);
 
-	gtk_grid_attach(GTK_GRID(grid), vcard_button, 1, 1, 1, 1);
+  gtk_container_add (GTK_CONTAINER (row), vcard_button);
+  list = g_list_append (list, row);
 
-	group = ui_group_create(grid, _("Contact book"), TRUE, FALSE);
-
-	return group;
+  return list;
 }
 
 RM_PLUGIN_CONFIG(vcard)

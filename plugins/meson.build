@@ -1,6 +1,7 @@
 plugins_dep=[]
 plugins_dep += dependency('gtk+-3.0')
 plugins_dep += dependency('libsoup-2.4')
+plugins_dep += dependency('libhandy-1')
 plugins_dep += librm_dep
 plugins_dep += libhandy_dep
 

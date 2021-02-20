@@ -919,6 +919,7 @@ gpointer google_plugin_configure(RmPlugin *config)
 
 	group = ui_group_create(grid, _("Access data"), TRUE, FALSE);
 
+  return NULL;
 	return group;
 }
 

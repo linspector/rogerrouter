@@ -76,6 +76,8 @@ struct _RogerPreferencesWindow {
   GtkWidget *microphone;
   GtkWidget *speaker;
   GtkWidget *ringer;
+
+  GtkWidget *plugins_listbox;
 };
 
 #define ROGER_TYPE_PREFERENCES_WINDOW (roger_preferences_window_get_type ())

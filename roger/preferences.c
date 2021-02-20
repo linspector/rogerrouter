@@ -27,6 +27,7 @@
 #include <roger/preferences.h>
 #include <roger/preferences-audio.h>
 #include <roger/preferences-telephony.h>
+#include <roger/preferences-plugins.h>
 
 G_DEFINE_TYPE (RogerPreferencesWindow, roger_preferences_window, HDY_TYPE_PREFERENCES_WINDOW)
 
@@ -323,6 +324,9 @@ roger_preferences_window_constructed (GObject *object)
 
   /* Audio */
   roger_preferences_setup_audio (self);
+
+  /* Plugins */
+  roger_preferences_setup_plugins (self);
 }
 
 static void
@@ -376,6 +380,9 @@ roger_preferences_window_class_init (RogerPreferencesWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, RogerPreferencesWindow, microphone);
   gtk_widget_class_bind_template_child (widget_class, RogerPreferencesWindow, speaker);
   gtk_widget_class_bind_template_child (widget_class, RogerPreferencesWindow, ringer);
+
+  /* Plugins */
+  gtk_widget_class_bind_template_child (widget_class, RogerPreferencesWindow, plugins_listbox);
 }
 
 static void

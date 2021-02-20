@@ -276,11 +276,11 @@ void app_plugins(void)
 		return;
 	}
 
-	plugins_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);//gtk_application_window_new(GTK_APPLICATION(journal_application));
+	plugins_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_default_size(GTK_WINDOW(plugins_window), 700, 500);
 	gtk_window_set_transient_for(GTK_WINDOW(plugins_window), GTK_WINDOW(journal_get_window()));
 	gtk_window_set_position(GTK_WINDOW(plugins_window), GTK_WIN_POS_CENTER_ON_PARENT);
-	//gtk_window_set_modal(GTK_WINDOW(plugins_window), TRUE);
+	gtk_window_set_modal(GTK_WINDOW(plugins_window), TRUE);
 
 	header = gtk_header_bar_new();
 	gtk_header_bar_set_title(GTK_HEADER_BAR(header), _("Configure plugins"));
@@ -294,7 +294,15 @@ void app_plugins(void)
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_vexpand(scroll_win, TRUE);
 
+  GtkWidget *clamp = hdy_clamp_new();
+  gtk_widget_set_margin_top (clamp, 6);
+  gtk_widget_set_margin_bottom (clamp, 6);
+  gtk_container_add(GTK_CONTAINER(scroll_win), clamp);
+
 	GtkWidget *listbox = gtk_list_box_new();
+  gtk_widget_class_set_css_name (GTK_WIDGET_CLASS (listbox), "content");
+  gtk_widget_set_margin_top (listbox, 6);
+  gtk_widget_set_margin_bottom (listbox, 6);
 
 	grid = gtk_grid_new();
 	gtk_grid_attach(GTK_GRID(grid), scroll_win, 0, 0, 1, 1);
@@ -306,30 +314,11 @@ void app_plugins(void)
 			continue;
 		}
 
-		GtkWidget *child = gtk_grid_new();
-		GtkWidget *on_switch;
-		GtkWidget *name = gtk_label_new(plugin->name);
-		GtkWidget *description = gtk_label_new(plugin->description);
+		GtkWidget *row = hdy_action_row_new();
+    GtkWidget *on_switch;
 
-		gtk_widget_set_margin(child, 12, 6, 12, 6);
-		gchar *tmp = g_strdup_printf("<b>%s</b>", plugin->name);
-		gtk_label_set_markup(GTK_LABEL(name), tmp);
-		g_free(tmp);
-    gtk_label_set_line_wrap (GTK_LABEL (name), TRUE);
-		gtk_widget_set_hexpand(name, TRUE);
-		gtk_label_set_xalign(GTK_LABEL (name), 0.0f);
-
-		gtk_widget_set_hexpand(description, TRUE);
-		gtk_widget_set_halign(description, GTK_ALIGN_START);
-	  gtk_label_set_xalign(GTK_LABEL (description), 0.0f);
-
-		gtk_grid_attach(GTK_GRID(child), name, 0, 0, 1, 1);
-
-		gtk_label_set_ellipsize(GTK_LABEL(description), PANGO_ELLIPSIZE_END);
-		gtk_grid_attach(GTK_GRID(child), description, 0, 1, 1, 1);
-
-    GtkWidget *separator = gtk_separator_new (GTK_ORIENTATION_VERTICAL);
-    gtk_grid_attach(GTK_GRID(child), separator, 1, 0, 1, 2);
+    hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), plugin->name);
+    hdy_action_row_set_subtitle (HDY_ACTION_ROW (row), plugin->description);
 
 		on_switch = gtk_switch_new();
 		gtk_widget_set_margin(on_switch, 6, 6, 3, 6);
@@ -339,13 +328,13 @@ void app_plugins(void)
 		g_signal_connect(G_OBJECT(on_switch), "state-set", G_CALLBACK(plugins_switch_state_set_cb), plugin);
 
 		gtk_widget_set_sensitive(on_switch, !plugin->builtin);
-		gtk_grid_attach(GTK_GRID(child), on_switch, 2, 0, 1, 2);
+		gtk_container_add(GTK_CONTAINER(row), on_switch);
 
-		g_object_set_data(G_OBJECT(child), "plugin", plugin);
+		g_object_set_data(G_OBJECT(row), "plugin", plugin);
 
-		gtk_list_box_insert(GTK_LIST_BOX(listbox), child, -1);
+		gtk_list_box_insert(GTK_LIST_BOX(listbox), row, -1);
 	}
-	gtk_container_add(GTK_CONTAINER(scroll_win), listbox);
+	gtk_container_add(GTK_CONTAINER(clamp), listbox);
 	g_signal_connect(listbox, "row-selected", G_CALLBACK(plugins_listbox_row_selected_cb), NULL);
 
 	toolbar = gtk_toolbar_new();
