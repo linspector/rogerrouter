@@ -19,4 +19,4 @@ subdir('osxab')
 
 subdir('thunderbird')
 subdir('vcard')
-subdir('webjournal')
+
