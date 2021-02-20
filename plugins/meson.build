@@ -9,8 +9,6 @@ subdir('google')
 if host_machine.system().contains('linux')
 subdir('indicator')
 subdir('evolution')
-else
-subdir('statusicon')
 endif
 
 subdir('keychain')
