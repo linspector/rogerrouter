@@ -7,6 +7,15 @@ stages:
   - build
   - flatpak
 
+check-code-style:
+  stage: check
+  image: alpine:latest
+  interruptible: true
+  before_script:
+    - apk update && apk add uncrustify bash python3
+  script:
+    - bash data/check-code-style
+
 scan-build:
   image: registry.gitlab.com/tabos/rogerrouter/linux:v3
   stage: check
