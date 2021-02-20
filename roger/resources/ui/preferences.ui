@@ -13,8 +13,8 @@
     <property name="modal">True</property>
     <child>
       <object class="HdyPreferencesPage">
-        <property name="icon_name">preferences-system-symbolic</property>
-        <property name="title" translatable="yes">Network</property>
+        <property name="icon_name">preferences-system-network-symbolic</property>
+        <property name="title" translatable="yes">Connections</property>
         <property name="visible">True</property>
         <child>
           <object class="HdyPreferencesGroup">
@@ -173,13 +173,6 @@
             </child>
           </object>
         </child>
-      </object>
-    </child>
-    <child>
-      <object class="HdyPreferencesPage">
-        <property name="icon_name">phone-symbolic</property>
-        <property name="title" translatable="yes">Telephony</property>
-        <property name="visible">True</property>
         <child>
           <object class="HdyPreferencesGroup">
             <property name="title" translatable="yes">Devices</property>

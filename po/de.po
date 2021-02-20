@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roger 1.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-11 11:11+0100\n"
+"POT-Creation-Date: 2021-02-20 21:56+0100\n"
 "PO-Revision-Date: 2016-09-17 21:39+0200\n"
 "Last-Translator: Jan-Michael Brummer <jan.brummer@tabos.org>\n"
 "Language-Team: Deutsch <>\n"
@@ -184,18 +184,16 @@ msgid "Status:"
 msgstr "Status:"
 
 #: roger/resources/journal.glade:149 plugins/indicator/indicator.c:244
-#: plugins/statusicon/statusicon.c:238
 msgid "Contacts"
 msgstr "Kontakte"
 
 #: roger/resources/journal.glade:163 roger/resources/settings.glade:761
 #: roger/resources/settings.glade:789 roger/phone.c:513
-#: plugins/indicator/indicator.c:249 plugins/statusicon/statusicon.c:243
+#: plugins/indicator/indicator.c:249
 msgid "Phone"
 msgstr "Telefon"
 
 #: roger/resources/journal.glade:176 plugins/indicator/indicator.c:254
-#: plugins/statusicon/statusicon.c:248
 msgid "Functions"
 msgstr "Funktionen"
 
@@ -203,13 +201,12 @@ msgstr "Funktionen"
 msgid "Assistant"
 msgstr "Assistent"
 
-#: roger/resources/journal.glade:216 plugins/indicator/indicator.c:264
-#: plugins/statusicon/statusicon.c:258
+#: roger/resources/journal.glade:216 roger/resources/ui/preferences.ui:412
+#: plugins/indicator/indicator.c:264
 msgid "Plugins"
 msgstr "Plugins"
 
 #: roger/resources/journal.glade:230 plugins/indicator/indicator.c:269
-#: plugins/statusicon/statusicon.c:263
 msgid "Preferences"
 msgstr "Einstellungen"
 
@@ -218,7 +215,6 @@ msgid "Keyboard Shortcuts"
 msgstr "Tastenkürzel"
 
 #: roger/resources/journal.glade:269 plugins/indicator/indicator.c:278
-#: plugins/statusicon/statusicon.c:272
 msgid "About"
 msgstr "Info"
 
@@ -227,7 +223,6 @@ msgid "Copy IP Address"
 msgstr "IP-Adresse kopieren"
 
 #: roger/resources/journal.glade:323 plugins/indicator/indicator.c:108
-#: plugins/statusicon/statusicon.c:103
 msgid "Reconnect"
 msgstr "Neu verbinden"
 
@@ -235,9 +230,8 @@ msgstr "Neu verbinden"
 msgid "Debug Window"
 msgstr "Debug-Fenster"
 
-#: roger/resources/journal.glade:359 roger/resources/ui/preferences.ui:344
+#: roger/resources/journal.glade:359 roger/resources/ui/preferences.ui:337
 #: roger/print.c:345 plugins/indicator/indicator.c:239
-#: plugins/statusicon/statusicon.c:233
 msgid "Journal"
 msgstr "Journal"
 
@@ -269,7 +263,7 @@ msgstr "Firma"
 
 #: roger/resources/journal.glade:567 roger/resources/settings.glade:200
 #: roger/resources/settings.glade:719 roger/resources/settings.glade:859
-#: roger/resources/ui/preferences.ui:225 roger/resources/ui/preferences.ui:246
+#: roger/resources/ui/preferences.ui:218 roger/resources/ui/preferences.ui:239
 #: roger/resources/ui/roger-journal.ui:391 roger/contacts.c:668
 #: roger/print.c:413 roger/settings.c:429
 msgid "Number"
@@ -493,7 +487,7 @@ msgid "Codes"
 msgstr "Vorwahlen"
 
 #: roger/resources/settings.glade:706 roger/resources/settings.glade:1001
-#: roger/resources/ui/preferences.ui:232 roger/resources/ui/preferences.ui:252
+#: roger/resources/ui/preferences.ui:225 roger/resources/ui/preferences.ui:245
 msgid "Controller"
 msgstr "Kontroller"
 
@@ -522,11 +516,11 @@ msgstr "Internet"
 msgid "Internet 2"
 msgstr "Internet 2"
 
-#: roger/resources/settings.glade:812 roger/resources/ui/preferences.ui:259
+#: roger/resources/settings.glade:812 roger/resources/ui/preferences.ui:252
 msgid "Header"
 msgstr "Kopfzeile"
 
-#: roger/resources/settings.glade:825 roger/resources/ui/preferences.ui:277
+#: roger/resources/settings.glade:825 roger/resources/ui/preferences.ui:270
 msgid "Ident"
 msgstr "Ident"
 
@@ -542,7 +536,7 @@ msgstr "Erweiterte Einstellungen"
 msgid "Report"
 msgstr "Bericht"
 
-#: roger/resources/settings.glade:974 roger/resources/ui/preferences.ui:294
+#: roger/resources/settings.glade:974 roger/resources/ui/preferences.ui:287
 msgid "Resolution"
 msgstr "Auflösung"
 
@@ -554,11 +548,11 @@ msgstr "Niedrig (98dpi)"
 msgid "High (196dpi)"
 msgstr "Hoch (196dpi)"
 
-#: roger/resources/settings.glade:1014 roger/resources/ui/preferences.ui:300
+#: roger/resources/settings.glade:1014 roger/resources/ui/preferences.ui:293
 msgid "Service"
 msgstr "Dienst"
 
-#: roger/resources/settings.glade:1027 roger/resources/ui/preferences.ui:327
+#: roger/resources/settings.glade:1027 roger/resources/ui/preferences.ui:320
 msgid "Error correction"
 msgstr "Fehlerkorrektur"
 
@@ -574,7 +568,7 @@ msgstr "Analog"
 msgid "ISDN"
 msgstr "ISDN"
 
-#: roger/resources/settings.glade:1136 roger/resources/ui/preferences.ui:378
+#: roger/resources/settings.glade:1136 roger/resources/ui/preferences.ui:371
 msgid "Ringtone"
 msgstr "Klingelton"
 
@@ -586,7 +580,7 @@ msgstr "Einstellung pro Nummer"
 msgid "Notification"
 msgstr "Benachrichtigung"
 
-#: roger/resources/settings.glade:1325 roger/resources/ui/preferences.ui:360
+#: roger/resources/settings.glade:1325 roger/resources/ui/preferences.ui:353
 msgid "Filter"
 msgstr "Filter"
 
@@ -646,7 +640,7 @@ msgstr "Eingang"
 msgid "Output (Ringtone)"
 msgstr "Ausgabe (Klingelton)"
 
-#: roger/resources/settings.glade:1733 roger/resources/ui/preferences.ui:369
+#: roger/resources/settings.glade:1733 roger/resources/ui/preferences.ui:362
 msgid "Audio"
 msgstr "Audio"
 
@@ -659,7 +653,7 @@ msgid "_Phone"
 msgstr "_Telefon"
 
 #: roger/resources/ui/journal-popover.ui:142
-#: roger/resources/ui/journal-popover.ui:259
+#: roger/resources/ui/journal-popover.ui:245
 msgid "_Functions"
 msgstr "_Funktionen"
 
@@ -668,36 +662,32 @@ msgid "_Assistant"
 msgstr "_Assistent"
 
 #: roger/resources/ui/journal-popover.ui:182
-msgid "P_lugins"
-msgstr "_Plugins"
-
-#: roger/resources/ui/journal-popover.ui:196
 msgid "Pr_eferences"
 msgstr "_Einstellungen"
 
-#: roger/resources/ui/journal-popover.ui:221
+#: roger/resources/ui/journal-popover.ui:207
 msgid "_Keyboard Shortcuts"
 msgstr "Tasten_kürzel"
 
-#: roger/resources/ui/journal-popover.ui:235
+#: roger/resources/ui/journal-popover.ui:221
 msgid "A_bout"
 msgstr "_Info"
 
-#: roger/resources/ui/journal-popover.ui:276
+#: roger/resources/ui/journal-popover.ui:262
 msgid "_Copy IP Address"
 msgstr "_IP-Adresse kopieren"
 
-#: roger/resources/ui/journal-popover.ui:290
+#: roger/resources/ui/journal-popover.ui:276
 msgid "_Reconnect"
 msgstr "_Neu verbinden"
 
-#: roger/resources/ui/journal-popover.ui:304
+#: roger/resources/ui/journal-popover.ui:290
 msgid "_Debug Window"
 msgstr "_Debug-Fenster"
 
 #: roger/resources/ui/preferences.ui:17
-msgid "Network"
-msgstr "Netzwerk"
+msgid "Connections"
+msgstr "Verbindungen"
 
 #: roger/resources/ui/preferences.ui:88
 msgid "External"
@@ -719,67 +709,63 @@ msgstr "National"
 msgid "Area"
 msgstr "Ort"
 
-#: roger/resources/ui/preferences.ui:181
-msgid "Telephony"
-msgstr "Telefonie"
-
-#: roger/resources/ui/preferences.ui:185 roger/resources/ui/preferences.ui:392
+#: roger/resources/ui/preferences.ui:178 roger/resources/ui/preferences.ui:385
 msgid "Devices"
 msgstr "Geräte"
 
-#: roger/resources/ui/preferences.ui:190 roger/resources/ui/preferences.ui:219
+#: roger/resources/ui/preferences.ui:183 roger/resources/ui/preferences.ui:212
 msgid "Softphone"
 msgstr "Softphone"
 
-#: roger/resources/ui/preferences.ui:191
+#: roger/resources/ui/preferences.ui:184
 msgid "Enable softphone support"
 msgstr "Softphoneunterstützung aktivieren"
 
-#: roger/resources/ui/preferences.ui:204 roger/resources/ui/preferences.ui:240
+#: roger/resources/ui/preferences.ui:197 roger/resources/ui/preferences.ui:233
 msgid "Softfax"
 msgstr "Softfax"
 
-#: roger/resources/ui/preferences.ui:205
+#: roger/resources/ui/preferences.ui:198
 msgid "Enable softfax support"
 msgstr "Softfaxunterstützung aktivieren"
 
-#: roger/resources/ui/preferences.ui:226
+#: roger/resources/ui/preferences.ui:219
 msgid "Phone number which will be used by softphone"
 msgstr "Telefonnummer welche vom Softphone verwendet wird"
 
-#: roger/resources/ui/preferences.ui:233
+#: roger/resources/ui/preferences.ui:226
 msgid "Router controller to take of router connections"
 msgstr "Routerkontroller der für die Routerverbindung genutzt wird"
 
-#: roger/resources/ui/preferences.ui:306
+#: roger/resources/ui/preferences.ui:299
 msgid "Fax reports"
 msgstr "Faxberichte"
 
-#: roger/resources/ui/preferences.ui:311
+#: roger/resources/ui/preferences.ui:304
 msgid "Directory"
 msgstr "Verzeichnis"
 
-#: roger/resources/ui/preferences.ui:348
+#: roger/resources/ui/preferences.ui:341
 msgid "Incoming Notifications"
 msgstr "Eingehende Benachrichtigungen"
 
-#: roger/resources/ui/preferences.ui:354
+#: roger/resources/ui/preferences.ui:347
 msgid "Outgoing Notifications"
 msgstr "Ausgehende Benachrichtigungen"
 
-#: roger/resources/ui/preferences.ui:373
+#: roger/resources/ui/preferences.ui:366 roger/resources/ui/preferences.ui:416
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: roger/resources/ui/preferences.ui:397
+#: roger/resources/ui/preferences.ui:390
 msgid "Microphone"
 msgstr "Mikrofon"
 
-#: roger/resources/ui/preferences.ui:403
+#: roger/resources/ui/preferences.ui:396
 msgid "Speaker"
 msgstr "Lautsprecher"
 
-#: roger/resources/ui/preferences.ui:409
+#: roger/resources/ui/preferences.ui:402
 msgid "Ringer"
 msgstr "Klingel"
 
@@ -852,7 +838,7 @@ msgid "finish"
 msgstr "fertig"
 
 #: roger/resources/ui/roger-assistant.ui:636 roger/assistant.c:395
-#: plugins/indicator/indicator.c:283 plugins/statusicon/statusicon.c:277
+#: plugins/indicator/indicator.c:283
 msgid "Quit"
 msgstr "Beenden"
 
@@ -860,15 +846,15 @@ msgstr "Beenden"
 msgid "Reset to defaults"
 msgstr "Auf Vorgaben zurücksetzen"
 
-#: roger/resources/ui/roger-journal.ui:74 roger/journal.c:840
+#: roger/resources/ui/roger-journal.ui:74 roger/journal.c:852
 msgid "Copy number"
 msgstr "Nummer kopieren"
 
-#: roger/resources/ui/roger-journal.ui:88 roger/journal.c:845
+#: roger/resources/ui/roger-journal.ui:88 roger/journal.c:857
 msgid "Call number"
 msgstr "Nummer wählen"
 
-#: roger/resources/ui/roger-journal.ui:113 roger/journal.c:854
+#: roger/resources/ui/roger-journal.ui:113 roger/journal.c:866
 msgid "Add contact"
 msgstr "Kontakt hinzufügen"
 
@@ -1123,7 +1109,7 @@ msgid "Do you want to delete contact '%s'?"
 msgstr "Wollen Sie den Kontakt '%s' löschen?"
 
 #: roger/contacts.c:1000 roger/debug.c:185 roger/journal.c:467
-#: roger/journal.c:519 roger/journal.c:937 roger/preferences.c:159
+#: roger/journal.c:519 roger/journal.c:949 roger/preferences.c:160
 #: roger/settings.c:515 roger/settings.c:658
 msgid "Cancel"
 msgstr "A_bbrechen"
@@ -1144,7 +1130,7 @@ msgstr "Fax Arbeit"
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: roger/debug.c:185 roger/journal.c:937 roger/preferences.c:163
+#: roger/debug.c:185 roger/journal.c:949 roger/preferences.c:164
 #: roger/settings.c:518
 msgid "Save"
 msgstr "Speichern"
@@ -1196,21 +1182,13 @@ msgstr "Willst Du das Journal auf dem Router wirklich löschen?"
 msgid "Do you really want to delete the selected entry?"
 msgstr "Willst Du den ausgewählten Eintrag wirklich löschen?"
 
-#: roger/journal.c:863
+#: roger/journal.c:875
 msgid "Delete entry"
 msgstr "Eintrag löschen"
 
-#: roger/journal.c:937
+#: roger/journal.c:949
 msgid "Export journal"
 msgstr "Journal exportieren"
-
-#: roger/pdf.c:147
-msgid "Save Fax"
-msgstr "Fax speichern"
-
-#: roger/pdf.c:224
-msgid "Fax Viewer"
-msgstr "Fax Betrachter"
 
 #: roger/phone.c:173
 msgid "A call is in progress, hangup first"
@@ -1233,7 +1211,7 @@ msgstr "<b>%s</b>"
 msgid "Help"
 msgstr "Hilfe"
 
-#: roger/plugins.c:154
+#: roger/plugins.c:154 roger/preferences-plugins.c:112
 msgid "Homepage"
 msgstr "Homepage"
 
@@ -1322,15 +1300,15 @@ msgstr "System Analog"
 msgid "Internet 1"
 msgstr "Internet 1"
 
-#: roger/preferences.c:156 roger/settings.c:512
+#: roger/preferences.c:157 roger/settings.c:512
 msgid "Edit filter"
 msgstr "Filter bearbeiten"
 
-#: roger/preferences.c:173 roger/settings.c:530 roger/settings.c:673
+#: roger/preferences.c:174 roger/settings.c:530 roger/settings.c:673
 msgid "Name:"
 msgstr "Name:"
 
-#: roger/preferences.c:288
+#: roger/preferences.c:289
 msgid "Add filter"
 msgstr "Filter hinzufügen"
 
@@ -1474,7 +1452,7 @@ msgid "%s (Firmware: %s)"
 msgstr "%s (Firmware: %s)"
 
 #: roger/org.tabos.roger.desktop.in:3 roger/org.tabos.roger.desktop.in:4
-#: roger/org.tabos.roger.appdata.xml.in:9 plugins/statusicon/statusicon.c:360
+#: roger/org.tabos.roger.appdata.xml.in:9
 msgid "Roger Router"
 msgstr "Roger Router"
 
@@ -1590,60 +1568,31 @@ msgstr "Google"
 msgid "Google address book support"
 msgstr "Google Adressbuch-Support"
 
-#: plugins/gtknotify/gtknotify.c:108
-#, c-format
-msgid "(on %s)"
-msgstr "(an %s)"
-
-#: plugins/gtknotify/gtknotify.c:108
-msgid "(on ?)"
-msgstr "(an ?)"
-
-#: plugins/gtknotify/gtknotify.c:124
-msgid "Incoming call"
-msgstr "Eingehender Anruf"
-
-#: plugins/gtknotify/gtknotify.c:147
-msgid "Outgoing call"
-msgstr "Ausgehender Anruf"
-
-#: plugins/gtknotify/gtknotify.desktop.in:4
-msgid "Notifications (using GTK)"
-msgstr "Benachrichtigungen (mittels GTK)"
-
-#: plugins/gtknotify/gtknotify.desktop.in:5
-msgid "Display notification about incoming/outgoing/missed calls using GTK"
-msgstr ""
-"Zeigt Benachrichtigungen über eingehende/ausgehende/verpasste Anrufe (GTK)"
-
-#: plugins/indicator/indicator.c:103 plugins/statusicon/statusicon.c:98
+#: plugins/indicator/indicator.c:103
 msgid "Copy IP address"
 msgstr "IP-Adresse kopieren"
 
-#: plugins/indicator/indicator.c:485 plugins/statusicon/statusicon.c:481
+#: plugins/indicator/indicator.c:485
 msgid "Hide Journal on startup"
 msgstr "Verstecke das Journal beim Starten"
 
-#: plugins/indicator/indicator.c:494 plugins/statusicon/statusicon.c:490
+#: plugins/indicator/indicator.c:494
 msgid "Default Icon"
 msgstr "Standard-Symbol"
 
 #: plugins/indicator/indicator.c:498 plugins/indicator/indicator.c:508
-#: plugins/statusicon/statusicon.c:494 plugins/statusicon/statusicon.c:504
 msgid "default"
 msgstr "default"
 
 #: plugins/indicator/indicator.c:499 plugins/indicator/indicator.c:509
-#: plugins/statusicon/statusicon.c:495 plugins/statusicon/statusicon.c:505
 msgid "mono-dark"
 msgstr "mono-dark"
 
 #: plugins/indicator/indicator.c:500 plugins/indicator/indicator.c:510
-#: plugins/statusicon/statusicon.c:496 plugins/statusicon/statusicon.c:506
 msgid "mono-lite"
 msgstr "mono-lite"
 
-#: plugins/indicator/indicator.c:504 plugins/statusicon/statusicon.c:500
+#: plugins/indicator/indicator.c:504
 msgid "Notify Icon"
 msgstr "Benachrichtigungs-Symbol"
 
@@ -1659,33 +1608,13 @@ msgstr "Application Indicator"
 msgid "Status icon plugin using AppIndicator support"
 msgstr "Statusicon-Plugin mit AppIndicator-Unterstützung"
 
-#: plugins/statusicon/statusicon.c:517
-msgid "Settings for Status icon GTK"
-msgstr "Einstellungen für Statusicon GTK"
-
-#: plugins/statusicon/statusicon.desktop.in:4
-msgid "Status icon GTK"
-msgstr "Statusicon GTK"
-
-#: plugins/statusicon/statusicon.desktop.in:5
-msgid "Status icon plugin using GTK following FreeDesktop standard"
-msgstr "Statusicon-Plugin in GTK nach den FreeDesktop-Standard"
-
-#: plugins/thunderbird/thunderbird.c:1054
-msgid "Select mab file"
-msgstr "VCard-Datei auswählen"
-
-#: plugins/thunderbird/thunderbird.c:1101
+#: plugins/thunderbird/thunderbird.c:1107
 msgid "Thunderbird file"
 msgstr "Thunderbird-Datei"
 
-#: plugins/thunderbird/thunderbird.c:1105 plugins/webjournal/webjournal.c:312
-msgid "Select"
-msgstr "Auswählen"
-
-#: plugins/thunderbird/thunderbird.c:1115 plugins/vcard/vcard.c:1269
-msgid "Contact book"
-msgstr "Kontaktbuch"
+#: plugins/thunderbird/thunderbird.c:1109
+msgid "Select Thunderbird Addressbook"
+msgstr "Thunderbird Adressbuch auswählen"
 
 #: plugins/thunderbird/thunderbird.desktop.in:4
 msgid "Thunderbird"
@@ -1695,16 +1624,16 @@ msgstr "Thunderbird"
 msgid "Thunderbird address book support"
 msgstr "Thunderbird Adressbuch-Support"
 
-#: plugins/vcard/vcard.c:1217
+#: plugins/vcard/vcard.c:1220
 msgid "Select vcard file"
 msgstr "VCard-Datei auswählen"
 
-#: plugins/vcard/vcard.c:1256
+#: plugins/vcard/vcard.c:1257
 msgid "VCard file"
 msgstr "VCard-Datei"
 
 #: plugins/vcard/vcard.c:1261
-msgid "Select vcard"
+msgid "Select VCard"
 msgstr "VCard auswählen"
 
 #: plugins/vcard/vcard.desktop.in:4
@@ -1715,22 +1644,70 @@ msgstr "VCard"
 msgid "VCard address book support"
 msgstr "VCard Adressbuch-Support"
 
-#: plugins/webjournal/webjournal.c:271
-msgid "Set HTML file"
-msgstr "HTML-Datei auswählen"
+#~ msgid "P_lugins"
+#~ msgstr "_Plugins"
 
-#: plugins/webjournal/webjournal.c:308
-msgid "Web Journal output file"
-msgstr "Web Journal Ausgabedatei"
+#~ msgid "Network"
+#~ msgstr "Netzwerk"
 
-#: plugins/webjournal/webjournal.c:322
-#: plugins/webjournal/webjournal.desktop.in:4
-msgid "Web Journal"
-msgstr "Web Journal"
+#~ msgid "Telephony"
+#~ msgstr "Telefonie"
 
-#: plugins/webjournal/webjournal.desktop.in:5
-msgid "Store journal as html file on a server"
-msgstr "Speichert das Journal als HTML-Datei auf einem Server"
+#~ msgid "Save Fax"
+#~ msgstr "Fax speichern"
+
+#~ msgid "Fax Viewer"
+#~ msgstr "Fax Betrachter"
+
+#, c-format
+#~ msgid "(on %s)"
+#~ msgstr "(an %s)"
+
+#~ msgid "(on ?)"
+#~ msgstr "(an ?)"
+
+#~ msgid "Incoming call"
+#~ msgstr "Eingehender Anruf"
+
+#~ msgid "Outgoing call"
+#~ msgstr "Ausgehender Anruf"
+
+#~ msgid "Notifications (using GTK)"
+#~ msgstr "Benachrichtigungen (mittels GTK)"
+
+#~ msgid "Display notification about incoming/outgoing/missed calls using GTK"
+#~ msgstr ""
+#~ "Zeigt Benachrichtigungen über eingehende/ausgehende/verpasste Anrufe (GTK)"
+
+#~ msgid "Settings for Status icon GTK"
+#~ msgstr "Einstellungen für Statusicon GTK"
+
+#~ msgid "Status icon GTK"
+#~ msgstr "Statusicon GTK"
+
+#~ msgid "Status icon plugin using GTK following FreeDesktop standard"
+#~ msgstr "Statusicon-Plugin in GTK nach den FreeDesktop-Standard"
+
+#~ msgid "Select mab file"
+#~ msgstr "VCard-Datei auswählen"
+
+#~ msgid "Select"
+#~ msgstr "Auswählen"
+
+#~ msgid "Contact book"
+#~ msgstr "Kontaktbuch"
+
+#~ msgid "Set HTML file"
+#~ msgstr "HTML-Datei auswählen"
+
+#~ msgid "Web Journal output file"
+#~ msgstr "Web Journal Ausgabedatei"
+
+#~ msgid "Web Journal"
+#~ msgstr "Web Journal"
+
+#~ msgid "Store journal as html file on a server"
+#~ msgstr "Speichert das Journal als HTML-Datei auf einem Server"
 
 #~ msgctxt "shortcut window"
 #~ msgid "Open phone window"
@@ -2158,9 +2135,6 @@ msgstr "Speichert das Journal als HTML-Datei auf einem Server"
 
 #~ msgid "Support for Google address book"
 #~ msgstr "Unterstützung für das Google Adressbuch"
-
-#~ msgid "Support for Thunderbird address book"
-#~ msgstr "Unterstützung für das Thunderbird Adressbuch"
 
 #~ msgid ""
 #~ "Name:\t\t%s\n"
