@@ -52,9 +52,9 @@ roger_audio_device_get_mapping (GValue   *value,
   gint idx = 0;
 
   for (list = get_audio_devices (); list; list = list->next) {
-		RmAudioDevice *device = list->data;
+    RmAudioDevice *device = list->data;
 
-		if (device->type != type)
+    if (device->type != type)
       continue;
 
     if (g_strcmp0 (device->name, g_variant_get_string (variant, NULL)) == 0) {
@@ -81,9 +81,9 @@ roger_audio_device_set_mapping (const GValue       *value,
   idx = g_value_get_int (value);
 
   for (list = get_audio_devices (); list; list = list->next) {
-		RmAudioDevice *device = list->data;
+    RmAudioDevice *device = list->data;
 
-		if (device->type != type)
+    if (device->type != type)
       continue;
 
     if (idx == 0)
@@ -106,23 +106,23 @@ roger_preferences_setup_audio (RogerPreferencesWindow *self)
   g_autofree gchar *speaker_name = NULL;
   g_autofree gchar *ringer_name = NULL;
 
-	g_settings_bind (self->profile->settings, "notification-play-ringtone", self->ringtone, "active", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (self->profile->settings, "notification-play-ringtone", self->ringtone, "active", G_SETTINGS_BIND_DEFAULT);
 
-	microphone_name = g_settings_get_string (self->profile->settings, "audio-input");
+  microphone_name = g_settings_get_string (self->profile->settings, "audio-input");
   speaker_name = g_settings_get_string (self->profile->settings, "audio-output");
-	ringer_name = g_settings_get_string (self->profile->settings, "audio-output-ringtone");
+  ringer_name = g_settings_get_string (self->profile->settings, "audio-output-ringtone");
 
   microphone_list = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
   speaker_list = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
   ringer_list = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
 
-	for (list = get_audio_devices (); list; list = list->next) {
-		RmAudioDevice *device = list->data;
+  for (list = get_audio_devices (); list; list = list->next) {
+    RmAudioDevice *device = list->data;
     HdyValueObject *obj;
 
     obj = hdy_value_object_new_string (device->name);
 
-		if (device->type == RM_AUDIO_INPUT) {
+    if (device->type == RM_AUDIO_INPUT) {
       g_list_store_append (microphone_list, obj);
     } else if (device->type == RM_AUDIO_OUTPUT) {
       g_list_store_append (speaker_list, obj);
@@ -130,11 +130,11 @@ roger_preferences_setup_audio (RogerPreferencesWindow *self)
     }
 
     g_clear_object (&obj);
-	}
+  }
 
   hdy_combo_row_bind_name_model (HDY_COMBO_ROW (self->microphone),
                                  G_LIST_MODEL (microphone_list),
-                                 (HdyComboRowGetNameFunc) hdy_value_object_dup_string,
+                                 (HdyComboRowGetNameFunc)hdy_value_object_dup_string,
                                  NULL,
                                  NULL);
   g_settings_bind_with_mapping (self->profile->settings,
@@ -149,7 +149,7 @@ roger_preferences_setup_audio (RogerPreferencesWindow *self)
 
   hdy_combo_row_bind_name_model (HDY_COMBO_ROW (self->speaker),
                                  G_LIST_MODEL (speaker_list),
-                                 (HdyComboRowGetNameFunc) hdy_value_object_dup_string,
+                                 (HdyComboRowGetNameFunc)hdy_value_object_dup_string,
                                  NULL,
                                  NULL);
   g_settings_bind_with_mapping (self->profile->settings,
@@ -164,7 +164,7 @@ roger_preferences_setup_audio (RogerPreferencesWindow *self)
 
   hdy_combo_row_bind_name_model (HDY_COMBO_ROW (self->ringer),
                                  G_LIST_MODEL (ringer_list),
-                                 (HdyComboRowGetNameFunc) hdy_value_object_dup_string,
+                                 (HdyComboRowGetNameFunc)hdy_value_object_dup_string,
                                  NULL,
                                  NULL);
   g_settings_bind_with_mapping (self->profile->settings,
@@ -177,4 +177,3 @@ roger_preferences_setup_audio (RogerPreferencesWindow *self)
                                 GINT_TO_POINTER (RM_AUDIO_OUTPUT),
                                 NULL);
 }
-

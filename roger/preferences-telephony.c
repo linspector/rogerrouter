@@ -64,7 +64,7 @@ roger_phone_number_get_mapping (GValue   *value,
   gint idx = 0;
 
   numbers = rm_router_get_numbers (self->profile);
-	for (idx = 0; idx < g_strv_length (numbers); idx++) {
+  for (idx = 0; idx < g_strv_length (numbers); idx++) {
     if (g_strcmp0 (numbers[idx], g_variant_get_string (variant, NULL)) == 0) {
       g_value_set_int (value, idx);
 
@@ -144,27 +144,27 @@ roger_preferences_setup_telephony (RogerPreferencesWindow *self)
   gint idx;
 
   /* Devices */
-	g_settings_bind (self->profile->settings, "phone-active", self->softphone, "active", G_SETTINGS_BIND_DEFAULT);
-	g_object_bind_property (self->softphone, "active", self->softphone_group, "visible", G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-	g_settings_bind (self->profile->settings, "fax-active", self->softfax, "active", G_SETTINGS_BIND_DEFAULT);
-	g_object_bind_property (self->softfax, "active", self->softfax_group, "visible", G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+  g_settings_bind (self->profile->settings, "phone-active", self->softphone, "active", G_SETTINGS_BIND_DEFAULT);
+  g_object_bind_property (self->softphone, "active", self->softphone_group, "visible", G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+  g_settings_bind (self->profile->settings, "fax-active", self->softfax, "active", G_SETTINGS_BIND_DEFAULT);
+  g_object_bind_property (self->softfax, "active", self->softfax_group, "visible", G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
 
   /* Phone */
   number_list = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
 
   numbers = rm_router_get_numbers (self->profile);
-	for (idx = 0; idx < g_strv_length(numbers); idx++) {
+  for (idx = 0; idx < g_strv_length (numbers); idx++) {
     HdyValueObject *obj;
 
     obj = hdy_value_object_new_string (numbers[idx]);
     g_list_store_append (number_list, obj);
 
     g_clear_object (&obj);
-	}
+  }
 
   hdy_combo_row_bind_name_model (HDY_COMBO_ROW (self->softphone_number),
                                  G_LIST_MODEL (number_list),
-                                 (HdyComboRowGetNameFunc) hdy_value_object_dup_string,
+                                 (HdyComboRowGetNameFunc)hdy_value_object_dup_string,
                                  NULL,
                                  NULL);
   g_settings_bind_with_mapping (self->profile->settings,
@@ -178,12 +178,12 @@ roger_preferences_setup_telephony (RogerPreferencesWindow *self)
                                 NULL);
 
   hdy_combo_row_set_for_enum (HDY_COMBO_ROW (self->softphone_controller), RM_TYPE_CONTROLLER, controller_get_name, NULL, NULL);
-	g_settings_bind (self->profile->settings, "phone-controller", self->softphone_controller, "selected-index", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (self->profile->settings, "phone-controller", self->softphone_controller, "selected-index", G_SETTINGS_BIND_DEFAULT);
 
   /* Fax */
   hdy_combo_row_bind_name_model (HDY_COMBO_ROW (self->softfax_number),
                                  G_LIST_MODEL (number_list),
-                                 (HdyComboRowGetNameFunc) hdy_value_object_dup_string,
+                                 (HdyComboRowGetNameFunc)hdy_value_object_dup_string,
                                  NULL,
                                  NULL);
   g_settings_bind_with_mapping (self->profile->settings,
@@ -197,18 +197,17 @@ roger_preferences_setup_telephony (RogerPreferencesWindow *self)
                                 NULL);
 
   hdy_combo_row_set_for_enum (HDY_COMBO_ROW (self->softfax_controller), RM_TYPE_CONTROLLER, controller_get_name, NULL, NULL);
-	g_settings_bind (self->profile->settings, "fax-controller", self->softfax_controller, "selected-index", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (self->profile->settings, "fax-controller", self->softfax_controller, "selected-index", G_SETTINGS_BIND_DEFAULT);
 
   g_settings_bind (self->profile->settings, "fax-header", self->softfax_header, "text", G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (self->profile->settings, "fax-ident", self->softfax_ident, "text", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (self->profile->settings, "fax-ident", self->softfax_ident, "text", G_SETTINGS_BIND_DEFAULT);
   hdy_combo_row_set_for_enum (HDY_COMBO_ROW (self->softfax_resolution), RM_TYPE_RESOLUTION, resolution_get_name, NULL, NULL);
-	g_settings_bind (self->profile->settings, "fax-resolution", self->softfax_resolution, "selected-index", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (self->profile->settings, "fax-resolution", self->softfax_resolution, "selected-index", G_SETTINGS_BIND_DEFAULT);
   hdy_combo_row_set_for_enum (HDY_COMBO_ROW (self->softfax_service), RM_TYPE_SERVICE, service_get_name, NULL, NULL);
-	g_settings_bind (self->profile->settings, "fax-cip", self->softfax_service, "selected-index", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (self->profile->settings, "fax-cip", self->softfax_service, "selected-index", G_SETTINGS_BIND_DEFAULT);
 
   g_settings_bind (self->profile->settings, "fax-report", self->softfax_report, "enable-expansion", G_SETTINGS_BIND_DEFAULT);
   gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (self->softfax_directory), g_settings_get_string (self->profile->settings, "fax-report-dir"));
   g_signal_connect (self->softfax_directory, "file-set", G_CALLBACK (softfax_directory_file_set), self);
-	g_settings_bind (self->profile->settings, "fax-ecm", self->softfax_ecm, "active", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (self->profile->settings, "fax-ecm", self->softfax_ecm, "active", G_SETTINGS_BIND_DEFAULT);
 }
-

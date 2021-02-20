@@ -28,34 +28,39 @@
 
 #include <rm/rm.h>
 
-#define RM_TYPE_KEYCHAIN_PLUGIN        (rm_keychain_plugin_get_type())
-#define RM_KEYCHAIN_PLUGIN(o)          (G_TYPE_CHECK_INSTANCE_CAST((o), RM_TYPE_KEYCHAIN_PLUGIN, RmKeyChainPlugin))
+#define RM_TYPE_KEYCHAIN_PLUGIN        (rm_keychain_plugin_get_type ())
+#define RM_KEYCHAIN_PLUGIN(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), RM_TYPE_KEYCHAIN_PLUGIN, RmKeyChainPlugin))
 
 typedef struct {
-	guint signal_id;
+  guint signal_id;
 } RmKeyChainPluginPrivate;
 
-RM_PLUGIN_REGISTER(RM_TYPE_KEYCHAIN_PLUGIN, RmKeyChainPlugin, rm_keychain_plugin)
+RM_PLUGIN_REGISTER (RM_TYPE_KEYCHAIN_PLUGIN, RmKeyChainPlugin, rm_keychain_plugin)
 
 #define SERVICE_NAME "roger"
 
-static gboolean keychain_remove_password(RmProfile *profile, const gchar *type);
+static gboolean keychain_remove_password (RmProfile   *profile,
+                                          const gchar *type);
 
-OSStatus keychain_get(gchar *pwd_name, void **password, UInt32 *pwd_len, SecKeychainItemRef *item_ref)
+OSStatus
+keychain_get (gchar               *pwd_name,
+              void               **password,
+              UInt32              *pwd_len,
+              SecKeychainItemRef  *item_ref)
 {
-	OSStatus status;
+  OSStatus status;
 
-	status = SecKeychainFindGenericPassword(
-		NULL,
-		strlen(SERVICE_NAME),
-		SERVICE_NAME,
-		strlen(pwd_name),
-		pwd_name,
-		pwd_len,
-		password,
-		item_ref);
+  status = SecKeychainFindGenericPassword (
+    NULL,
+    strlen (SERVICE_NAME),
+    SERVICE_NAME,
+    strlen (pwd_name),
+    pwd_name,
+    pwd_len,
+    password,
+    item_ref);
 
-	return status;
+  return status;
 }
 
 /**
@@ -64,34 +69,36 @@ OSStatus keychain_get(gchar *pwd_name, void **password, UInt32 *pwd_len, SecKeyc
  * \param type password type
  * \return password or NULL on error
  */
-static gchar *keychain_get_password(RmProfile *profile, const gchar *type)
+static gchar *
+keychain_get_password (RmProfile   *profile,
+                       const gchar *type)
 {
-	OSStatus status;
-	UInt32 pwd_length;
-	void *password = NULL;
-	gchar *pwd_name;
-	gchar *secret_password = NULL;
-	SecKeychainItemRef ref;
+  OSStatus status;
+  UInt32 pwd_length;
+  void *password = NULL;
+  gchar *pwd_name;
+  gchar *secret_password = NULL;
+  SecKeychainItemRef ref;
 
-	if (profile == NULL || profile->name == NULL || type == NULL) {
-		return NULL;
-	}
+  if (profile == NULL || profile->name == NULL || type == NULL) {
+    return NULL;
+  }
 
-	/* Find password */
-	pwd_name = g_strdup_printf("%s/%s", profile->name, type);
-	status = keychain_get(pwd_name, &password, &pwd_length, &ref);
-	g_free(pwd_name);
+  /* Find password */
+  pwd_name = g_strdup_printf ("%s/%s", profile->name, type);
+  status = keychain_get (pwd_name, &password, &pwd_length, &ref);
+  g_free (pwd_name);
 
-	/* Check return value, if no error occurred: return password */
-	if (status == noErr) {
-		secret_password = g_strndup((char*)password, pwd_length);
-		SecKeychainItemFreeContent(NULL, password);
-		return secret_password;
-	}
+  /* Check return value, if no error occurred: return password */
+  if (status == noErr) {
+    secret_password = g_strndup ((char *)password, pwd_length);
+    SecKeychainItemFreeContent (NULL, password);
+    return secret_password;
+  }
 
-	g_warning("Couldn't find password: %d", status);
+  g_warning ("Couldn't find password: %d", status);
 
-	return NULL;
+  return NULL;
 }
 
 /**
@@ -100,50 +107,53 @@ static gchar *keychain_get_password(RmProfile *profile, const gchar *type)
  * \param type password type
  * \param password password text
  */
-static void keychain_store_password(RmProfile *profile, const gchar *type, const gchar *password)
+static void
+keychain_store_password (RmProfile   *profile,
+                         const gchar *type,
+                         const gchar *password)
 {
-	OSStatus status;
-	SecKeychainItemRef item_ref = NULL;
-	gchar *pwd_name;
-	UInt32 pwd_len = 0;
-	void *pwd_data = NULL;
+  OSStatus status;
+  SecKeychainItemRef item_ref = NULL;
+  gchar *pwd_name;
+  UInt32 pwd_len = 0;
+  void *pwd_data = NULL;
 
-	if (profile == NULL || profile->name == NULL || type == NULL) {
-		return;
-	}
+  if (profile == NULL || profile->name == NULL || type == NULL) {
+    return;
+  }
 
-	/* store password */
-	pwd_name = g_strdup_printf("%s/%s", profile->name, type);
+  /* store password */
+  pwd_name = g_strdup_printf ("%s/%s", profile->name, type);
 
-	status = keychain_get(pwd_name, &pwd_data, &pwd_len, &item_ref);
-	g_free(pwd_name);
+  status = keychain_get (pwd_name, &pwd_data, &pwd_len, &item_ref);
+  g_free (pwd_name);
 
-	if (status == errSecItemNotFound) {
-		status = SecKeychainAddGenericPassword(NULL, strlen(SERVICE_NAME), SERVICE_NAME, strlen(pwd_name), pwd_name, strlen(password), password, NULL);
-		return;
-	}
+  if (status == errSecItemNotFound) {
+    status = SecKeychainAddGenericPassword (NULL, strlen (SERVICE_NAME), SERVICE_NAME, strlen (pwd_name), pwd_name, strlen (password), password, NULL);
+    return;
+  }
 
-	if (status == noErr) {
-		status = SecKeychainItemFreeContent(NULL, pwd_data);
-	}
+  if (status == noErr) {
+    status = SecKeychainItemFreeContent (NULL, pwd_data);
+  }
 
-	if (status) {
-		g_warning("Couldn't gete password: %d", status);
-		CFRelease(item_ref);
-		return;
-	}
+  if (status) {
+    g_warning ("Couldn't gete password: %d", status);
+    CFRelease (item_ref);
+    return;
+  }
 
-	/* insert new keychain entry */
-	status = SecKeychainItemModifyAttributesAndData(item_ref, NULL, (UInt32)strlen(password), password);
+  /* insert new keychain entry */
+  status = SecKeychainItemModifyAttributesAndData (item_ref, NULL, (UInt32)strlen (password), password);
 
-	/* Check return value, if error occurred: show reason */
-	if (status != noErr) {
-		g_warning("Couldn't modify password: %d", status);
-	}
+  /* Check return value, if error occurred: show reason */
+  if (status != noErr) {
+    g_warning ("Couldn't modify password: %d", status);
+  }
 
-	if (item_ref) {
-		CFRelease(item_ref);
-	}
+  if (item_ref) {
+    CFRelease (item_ref);
+  }
 }
 
 /**
@@ -152,66 +162,70 @@ static void keychain_store_password(RmProfile *profile, const gchar *type, const
  * \param type type indicating which password to remove
  * \return TRUE on success, otherwise FALSE on error
  */
-static gboolean keychain_remove_password(RmProfile *profile, const gchar *type)
+static gboolean
+keychain_remove_password (RmProfile   *profile,
+                          const gchar *type)
 {
-	OSStatus status;
-	SecKeychainItemRef item_ref = NULL;
-	gchar *pwd_name;
-	gboolean ret = TRUE;
+  OSStatus status;
+  SecKeychainItemRef item_ref = NULL;
+  gchar *pwd_name;
+  gboolean ret = TRUE;
 
-	if (profile == NULL || profile->name == NULL) {
-		return FALSE;
-	}
+  if (profile == NULL || profile->name == NULL) {
+    return FALSE;
+  }
 
-	pwd_name = g_strdup_printf("%s/%s", profile->name, type);
-	status = SecKeychainFindGenericPassword(
-		NULL,
-		strlen(SERVICE_NAME),
-		SERVICE_NAME,
-		strlen(profile->name),
-		profile->name,
-		NULL,
-		NULL,
-		&item_ref);
+  pwd_name = g_strdup_printf ("%s/%s", profile->name, type);
+  status = SecKeychainFindGenericPassword (
+    NULL,
+    strlen (SERVICE_NAME),
+    SERVICE_NAME,
+    strlen (profile->name),
+    profile->name,
+    NULL,
+    NULL,
+    &item_ref);
 
-	if (status == noErr) {
-		g_assert(item_ref != NULL);
-		status = SecKeychainItemDelete(item_ref);
-	}
+  if (status == noErr) {
+    g_assert (item_ref != NULL);
+    status = SecKeychainItemDelete (item_ref);
+  }
 
-	/* Check return value, if error occurred: show reason */
-	if (status != noErr) {
-		g_warning("Couldn't remove password: %d", status);
-		ret = FALSE;
-	}
+  /* Check return value, if error occurred: show reason */
+  if (status != noErr) {
+    g_warning ("Couldn't remove password: %d", status);
+    ret = FALSE;
+  }
 
-	g_free(pwd_name);
+  g_free (pwd_name);
 
-	return ret;
+  return ret;
 }
 
 /** Keychain password manager structure */
 struct password_manager keychain = {
-	"OS X Keychain",
-	keychain_store_password,
-	keychain_get_password,
-	keychain_remove_password,
+  "OS X Keychain",
+  keychain_store_password,
+  keychain_get_password,
+  keychain_remove_password,
 };
 
 /**
  * \brief Activate plugin
  * \param plugin peas plugin structure
  */
-void impl_activate(PeasActivatable *plugin)
+void
+impl_activate (PeasActivatable *plugin)
 {
-	g_debug("Register keychain password manager plugin");
-	rm_password_register(&keychain);
+  g_debug ("Register keychain password manager plugin");
+  rm_password_register (&keychain);
 }
 
 /**
  * \brief Deactivate plugin
  * \param plugin peas plugin structure
  */
-void impl_deactivate(PeasActivatable *plugin)
+void
+impl_deactivate (PeasActivatable *plugin)
 {
 }

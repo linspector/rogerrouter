@@ -29,21 +29,22 @@
  *
  * Entry for application shortcuts window
  */
-void app_shortcuts(void)
+void
+app_shortcuts (void)
 {
-	static GtkWidget *shortcuts_window;
+  static GtkWidget *shortcuts_window;
 
-	if (!shortcuts_window) {
-		GtkBuilder *builder;
+  if (!shortcuts_window) {
+    GtkBuilder *builder;
 
-		builder = gtk_builder_new_from_resource("/org/tabos/roger/ui/shortcuts.ui");
-		shortcuts_window = GTK_WIDGET(gtk_builder_get_object(builder, "shortcuts_window"));
+    builder = gtk_builder_new_from_resource ("/org/tabos/roger/ui/shortcuts.ui");
+    shortcuts_window = GTK_WIDGET (gtk_builder_get_object (builder, "shortcuts_window"));
 
-		g_signal_connect(shortcuts_window, "delete-event", G_CALLBACK(gtk_widget_hide_on_delete), &shortcuts_window);
-		g_object_unref(builder);
-	}
-	gtk_window_set_transient_for(GTK_WINDOW(shortcuts_window), GTK_WINDOW(journal_get_window()));
+    g_signal_connect (shortcuts_window, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), &shortcuts_window);
+    g_object_unref (builder);
+  }
+  gtk_window_set_transient_for (GTK_WINDOW (shortcuts_window), GTK_WINDOW (journal_get_window ()));
 
-	gtk_widget_show_all(shortcuts_window);
-	gtk_window_present(GTK_WINDOW(shortcuts_window));
+  gtk_widget_show_all (shortcuts_window);
+  gtk_window_present (GTK_WINDOW (shortcuts_window));
 }

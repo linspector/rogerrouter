@@ -31,7 +31,7 @@
 
 #include <config.h>
 
-GtkApplication *application_new(void);
+GtkApplication *application_new (void);
 gchar *argv0 = NULL;
 
 /**
@@ -43,18 +43,20 @@ gchar *argv0 = NULL;
  *
  * Returns: error code
  */
-int main(int argc, char **argv)
+int
+main (int    argc,
+      char **argv)
 {
-	int status;
+  int status;
 
-	argv0 = g_strdup(argv[0]);
+  argv0 = g_strdup (argv[0]);
 
-	roger_app = application_new();
+  roger_app = application_new ();
 
-	gdk_notify_startup_complete();
-	status = g_application_run(G_APPLICATION(roger_app), argc, argv);
+  gdk_notify_startup_complete ();
+  status = g_application_run (G_APPLICATION (roger_app), argc, argv);
 
-	g_object_unref(roger_app);
+  g_object_unref (roger_app);
 
-	return status;
+  return status;
 }

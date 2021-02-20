@@ -28,324 +28,333 @@
 
 #include <rm/rm.h>
 
-#define RM_TYPE_OSXAB_PLUGIN        (rm_osxab_plugin_get_type())
-#define RM_OSXAB_PLUGIN(o)          (G_TYPE_CHECK_INSTANCE_CAST((o), RM_TYPE_OSXAB_PLUGIN, RmOSXAbPlugin))
+#define RM_TYPE_OSXAB_PLUGIN        (rm_osxab_plugin_get_type ())
+#define RM_OSXAB_PLUGIN(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), RM_TYPE_OSXAB_PLUGIN, RmOSXAbPlugin))
 
 typedef struct {
-	guint signal_id;
+  guint signal_id;
 } RmOSXAbPluginPrivate;
 
-RM_PLUGIN_REGISTER(RM_TYPE_OSXAB_PLUGIN, RmOSXAbPlugin, rm_osxab_plugin)
+RM_PLUGIN_REGISTER (RM_TYPE_OSXAB_PLUGIN, RmOSXAbPlugin, rm_osxab_plugin)
 
-static GSList * contacts = NULL;
+static GSList *contacts = NULL;
 
-static char *cstring(CFStringRef s)
+static char *
+cstring (CFStringRef s)
 {
-	if (!s) {
-		return NULL;
-	}
+  if (!s) {
+    return NULL;
+  }
 
-	CFIndex length = CFStringGetLength(s);
-	CFIndex max_size = CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingUTF8);
-	char *buffer = (char*)malloc(max_size);
+  CFIndex length = CFStringGetLength (s);
+  CFIndex max_size = CFStringGetMaximumSizeForEncoding (length, kCFStringEncodingUTF8);
+  char *buffer = (char *)malloc (max_size);
 
-	if (CFStringGetCString(s, buffer, max_size, kCFStringEncodingUTF8)) {
-		return buffer;
-	}
+  if (CFStringGetCString (s, buffer, max_size, kCFStringEncodingUTF8)) {
+    return buffer;
+  }
 
-	free(buffer);
+  free (buffer);
 
-	return NULL;
+  return NULL;
 }
 
 /**
  * \brief Read osxab book
  * \return error code
  */
-static int osxab_read_book(void)
+static int
+osxab_read_book (void)
 {
-	ABAddressBookRef ab = ABGetSharedAddressBook();
-	CFArrayRef entries;
-	CFIndex len;
+  ABAddressBookRef ab = ABGetSharedAddressBook ();
+  CFArrayRef entries;
+  CFIndex len;
 
-	if (!ab) {
-		return -1;
-	}
+  if (!ab) {
+    return -1;
+  }
 
-	entries = ABCopyArrayOfAllPeople(ab);
-	if (!entries) {
-		return -1;
-	}
+  entries = ABCopyArrayOfAllPeople (ab);
+  if (!entries) {
+    return -1;
+  }
 
-	len = CFArrayGetCount(entries);
+  len = CFArrayGetCount (entries);
 
-	for (int i = 0; i < len; i++) {
-		ABPersonRef person = (ABPersonRef)CFArrayGetValueAtIndex(entries, i);
-		CFTypeRef firstName = ABRecordCopyValue(person, kABFirstNameProperty);
-		CFTypeRef lastName = ABRecordCopyValue(person, kABLastNameProperty);
-		CFTypeRef company = ABRecordCopyValue(person, kABOrganizationProperty);
-		CFTypeRef addresses = ABRecordCopyValue(person, kABAddressProperty);
-		CFTypeRef phones = ABRecordCopyValue(person, kABPhoneProperty);
-		CFTypeRef uid = ABRecordCopyUniqueId(person);
-		gchar *lastname_cstr;
-		RmContact *contact;
+  for (int i = 0; i < len; i++) {
+    ABPersonRef person = (ABPersonRef)CFArrayGetValueAtIndex (entries, i);
+    CFTypeRef firstName = ABRecordCopyValue (person, kABFirstNameProperty);
+    CFTypeRef lastName = ABRecordCopyValue (person, kABLastNameProperty);
+    CFTypeRef company = ABRecordCopyValue (person, kABOrganizationProperty);
+    CFTypeRef addresses = ABRecordCopyValue (person, kABAddressProperty);
+    CFTypeRef phones = ABRecordCopyValue (person, kABPhoneProperty);
+    CFTypeRef uid = ABRecordCopyUniqueId (person);
+    gchar *lastname_cstr;
+    RmContact *contact;
 
-		if (!firstName && !lastName) {
-			/* Company... */
-			if (!company) {
-				continue;
-			}
-			firstName = company;
-		}
+    if (!firstName && !lastName) {
+      /* Company... */
+      if (!company) {
+        continue;
+      }
+      firstName = company;
+    }
 
-		contact = g_slice_new0(RmContact);
-		contact->priv = (gpointer)uid;
-		g_debug("Uid: %s", cstring(contact->priv));
+    contact = g_slice_new0 (RmContact);
+    contact->priv = (gpointer)uid;
+    g_debug ("Uid: %s", cstring (contact->priv));
 
-		lastname_cstr = cstring(lastName);
-		contact->name = g_strdup_printf("%s%s%s",
-						firstName ? cstring(firstName) : "",
-						lastname_cstr ? " " : "",
-						lastname_cstr ? lastname_cstr : "");
+    lastname_cstr = cstring (lastName);
+    contact->name = g_strdup_printf ("%s%s%s",
+                                     firstName ? cstring (firstName) : "",
+                                     lastname_cstr ? " " : "",
+                                     lastname_cstr ? lastname_cstr : "");
 
-		if (addresses) {
-			for (int j = 0; j < ABMultiValueCount((ABMultiValueRef)addresses); j++) {
-				CFDictionaryRef an_address = ABMultiValueCopyValueAtIndex(addresses, j);
-				CFStringRef label = ABMultiValueCopyLabelAtIndex(addresses, j);
-				CFStringRef street = CFDictionaryGetValue(an_address, kABAddressStreetKey);
-				CFStringRef city = CFDictionaryGetValue(an_address, kABAddressCityKey);
-				CFStringRef zip = CFDictionaryGetValue(an_address, kABAddressZIPKey);
-				RmContactAddress *address = g_slice_new0(RmContactAddress);
-				gchar *tmp;
+    if (addresses) {
+      for (int j = 0; j < ABMultiValueCount ((ABMultiValueRef)addresses); j++) {
+        CFDictionaryRef an_address = ABMultiValueCopyValueAtIndex (addresses, j);
+        CFStringRef label = ABMultiValueCopyLabelAtIndex (addresses, j);
+        CFStringRef street = CFDictionaryGetValue (an_address, kABAddressStreetKey);
+        CFStringRef city = CFDictionaryGetValue (an_address, kABAddressCityKey);
+        CFStringRef zip = CFDictionaryGetValue (an_address, kABAddressZIPKey);
+        RmContactAddress *address = g_slice_new0 (RmContactAddress);
+        gchar *tmp;
 
-				address->type = CFStringCompare(label, kABHomeLabel, 0);
+        address->type = CFStringCompare (label, kABHomeLabel, 0);
 
-				tmp = cstring(street);
-				address->street = tmp ? tmp : g_strdup("");
-				tmp = cstring(city);
-				address->city = tmp ? tmp : g_strdup("");
-				tmp = cstring(zip);
-				address->zip = tmp ? tmp : g_strdup("");
-				contact->addresses = g_slist_prepend(contact->addresses, address);
-			}
-		}
+        tmp = cstring (street);
+        address->street = tmp ? tmp : g_strdup ("");
+        tmp = cstring (city);
+        address->city = tmp ? tmp : g_strdup ("");
+        tmp = cstring (zip);
+        address->zip = tmp ? tmp : g_strdup ("");
+        contact->addresses = g_slist_prepend (contact->addresses, address);
+      }
+    }
 
-		if (phones) {
-			for (int j = 0; j < ABMultiValueCount((ABMultiValueRef)phones); j++) {
-				CFStringRef an_phone = ABMultiValueCopyValueAtIndex(phones, j);
-				CFStringRef label = ABMultiValueCopyLabelAtIndex(phones, j);
-				RmPhoneNumber *number = g_slice_new0(RmPhoneNumber);
+    if (phones) {
+      for (int j = 0; j < ABMultiValueCount ((ABMultiValueRef)phones); j++) {
+        CFStringRef an_phone = ABMultiValueCopyValueAtIndex (phones, j);
+        CFStringRef label = ABMultiValueCopyLabelAtIndex (phones, j);
+        RmPhoneNumber *number = g_slice_new0 (RmPhoneNumber);
 
-				if (!CFStringCompare(label, kABPhoneHomeLabel, 0)) {
-					number->type = PHONE_NUMBER_HOME;
-				} else if (!CFStringCompare(label, kABPhoneWorkLabel, 0)) {
-					number->type = PHONE_NUMBER_WORK;
-				} else if (!CFStringCompare(label, kABPhoneMobileLabel, 0)) {
-					number->type = PHONE_NUMBER_MOBILE;
-				} else if (!CFStringCompare(label, kABPhoneHomeFAXLabel, 0)) {
-					number->type = PHONE_NUMBER_FAX_HOME;
-				} else if (!CFStringCompare(label, kABPhoneWorkFAXLabel, 0)) {
-					number->type = PHONE_NUMBER_FAX_WORK;
-				} else {
-					number->type = PHONE_NUMBER_HOME;
-				}
-				number->number = cstring(an_phone);
-				contact->numbers = g_slist_prepend(contact->numbers, number);
-			}
-		}
+        if (!CFStringCompare (label, kABPhoneHomeLabel, 0)) {
+          number->type = PHONE_NUMBER_HOME;
+        } else if (!CFStringCompare (label, kABPhoneWorkLabel, 0)) {
+          number->type = PHONE_NUMBER_WORK;
+        } else if (!CFStringCompare (label, kABPhoneMobileLabel, 0)) {
+          number->type = PHONE_NUMBER_MOBILE;
+        } else if (!CFStringCompare (label, kABPhoneHomeFAXLabel, 0)) {
+          number->type = PHONE_NUMBER_FAX_HOME;
+        } else if (!CFStringCompare (label, kABPhoneWorkFAXLabel, 0)) {
+          number->type = PHONE_NUMBER_FAX_WORK;
+        } else {
+          number->type = PHONE_NUMBER_HOME;
+        }
+        number->number = cstring (an_phone);
+        contact->numbers = g_slist_prepend (contact->numbers, number);
+      }
+    }
 
-		CFDataRef image = ABPersonCopyImageData(person);
-		if (image) {
-			GdkPixbufLoader *loader;
-			gint image_len = CFDataGetLength(image);
+    CFDataRef image = ABPersonCopyImageData (person);
+    if (image) {
+      GdkPixbufLoader *loader;
+      gint image_len = CFDataGetLength (image);
 
-			loader = gdk_pixbuf_loader_new();
-			if (gdk_pixbuf_loader_write(loader, CFDataGetBytePtr(image), image_len, NULL)) {
-				printf("Image loaded (%d)\n", image_len);
-				contact->image = gdk_pixbuf_loader_get_pixbuf(loader);
-				contact->image_len = image_len;
-			} else {
-				printf("Image NOT loaded\n");
-			}
-			gdk_pixbuf_loader_close(loader, NULL);
-		}
+      loader = gdk_pixbuf_loader_new ();
+      if (gdk_pixbuf_loader_write (loader, CFDataGetBytePtr (image), image_len, NULL)) {
+        printf ("Image loaded (%d)\n", image_len);
+        contact->image = gdk_pixbuf_loader_get_pixbuf (loader);
+        contact->image_len = image_len;
+      } else {
+        printf ("Image NOT loaded\n");
+      }
+      gdk_pixbuf_loader_close (loader, NULL);
+    }
 
-		contacts = g_slist_insert_sorted(contacts, contact, rm_contact_name_compare);
-	}
+    contacts = g_slist_insert_sorted (contacts, contact, rm_contact_name_compare);
+  }
 
-	return 0;
+  return 0;
 }
 
-GSList *osxab_get_contacts(void)
+GSList *
+osxab_get_contacts (void)
 {
-	GSList *list = contacts;
+  GSList *list = contacts;
 
-	return list;
+  return list;
 }
 
-gboolean osxab_reload_contacts(void)
+gboolean
+osxab_reload_contacts (void)
 {
-	contacts = NULL;
+  contacts = NULL;
 
-	osxab_read_book();
+  osxab_read_book ();
 
-	return TRUE;
+  return TRUE;
 }
 
-static gboolean osxab_remove_contact(RmContact *contact)
+static gboolean
+osxab_remove_contact (RmContact *contact)
 {
-	ABAddressBookRef ab = ABGetSharedAddressBook();
-	ABPersonRef ref;
-	gboolean ret = FALSE;
+  ABAddressBookRef ab = ABGetSharedAddressBook ();
+  ABPersonRef ref;
+  gboolean ret = FALSE;
 
-	g_debug("Uid: %s", cstring(contact->priv));
-	ref = ABCopyRecordForUniqueId(ab, contact->priv);
+  g_debug ("Uid: %s", cstring (contact->priv));
+  ref = ABCopyRecordForUniqueId (ab, contact->priv);
 
-	if (ref) {
-		ABRemoveRecord(ab, ref);
-		ABSave(ab);
-		osxab_reload_contacts();
-		ret = TRUE;
-	}
+  if (ref) {
+    ABRemoveRecord (ab, ref);
+    ABSave (ab);
+    osxab_reload_contacts ();
+    ret = TRUE;
+  }
 
-	return ret;
+  return ret;
 }
 
-static gboolean osxab_save_contact(RmContact *contact)
+static gboolean
+osxab_save_contact (RmContact *contact)
 {
-	ABAddressBookRef ab = ABGetSharedAddressBook();
-	ABPersonRef ref;
-	CFStringRef cfstring;
-	gchar *first_name = NULL;
-	gchar *last_name = NULL;
-	gchar **split;
+  ABAddressBookRef ab = ABGetSharedAddressBook ();
+  ABPersonRef ref;
+  CFStringRef cfstring;
+  gchar *first_name = NULL;
+  gchar *last_name = NULL;
+  gchar **split;
 
-	if (!contact->priv) {
-		ref = ABPersonCreate();
-		contact->priv = (gpointer)ABRecordCopyUniqueId(ref);
-		ABAddRecord(ab, ref);
-	} else {
-		ref = ABCopyRecordForUniqueId(ab, contact->priv);
-	}
+  if (!contact->priv) {
+    ref = ABPersonCreate ();
+    contact->priv = (gpointer)ABRecordCopyUniqueId (ref);
+    ABAddRecord (ab, ref);
+  } else {
+    ref = ABCopyRecordForUniqueId (ab, contact->priv);
+  }
 
-	split = g_strsplit(contact->name, " ", 2);
-	first_name = split[0];
-	last_name = split[1];
+  split = g_strsplit (contact->name, " ", 2);
+  first_name = split[0];
+  last_name = split[1];
 
-	cfstring = CFStringCreateWithCString(NULL, first_name ? first_name : "", kCFStringEncodingUTF8);
-	ABRecordSetValue(ref, kABFirstNameProperty, cfstring);
+  cfstring = CFStringCreateWithCString (NULL, first_name ? first_name : "", kCFStringEncodingUTF8);
+  ABRecordSetValue (ref, kABFirstNameProperty, cfstring);
 
-	cfstring = CFStringCreateWithCString(NULL, last_name ? last_name : "", kCFStringEncodingUTF8);
-	ABRecordSetValue(ref, kABLastNameProperty, cfstring);
+  cfstring = CFStringCreateWithCString (NULL, last_name ? last_name : "", kCFStringEncodingUTF8);
+  ABRecordSetValue (ref, kABLastNameProperty, cfstring);
 
-	g_strfreev(split);
+  g_strfreev (split);
 
-	if (contact->numbers) {
-		ABMutableMultiValueRef multi_phone = ABMultiValueCreateMutable();
-		GSList *list;
+  if (contact->numbers) {
+    ABMutableMultiValueRef multi_phone = ABMultiValueCreateMutable ();
+    GSList *list;
 
-		for (list = contact->numbers; list != NULL; list = list->next) {
-			RmPhoneNumber *number = list->data;
-			CFTypeRef type;
+    for (list = contact->numbers; list != NULL; list = list->next) {
+      RmPhoneNumber *number = list->data;
+      CFTypeRef type;
 
-			switch (number->type) {
-			case PHONE_NUMBER_HOME:
-				type = kABPhoneHomeLabel;
-				break;
-			case PHONE_NUMBER_WORK:
-				type = kABPhoneWorkLabel;
-				break;
-			case PHONE_NUMBER_MOBILE:
-				type = kABPhoneMobileLabel;
-				break;
-			case PHONE_NUMBER_FAX_HOME:
-				type = kABPhoneHomeFAXLabel;
-				break;
-			case PHONE_NUMBER_FAX_WORK:
-				type = kABPhoneWorkFAXLabel;
-				break;
-			default:
-				continue;
-			}
+      switch (number->type) {
+        case PHONE_NUMBER_HOME:
+          type = kABPhoneHomeLabel;
+          break;
+        case PHONE_NUMBER_WORK:
+          type = kABPhoneWorkLabel;
+          break;
+        case PHONE_NUMBER_MOBILE:
+          type = kABPhoneMobileLabel;
+          break;
+        case PHONE_NUMBER_FAX_HOME:
+          type = kABPhoneHomeFAXLabel;
+          break;
+        case PHONE_NUMBER_FAX_WORK:
+          type = kABPhoneWorkFAXLabel;
+          break;
+        default:
+          continue;
+      }
 
-			cfstring = CFStringCreateWithCString(NULL, number->number, kCFStringEncodingUTF8);
-			ABMultiValueAdd(multi_phone, cfstring, type, NULL);
-		}
+      cfstring = CFStringCreateWithCString (NULL, number->number, kCFStringEncodingUTF8);
+      ABMultiValueAdd (multi_phone, cfstring, type, NULL);
+    }
 
-		ABRecordSetValue(ref, kABPhoneProperty, multi_phone);
-	}
+    ABRecordSetValue (ref, kABPhoneProperty, multi_phone);
+  }
 
-	if (contact->addresses) {
-		ABMutableMultiValueRef multi_addresses = ABMultiValueCreateMutable();
-		GSList *list;
+  if (contact->addresses) {
+    ABMutableMultiValueRef multi_addresses = ABMultiValueCreateMutable ();
+    GSList *list;
 
-		for (list = contact->addresses; list != NULL; list = list->next) {
-			CFMutableDictionaryRef dic;
-			CFTypeRef type;
-			RmContactAddress *address = list->data;
+    for (list = contact->addresses; list != NULL; list = list->next) {
+      CFMutableDictionaryRef dic;
+      CFTypeRef type;
+      RmContactAddress *address = list->data;
 
-			switch (address->type) {
-			case 0:
-				type = kABHomeLabel;
-				break;
-			case 1:
-				type = kABWorkLabel;
-				break;
-			default:
-				continue;
-			}
+      switch (address->type) {
+        case 0:
+          type = kABHomeLabel;
+          break;
+        case 1:
+          type = kABWorkLabel;
+          break;
+        default:
+          continue;
+      }
 
-			dic = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
+      dic = CFDictionaryCreateMutable (NULL, 0, NULL, NULL);
 
-			cfstring = CFStringCreateWithCString(NULL, address->street, kCFStringEncodingUTF8);
-			CFDictionaryAddValue(dic, kABAddressStreetKey, cfstring);
+      cfstring = CFStringCreateWithCString (NULL, address->street, kCFStringEncodingUTF8);
+      CFDictionaryAddValue (dic, kABAddressStreetKey, cfstring);
 
-			cfstring = CFStringCreateWithCString(NULL, address->city, kCFStringEncodingUTF8);
-			CFDictionaryAddValue(dic, kABAddressCityKey, cfstring);
+      cfstring = CFStringCreateWithCString (NULL, address->city, kCFStringEncodingUTF8);
+      CFDictionaryAddValue (dic, kABAddressCityKey, cfstring);
 
-			cfstring = CFStringCreateWithCString(NULL, address->zip, kCFStringEncodingUTF8);
-			CFDictionaryAddValue(dic, kABAddressZIPKey, cfstring);
+      cfstring = CFStringCreateWithCString (NULL, address->zip, kCFStringEncodingUTF8);
+      CFDictionaryAddValue (dic, kABAddressZIPKey, cfstring);
 
-			ABMultiValueAdd(multi_addresses, dic, type, NULL);
-		}
+      ABMultiValueAdd (multi_addresses, dic, type, NULL);
+    }
 
-		ABRecordSetValue(ref, kABAddressProperty, multi_addresses);
-	}
+    ABRecordSetValue (ref, kABAddressProperty, multi_addresses);
+  }
 
-	ABSave(ab);
-	osxab_reload_contacts();
+  ABSave (ab);
+  osxab_reload_contacts ();
 
-	return TRUE;
+  return TRUE;
 }
 
-gchar *osxab_get_active_book_name(void)
+gchar *
+osxab_get_active_book_name (void)
 {
-	return g_strdup("osxab");
+  return g_strdup ("osxab");
 }
 
 RmAddressBook osxab_book = {
-	"OS X AB",
-	osxab_get_active_book_name,
-	osxab_get_contacts,
-	osxab_reload_contacts,
-	osxab_remove_contact,
-	osxab_save_contact
+  "OS X AB",
+  osxab_get_active_book_name,
+  osxab_get_contacts,
+  osxab_reload_contacts,
+  osxab_remove_contact,
+  osxab_save_contact
 };
 
-void impl_activate(PeasActivatable *plugin)
+void
+impl_activate (PeasActivatable *plugin)
 {
-	osxab_read_book();
+  osxab_read_book ();
 
-	rm_addressbook_register(&osxab_book);
+  rm_addressbook_register (&osxab_book);
 }
 
-void impl_deactivate(PeasActivatable *plugin)
+void
+impl_deactivate (PeasActivatable *plugin)
 {
-	RmOSXAbPlugin *osxab_plugin = RM_OSXAB_PLUGIN(plugin);
+  RmOSXAbPlugin *osxab_plugin = RM_OSXAB_PLUGIN (plugin);
 
-	rm_addressbook_unregister(&osxab_book);
+  rm_addressbook_unregister (&osxab_book);
 
-	if (g_signal_handler_is_connected(G_OBJECT(rm_object), osxab_plugin->priv->signal_id)) {
-		g_signal_handler_disconnect(G_OBJECT(rm_object), osxab_plugin->priv->signal_id);
-	}
+  if (g_signal_handler_is_connected (G_OBJECT (rm_object), osxab_plugin->priv->signal_id)) {
+    g_signal_handler_disconnect (G_OBJECT (rm_object), osxab_plugin->priv->signal_id);
+  }
 }
