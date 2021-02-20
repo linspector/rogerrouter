@@ -12,7 +12,6 @@ subdir('evolution')
 else
 subdir('statusicon')
 endif
-subdir('gtknotify')
 
 subdir('keychain')
 subdir('osxab')
