@@ -32,7 +32,7 @@ fedora-x86_64:
       - "_build/meson-logs"
     when: on_failure
 
-windows:
+.windows:
   image: registry.gitlab.com/tabos/rogerrouter/mxe:v3
   stage: build
   allow_failure: true
