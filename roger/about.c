@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,79 +17,56 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
-#include <stdlib.h>
-
+#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 
-#include <rm/rm.h>
+#define ABOUT_GROUP "About"
 
-#include <roger/main.h>
-#include <roger/journal.h>
-
-/**
- * about_response:
- * @widget: dialog widget we will destroy
- * @user_data: UNUSED
- *
- * Dialog response callback - destroy dialog
- */
-static void
-about_response (GtkWidget *widget,
-                gpointer   user_data)
-{
-  gtk_widget_destroy (widget);
-}
-
-/**
- * app_show_about:
- *
- * About dialog
- */
 void
-app_show_about (GtkWidget *parent)
+app_show_about (GtkWidget *window)
 {
   GtkWidget *dialog = NULL;
-  const gchar *authors[] = {
-    "Jan-Michael Brummer <jan.brummer@tabos.org>",
-    NULL
-  };
-  const gchar *documenters[] = {
-    "Jan-Michael Brummer <jan.brummer@tabos.org>",
-    NULL
-  };
-  const gchar *artists[] = {
-    "Tobias Bernard",
-    NULL
-  };
-  gchar *translators =
-    "Jan-Michael Brummer <jan.brummer@tabos.org>";
+  g_autoptr (GKeyFile) key_file = NULL;
+  g_autoptr (GError) error = NULL;
+  g_autoptr (GBytes) bytes = NULL;
+  g_auto (GStrv) authors = NULL;
+  g_auto (GStrv) documenters = NULL;
+  g_auto (GStrv) artists = NULL;
 
-  /* create about dialog */
+  key_file = g_key_file_new ();
+  bytes = g_resources_lookup_data ("/org/tabos/roger/about.ini", 0, NULL);
+  if (!g_key_file_load_from_data (key_file, g_bytes_get_data (bytes, NULL), -1, 0, &error)) {
+    g_warning ("Couldn't load about data: %s\n", error ? error->message : "");
+    return;
+  }
+
+  authors = g_key_file_get_string_list (key_file, ABOUT_GROUP, "Author", NULL, NULL);
+  documenters = g_key_file_get_string_list (key_file, ABOUT_GROUP, "Documenters", NULL, NULL);
+  artists = g_key_file_get_string_list (key_file, ABOUT_GROUP, "Artists", NULL, NULL);
+
   dialog = gtk_about_dialog_new ();
 
   gtk_about_dialog_set_program_name (GTK_ABOUT_DIALOG (dialog), PACKAGE_NAME);
   gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (dialog), PACKAGE_VERSION);
-  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (dialog), "(C) 2012-2020, Jan-Michael Brummer <jan.brummer@tabos.org>");
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (dialog), "(C) 2012-2021, Jan-Michael Brummer <jan.brummer@tabos.org>");
   gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (dialog), _("FRITZ!Box Journal, Soft/phone, and Fax\nDedicated to my father"));
-
   gtk_about_dialog_set_license_type (GTK_ABOUT_DIALOG (dialog), GTK_LICENSE_GPL_2_0_ONLY);
   gtk_about_dialog_set_wrap_license (GTK_ABOUT_DIALOG (dialog), TRUE);
-  gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (dialog), authors);
-  gtk_about_dialog_set_documenters (GTK_ABOUT_DIALOG (dialog), documenters);
-  gtk_about_dialog_set_artists (GTK_ABOUT_DIALOG (dialog), artists);
-  gtk_about_dialog_set_translator_credits (GTK_ABOUT_DIALOG (dialog), g_locale_to_utf8 (translators, -1, 0, 0, 0));
+  gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (dialog), (const char **)authors);
+  gtk_about_dialog_set_documenters (GTK_ABOUT_DIALOG (dialog), (const char **)documenters);
+  gtk_about_dialog_set_artists (GTK_ABOUT_DIALOG (dialog), (const char **)artists);
   gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (dialog), PACKAGE_BUGREPORT);
-#ifdef G_OS_WIN32
-  gtk_about_dialog_set_logo (GTK_ABOUT_DIALOG (dialog), gdk_pixbuf_new_from_resource ("/org/tabos/roger/images/org.tabos.roger.png", NULL));
-#else
+  gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (dialog), _("Website"));
   gtk_about_dialog_set_logo (GTK_ABOUT_DIALOG (dialog), gdk_pixbuf_new_from_resource ("/org/tabos/roger/images/org.tabos.roger.svg", NULL));
-#endif
-  g_signal_connect (G_OBJECT (dialog), "response", G_CALLBACK (about_response), dialog);
 
-  gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-  gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (parent));
+
+  if (window) {
+    gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
+    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+  }
 
   gtk_dialog_run (GTK_DIALOG (dialog));
+  gtk_widget_destroy (dialog);
 }
