@@ -1,6 +1,6 @@
 /**
  * The rm project
- * Copyright (c) 2012-2014 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,8 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef VCARD_H
-#define VCARD_H
+#pragma once
+
+#include <glib.h>
 
 G_BEGIN_DECLS
 
@@ -32,9 +33,9 @@ enum {
 
 struct vcard_data {
 	gint state;
-	gchar *header;
-	gchar *options;
-	gchar *entry;
+	char *header;
+	char *options;
+	char *entry;
 };
 
 struct vcard {
@@ -42,9 +43,8 @@ struct vcard {
 };
 
 GString *vcard_create_uid(void);
-void vcard_load_file(gchar *file_name);
-void vcard_write_file(gchar *file_name);
+void vcard_load_file(char *file_name);
+void vcard_write_file(char *file_name);
 
 G_END_DECLS
 
-#endif

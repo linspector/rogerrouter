@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,14 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
+#include "answeringmachine.h"
+
+#include "journal.h"
+
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
 #include <rm/rm.h>
-
-#include <roger/journal.h>
-#include <roger/main.h>
 
 typedef struct _VoxPlaybackData {
   /*< private >*/
@@ -75,7 +77,7 @@ vox_update_ui (gpointer data)
   fraction = rm_vox_get_fraction (vox_playback->vox_data);
 
   if (vox_playback->fraction != fraction) {
-    gchar *tmp;
+    char *tmp;
     gfloat seconds = rm_vox_get_seconds (vox_playback->vox_data);
 
     vox_playback->fraction = fraction;
@@ -186,13 +188,13 @@ vox_scale_change_value_cb (GtkRange      *range,
  * Shows answering machine window for playback
  */
 void
-app_answeringmachine (const gchar *name)
+app_answeringmachine (const char *name)
 {
   GtkWidget *window;
   GtkBuilder *builder;
   GError *error = NULL;
   gsize len = 0;
-  gchar *data;
+  char *data;
   RmVoxPlayback *vox;
   VoxPlaybackData *vox_playback;
 

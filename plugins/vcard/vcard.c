@@ -17,26 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
+#include "vcard.h"
+
+#include <ctype.h>
+#include <gio/gio.h>
+#include <glib/gi18n.h>
+#include <glib.h>
+#include <gtk/gtk.h>
+#include <handy.h>
+#include <rm/rm.h>
+#include <stdio.h>
 #include <string.h>
 #include <strings.h>
-#include <stdio.h>
-#include <ctype.h>
-
-#include <glib.h>
-#include <gio/gio.h>
-#include <gtk/gtk.h>
-
-#include <handy.h>
-
-#include <rm/rm.h>
-
-#include <roger/main.h>
-#include <roger/settings.h>
-#include <roger/uitools.h>
-
-#include <vcard.h>
 
 static GSList *contacts = NULL;
 
@@ -274,7 +268,7 @@ process_address (struct vcard_data *card_data,
 {
   RmContactAddress *address;
   GString *tmp_str;
-  gchar *tmp = NULL;
+  char *tmp = NULL;
 
   if (card_data == NULL || card_data->entry == NULL) {
     return;
@@ -362,7 +356,7 @@ static void
 process_telephone (struct vcard_data *card_data,
                    RmContact         *contact)
 {
-  gchar *tmp = card_data->entry;
+  char *tmp = card_data->entry;
   RmPhoneNumber *number;
 
   if (card_data->options == NULL) {
@@ -427,7 +421,7 @@ process_photo (struct vcard_data *card_data,
   gsize len;
   GError *error = NULL;
   goffset offset = 0;
-  gchar *pos = NULL;
+  char *pos = NULL;
 
   if (!contact) {
     return;
@@ -725,7 +719,7 @@ vcard_load_file (char *file_name)
   goffset file_size;
   GFileInputStream *input_stream;
   GError *error = NULL;
-  g_autofree gchar *data = NULL;
+  g_autofree char *data = NULL;
   gint chr;
   gboolean start_of_line = TRUE;
   gboolean fold = FALSE;
@@ -825,13 +819,13 @@ vcard_put_char (GString *data,
  */
 void
 vcard_print (GString *data,
-             gchar   *format,
+             char    *format,
              ...)
 {
   va_list args;
   int len;
   int size = 100;
-  gchar *ptr = NULL;
+  char *ptr = NULL;
 
   if ((ptr = g_malloc (size)) == NULL) {
     return;
@@ -876,13 +870,13 @@ vcard_print (GString *data,
  * \param vcard entry list pointer or NULL
  */
 GList *
-vcard_find_entry (const gchar *uid)
+vcard_find_entry (const char *uid)
 {
   GList *list1 = NULL;
   GList *list2 = NULL;
   GList *card = NULL;
   struct vcard_data *data;
-  gchar *current_uid;
+  char *current_uid;
 
   for (list1 = vcard_list; list1 != NULL && list1->data != NULL; list1 = list1->next) {
     card = list1->data;
@@ -911,8 +905,8 @@ vcard_find_entry (const gchar *uid)
  */
 struct vcard_data *
 find_card_data (GList *list,
-                gchar *header,
-                gchar *option)
+                char  *header,
+                char  *option)
 {
   GList *tmp = NULL;
   struct vcard_data *data = NULL;
@@ -932,8 +926,8 @@ find_card_data (GList *list,
 
 gboolean
 vcard_modify_data (GList *list,
-                   gchar *header,
-                   gchar *entry)
+                   char  *header,
+                   char  *entry)
 {
   struct vcard_data *card_data;
 
@@ -958,7 +952,7 @@ vcard_modify_data (GList *list,
 
 GList *
 vcard_remove_data (GList *list,
-                   gchar *header)
+                   char  *header)
 {
   GList *tmp = NULL;
   struct vcard_data *data = NULL;
@@ -1092,7 +1086,7 @@ vcard_write_file (char *file_name)
 #if 0
     if (contact->image_uri != NULL) {
       /* Ok, new image set */
-      gchar *data = NULL;
+      char *data = NULL;
       gsize len = 0;
       struct vcard_data *card_data;
 
@@ -1109,7 +1103,7 @@ vcard_write_file (char *file_name)
         }
 
         if (g_file_get_contents (contact->image_uri, &data, &len, NULL)) {
-          gchar *base64 = g_base64_encode ((const guchar *)data, len);
+          char *base64 = g_base64_encode ((const guchar *)data, len);
           if (card_data->options != NULL) {
             g_free (card_data->options);
           }
@@ -1158,7 +1152,7 @@ vcard_get_contacts (void)
 gboolean
 vcard_reload_contacts (void)
 {
-  gchar *name;
+  char *name;
 
   contacts = NULL;
 
@@ -1171,7 +1165,7 @@ vcard_reload_contacts (void)
 gboolean
 vcard_remove_contact (RmContact *contact)
 {
-  gchar *name;
+  char *name;
 
   contacts = g_slist_remove (contacts, contact);
 
@@ -1184,7 +1178,7 @@ vcard_remove_contact (RmContact *contact)
 gboolean
 vcard_save_contact (RmContact *contact)
 {
-  gchar *name;
+  char *name;
 
   if (!contact->priv) {
     contacts = g_slist_insert_sorted (contacts, contact, rm_contact_name_compare);
@@ -1196,17 +1190,17 @@ vcard_save_contact (RmContact *contact)
   return TRUE;
 }
 
-gchar *
+char *
 vcard_get_active_book_name (void)
 {
   return g_strdup ("VCard");
 }
 
-gchar **
+char **
 vcard_get_sub_books (void)
 {
-  gchar **ret = NULL;
-  gchar *name = g_settings_get_string (vcard_settings, "filename");
+  char **ret = NULL;
+  char *name = g_settings_get_string (vcard_settings, "filename");
 
   if (name) {
     ret = rm_strv_add (ret, name);
@@ -1216,7 +1210,7 @@ vcard_get_sub_books (void)
 }
 
 gboolean
-vcard_set_sub_book (gchar *name)
+vcard_set_sub_book (char *name)
 {
   return TRUE;
 }
@@ -1234,7 +1228,7 @@ RmAddressBook vcard_book = {
 gboolean
 vcard_plugin_init (RmPlugin *plugin)
 {
-  gchar *name;
+  char *name;
 
   if (!vcard_settings)
     vcard_settings = rm_settings_new ("org.tabos.roger.plugins.vcard");
@@ -1276,7 +1270,7 @@ filename_button_clicked_cb (GtkButton *button,
   gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (dialog), filter);
 
   if (gtk_native_dialog_run (GTK_NATIVE_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
-    gchar *folder = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+    char *folder = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 
     gtk_entry_set_text (GTK_ENTRY (user_data), folder);
     contacts = NULL;
@@ -1292,7 +1286,7 @@ void
 vcard_file_chooser_button_file_set_cb (GtkWidget *button,
                                        gpointer   user_data)
 {
-  gchar *file = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (button));
+  char *file = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (button));
 
   g_settings_set_string (vcard_settings, "filename", file);
 }

@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2014 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,26 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
-#include <string.h>
-#include <stdlib.h>
 #include <fcntl.h>
-
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <handy.h>
-
 #include <rm/rm.h>
-
-#include <roger/main.h>
-#include <roger/settings.h>
-#include <roger/uitools.h>
+#include <string.h>
+#include <stdlib.h>
 
 void pref_notebook_add_page (GtkWidget *notebook,
                              GtkWidget *page,
-                             gchar     *title);
+                             char      *title);
 GtkWidget *pref_group_create (GtkWidget *box,
-                              gchar     *title_str,
+                              char      *title_str,
                               gboolean   hexpand,
                               gboolean   vexpand);
 
@@ -55,7 +50,7 @@ enum {
   PARSE_COLUMNS
 };
 
-static gchar *mork_data = NULL;
+static char *mork_data = NULL;
 static gint mork_pos = 0;
 static gint mork_now_parsing = PARSE_VALUES;
 static gint mork_next_add_value_id = MAX_VAL;
@@ -73,7 +68,7 @@ static gint default_table_id = 1;
  * \brief Get selected thunderbird addressbook
  * \return thunderbird addressbook
  */
-static const gchar *
+static const char *
 thunderbird_get_selected_book (void)
 {
   return g_settings_get_string (thunderbird_settings, "filename");
@@ -84,7 +79,7 @@ thunderbird_get_selected_book (void)
  * \param uri thunderbird addressbook
  */
 void
-thunderbird_set_selected_book (gchar *uri)
+thunderbird_set_selected_book (char *uri)
 {
   g_settings_set_string (thunderbird_settings, "filename", uri);
 }
@@ -145,13 +140,13 @@ find_map_entry (GHashTable *table,
  * \brief Find thunderbird directory
  * \return string to directory
  */
-static gchar *
+static char *
 find_thunderbird_dir (void)
 {
-  gchar *buffer;
-  gchar file[256];
-  gchar *path;
-  gchar *relative;
+  char *buffer;
+  char file[256];
+  char *path;
+  char *relative;
   GString *result;
   gboolean version3 = FALSE;
   gboolean is_relative = TRUE;
@@ -159,10 +154,10 @@ find_thunderbird_dir (void)
   result = g_string_new (NULL);
   snprintf (file, sizeof (file), "%s/.mozilla-thunderbird/profiles.ini", g_get_home_dir ());
 
-  buffer = (gchar *)rm_file_load (file, NULL);
+  buffer = (char *)rm_file_load (file, NULL);
   if (buffer == NULL) {
     snprintf (file, sizeof (file), "%s/.thunderbird/profiles.ini", g_get_home_dir ());
-    buffer = (gchar *)rm_file_load (file, NULL);
+    buffer = (char *)rm_file_load (file, NULL);
     version3 = TRUE;
   }
 
@@ -186,7 +181,7 @@ find_thunderbird_dir (void)
       }
 
       while (path != NULL && *path != '\n') {
-        result = g_string_append_c (result, (gchar) * path++);
+        result = g_string_append_c (result, (char)*path++);
       }
 
       while (result->str[strlen (result->str) - 1] == '\n') {
@@ -201,13 +196,13 @@ find_thunderbird_dir (void)
 }
 
 /**
- * \brief Get next gchar of buffer
- * \return next gchar
+ * \brief Get next char of buffer
+ * \return next char
  */
-static inline gchar
+static inline char
 next_char (void)
 {
-  gchar cur = 0;
+  char cur = 0;
 
   if (mork_pos < mork_size) {
     cur = mork_data[mork_pos];
@@ -218,12 +213,12 @@ next_char (void)
 }
 
 /**
- * \brief Check if gchar is whitespace
- * \param character gchar to check
+ * \brief Check if char is whitespace
+ * \param character char to check
  * \return 1 or 0
  */
 static gboolean
-is_whitespace (gchar character)
+is_whitespace (char character)
 {
   switch (character) {
     case ' ':
@@ -244,7 +239,7 @@ is_whitespace (gchar character)
 static inline gboolean
 parse_comment (void)
 {
-  gchar cur = next_char ();
+  char cur = next_char ();
 
   if (cur != '/') {
     return FALSE;
@@ -270,7 +265,7 @@ parse_cell (void)
   GString *column = g_string_new_len (NULL, 4);
   GString *text = g_string_new_len (NULL, 32);
   int corners = 0;
-  gchar cur = next_char ();
+  char cur = next_char ();
 
   while (result && cur != ')' && cur) {
     switch (cur) {
@@ -283,7 +278,7 @@ parse_cell (void)
         }
         break;
       case '$': {
-        gchar hex_chr[3];
+        char hex_chr[3];
         int x;
 
         hex_chr[0] = next_char ();
@@ -294,7 +289,7 @@ parse_cell (void)
         break;
       }
       case '\\': {
-        gchar next_chr = next_char ();
+        char next_chr = next_char ();
         if (next_chr != '\r' && next_chr != '\n') {
           text = g_string_append_c (text, next_chr);
         } else {
@@ -367,7 +362,7 @@ parse_cell (void)
 static gboolean
 parse_dict (void)
 {
-  gchar cur = next_char ();
+  char cur = next_char ();
   gboolean result = TRUE;
 
   mork_now_parsing = PARSE_VALUES;
@@ -410,12 +405,12 @@ parse_scope_id (GString *text,
                 gint    *id,
                 gint    *scope)
 {
-  gchar *pos;
+  char *pos;
 
   if ((pos = strchr (text->str, ':')) != NULL) {
     gint size = pos - text->str;
-    gchar *id_str = NULL;
-    gchar *sc_str = NULL;
+    char *id_str = NULL;
+    char *sc_str = NULL;
     gint pos = size;
 
     id_str = g_malloc (size + 1);
@@ -428,7 +423,7 @@ parse_scope_id (GString *text,
     sc_str[size] = '\0';
 
     if (size > 1 && sc_str[0] == '^') {
-      /*gchar *tmp = g_malloc(strlen(sc_str));
+      /*char *tmp = g_malloc(strlen(sc_str));
        *  strncpy(tmp, sc_str + 1, strlen(sc_str));
        *  g_free(sc_str);
        *  sc_str = tmp;*/
@@ -447,13 +442,13 @@ parse_scope_id (GString *text,
 
 /**
  * \brief Parse meta section
- * \param character current gchar
+ * \param character current char
  * \return 1 on success, else error
  */
-static gchar
-parse_meta (gchar character)
+static char
+parse_meta (char character)
 {
-  gchar cur = next_char ();
+  char cur = next_char ();
 
   while (cur != character && cur) {
     cur = next_char ();
@@ -553,12 +548,12 @@ set_current_row (int table_scope,
  * \param table_scope table scope id
  * \return 1 on success, else error
  */
-static gchar
+static char
 parse_row (int table_id,
            int table_scope)
 {
-  gchar result = 1;
-  gchar cur = next_char ();
+  char result = 1;
+  char cur = next_char ();
   GString *text = g_string_new (NULL);
   int id, scope;
 
@@ -606,7 +601,7 @@ parse_table (void)
   gboolean result = TRUE;
   GString *text_id = g_string_new (NULL);
   gint id = 0, scope = 0;
-  gchar cur = next_char ();
+  char cur = next_char ();
 
   while (cur != '{' && cur != '[' && cur != '}' && cur) {
     if (!is_whitespace (cur)) {
@@ -663,7 +658,7 @@ parse_table (void)
  * \brief Parse group section
  * \return 1 on success, else error
  */
-static gchar
+static char
 parse_group (void)
 {
   return parse_meta ('@');
@@ -677,7 +672,7 @@ static gboolean
 parse_mork (void)
 {
   gboolean result = TRUE;
-  gchar cur = 0;
+  char cur = 0;
 
   cur = next_char ();
 
@@ -724,7 +719,7 @@ parse_mork (void)
  * \param key key id
  * \return column entry
  */
-static inline gchar *
+static inline char *
 get_column (int key)
 {
   return g_hash_table_lookup (mork_columns, GINT_TO_POINTER (key));
@@ -735,7 +730,7 @@ get_column (int key)
  * \param key key id
  * \return value entry
  */
-static inline gchar *
+static inline char *
 get_value (int key)
 {
   return g_hash_table_lookup (mork_values, GINT_TO_POINTER (key));
@@ -750,19 +745,19 @@ static void
 parse_person (GHashTable *map,
               gpointer    pId)
 {
-  /*const gchar *check = NULL; */
+  /*const char *check = NULL; */
   /*GdkPixbuf *image = NULL; */
-  const gchar *home_street = NULL;
-  const gchar *home_city = NULL;
-  const gchar *home_zip = NULL;
-  const gchar *business_street = NULL;
-  const gchar *business_city = NULL;
-  const gchar *business_zip = NULL;
+  const char *home_street = NULL;
+  const char *home_city = NULL;
+  const char *home_zip = NULL;
+  const char *business_street = NULL;
+  const char *business_city = NULL;
+  const char *business_zip = NULL;
   GHashTableIter iter5;
   gpointer key5, value5;
   RmContact *contact = NULL;
   RmPhoneNumber *number;
-  const gchar *thunderbird_dir = thunderbird_get_selected_book ();
+  const char *thunderbird_dir = thunderbird_get_selected_book ();
 
   if (thunderbird_dir) {
     thunderbird_dir = g_path_get_dirname (thunderbird_dir);
@@ -781,8 +776,8 @@ parse_person (GHashTable *map,
     if (GPOINTER_TO_INT (key5) == 0) {
       continue;
     }
-    const gchar *column = get_column (GPOINTER_TO_INT (key5));
-    const gchar *value = get_value (GPOINTER_TO_INT (value5));
+    const char *column = get_column (GPOINTER_TO_INT (key5));
+    const char *value = get_value (GPOINTER_TO_INT (value5));
 #ifdef THUNDERBIRD_DEBUG
     g_debug ("'%s' = '%s'", column, value);
 #endif
@@ -822,7 +817,7 @@ parse_person (GHashTable *map,
     } else if (!strcmp (column, "WorkZipCode")) {
       business_zip = value;
     } else if (!strcmp (column, "PhotoName")) {
-      gchar *file_name = g_build_filename (thunderbird_dir, "Photos", value, NULL);
+      char *file_name = g_build_filename (thunderbird_dir, "Photos", value, NULL);
 
       contact->image = gdk_pixbuf_new_from_file (file_name, NULL);
       g_free (file_name);
@@ -930,7 +925,7 @@ parse_tables (void)
  * \param book address book file name
  */
 static void
-thunderbird_open_book (gchar *book)
+thunderbird_open_book (char *book)
 {
   int file;
   off_t size;
@@ -976,8 +971,8 @@ thunderbird_open_book (gchar *book)
 static int
 thunderbird_read_book (void)
 {
-  const gchar *book;
-  gchar file[256];
+  const char *book;
+  char file[256];
 
   num_persons = 0;
   num_possible = 0;
@@ -1034,18 +1029,18 @@ thunderbird_reload_contacts (void)
   return TRUE;
 }
 
-gchar *
+char *
 thunderbird_get_active_book_name (void)
 {
   return g_strdup ("Thunderbird");
 }
 
 
-gchar **
+char **
 thunderbird_get_sub_books (void)
 {
-  gchar **ret = NULL;
-  const gchar *name = thunderbird_get_selected_book ();
+  char **ret = NULL;
+  const char *name = thunderbird_get_selected_book ();
 
   if (name) {
     ret = rm_strv_add (ret, name);
@@ -1055,7 +1050,7 @@ thunderbird_get_sub_books (void)
 }
 
 gboolean
-thunderbird_set_sub_book (gchar *name)
+thunderbird_set_sub_book (char *name)
 {
   return TRUE;
 }
@@ -1101,9 +1096,9 @@ thunderbird_plugin_shutdown (RmPlugin *plugin)
  *  {
  *       GtkFileChooserNative *dialog = gtk_file_chooser_native_new(_("Select mab file"), NULL, GTK_FILE_CHOOSER_ACTION_OPEN, NULL, NULL);
  *       GtkFileFilter *filter;
- *       const gchar *book;
- *       gchar *dir;
- *       gchar file[256];
+ *       const char *book;
+ *       char *dir;
+ *       char file[256];
  *
  *       filter = gtk_file_filter_new();
  *       gtk_file_filter_add_pattern(filter, "*.mab");
@@ -1122,7 +1117,7 @@ thunderbird_plugin_shutdown (RmPlugin *plugin)
  *       }
  *
  *       if (gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
- *               gchar *folder = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+ *               char *folder = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
  *
  *               gtk_entry_set_text(GTK_ENTRY(user_data), folder);
  *               contacts = NULL;
@@ -1140,7 +1135,7 @@ void
 thunderbird_file_chooser_button_file_set_cb (GtkWidget *button,
                                              gpointer   user_data)
 {
-  gchar *file = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (button));
+  char *file = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (button));
 
   thunderbird_set_selected_book (file);
 }

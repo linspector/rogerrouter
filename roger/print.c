@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,23 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
+#include "print.h"
+
+#include "journal.h"
+
+#include <cairo-pdf.h>
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
 #include <math.h>
+#include <rm/rm.h>
 #include <string.h>
 #include <strings.h>
-
-#include <gtk/gtk.h>
-#include <cairo-pdf.h>
-
 #include <tiff.h>
 #include <tiffio.h>
-
-#include <rm/rm.h>
-
-#include <roger/print.h>
-#include <roger/journal.h>
-#include <roger/main.h>
 
 #define FONT "cairo:monospace 10"
 
@@ -80,7 +78,7 @@ print_journal_check_monospace (PangoContext         *pc,
 {
   PangoFontFamily **families;
   gint num_families, i;
-  const gchar *font;
+  const char *font;
   gboolean ret = TRUE;
 
   font = pango_font_description_get_family (desc);
@@ -91,7 +89,7 @@ print_journal_check_monospace (PangoContext         *pc,
   pango_context_list_families (pc, &families, &num_families);
 
   for (i = 0; i < num_families; i++) {
-    const gchar *check = pango_font_family_get_name (families[i]);
+    const char *check = pango_font_family_get_name (families[i]);
 
     if (!strcasecmp (font, check) && !pango_font_family_is_monospace (families[i])) {
       ret = FALSE;
@@ -255,7 +253,7 @@ print_journal_begin_print_cb (GtkPrintOperation *operation,
 static void
 print_journal_show_text (cairo_t     *cairo,
                          PangoLayout *layout,
-                         gchar       *text,
+                         char        *text,
                          gint         width)
 {
   gint text_width, text_height;
@@ -282,12 +280,12 @@ print_journal_show_text (cairo_t     *cairo,
  *
  * Returns: date/time string
  */
-static gchar *
-print_journal_get_date_time (const gchar *format)
+static char *
+print_journal_get_date_time (const char *format)
 {
   const struct tm *time_m;
-  static gchar date[1024];
-  gchar *locale_format;
+  static char date[1024];
+  char *locale_format;
   gsize len;
 
   if (!g_utf8_validate (format, -1, NULL)) {
@@ -338,12 +336,12 @@ print_journal_draw_page_cb (GtkPrintOperation *operation,
   GtkTreeIter iter;
   GdkPixbuf *pix, *dst_pix;
   gboolean valid;
-  gchar *date_time;
-  gchar *name;
-  gchar *number;
-  gchar *local_name;
-  gchar *local_number;
-  gchar *duration;
+  char *date_time;
+  char *name;
+  char *number;
+  char *local_name;
+  char *local_number;
+  char *duration;
   gint tmp;
   gint line_height = 0;
 
@@ -360,7 +358,7 @@ print_journal_draw_page_cb (GtkPrintOperation *operation,
   pango_layout_set_width (print_data->layout, (width - 8) * PANGO_SCALE);
 
   /* Title */
-  gchar *data = g_strdup_printf ("<b>%s - %s</b>", PACKAGE_NAME, _("Journal"));
+  char *data = g_strdup_printf ("<b>%s - %s</b>", PACKAGE_NAME, _("Journal"));
   pango_layout_set_markup (print_data->layout, data, -1);
   pango_layout_set_alignment (print_data->layout, PANGO_ALIGN_CENTER);
   cairo_move_to (cairo, 3, print_data->line_height * 0.5);
@@ -376,7 +374,7 @@ print_journal_draw_page_cb (GtkPrintOperation *operation,
   g_free (data);
 
   /* Date */
-  gchar *date = print_journal_get_date_time ("%d.%m.%Y %H:%M:%S");
+  char *date = print_journal_get_date_time ("%d.%m.%Y %H:%M:%S");
   data = g_strdup_printf ("<small>%s</small>", date);
   pango_layout_set_markup (print_data->layout, data, -1);
   pango_layout_set_alignment (print_data->layout, PANGO_ALIGN_RIGHT);
@@ -616,7 +614,7 @@ print_load_tiff_page (TIFF *tiff_file)
  */
 void
 print_fax_report (RmFaxStatus *status,
-                  gchar       *file,
+                  char        *file,
                   const char  *report_dir)
 {
   cairo_t *cairo;

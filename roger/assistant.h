@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *

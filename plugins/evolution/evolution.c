@@ -1,6 +1,6 @@
 /**
  * Roger Router
- * Copyright (c) 2012-2014 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,25 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
-#include <string.h>
+#include "ebook-sources.h"
 
 #include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include <rm/rm.h>
+#include <string.h>
 
-#include <roger/main.h>
-#include "config.h"
-
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-#include <libebook/libebook.h>
-G_GNUC_END_IGNORE_DEPRECATIONS
-
-#include "ebook-sources.h"
-
-static GSList * contacts = NULL;
+static GSList *contacts = NULL;
 static GSettings *ebook_settings = NULL;
 static EClient *e_client = NULL;
 
@@ -45,7 +37,7 @@ gboolean evolution_reload (void);
  * \brief Get selected evolution address book Id
  * \return evolution address book
  */
-const gchar *
+const char *
 get_selected_ebook_id (void)
 {
   return g_settings_get_string (ebook_settings, "book");
@@ -100,7 +92,7 @@ get_selected_ebook_esource (void)
 {
   GList *list;
   ESourceRegistry *registry = get_source_registry ();
-  const gchar *id = get_selected_ebook_id ();
+  const char *id = get_selected_ebook_id ();
   gboolean none_selected = RM_EMPTY_STRING (id);
 
   list = get_ebook_list ();
@@ -178,7 +170,7 @@ ebook_read_data (EClient *e_client)
 {
   EBookClient *client;
   EBookQuery *query;
-  gchar *sexp = NULL;
+  char *sexp = NULL;
   EContact *e_contact;
   EContactPhoto *photo;
   GdkPixbufLoader *loader;
@@ -239,11 +231,11 @@ ebook_read_data (EClient *e_client)
     return;
   }
   for (list = ebook_contacts; list != NULL; list = list->next) {
-    const gchar *display_name;
+    const char *display_name;
     RmContact *contact;
     RmPhoneNumber *phone_number;
-    const gchar *number;
-    const gchar *company;
+    const char *number;
+    const char *company;
     EContactAddress *address;
 
     g_return_if_fail (E_IS_CONTACT (list->data));
@@ -278,7 +270,7 @@ ebook_read_data (EClient *e_client)
           GRegex *pro = g_regex_new ("%25", G_REGEX_DOTALL | G_REGEX_OPTIMIZE, 0, NULL);
 
           if (!strncmp (photo->data.uri, "file://", 7)) {
-            gchar *uri = g_regex_replace_literal (pro, photo->data.uri + 7, -1, 0, "%", 0, NULL);
+            char *uri = g_regex_replace_literal (pro, photo->data.uri + 7, -1, 0, "%", 0, NULL);
             buf = gdk_pixbuf_new_from_file (uri, NULL);
           } else {
             g_debug ("Cannot handle URI: '%s'!", photo->data.uri);
@@ -489,7 +481,7 @@ evolution_set_image (EContact  *e_contact,
     EContactPhoto photo;
     GError *error = NULL;
 
-    if (gdk_pixbuf_save_to_buffer (contact->image, (gchar **)&photo.data.inlined.data, &photo.data.inlined.length, "png", &error, NULL)) {
+    if (gdk_pixbuf_save_to_buffer (contact->image, (char **)&photo.data.inlined.data, &photo.data.inlined.length, "png", &error, NULL)) {
       photo.type = E_CONTACT_PHOTO_TYPE_INLINED;
       photo.data.inlined.mime_type = NULL;
       e_contact_set (e_contact, E_CONTACT_PHOTO, &photo);
@@ -617,17 +609,17 @@ evolution_save_contact (RmContact *contact)
   return ret;
 }
 
-gchar *
+char *
 evolution_get_active_book_name (void)
 {
   return g_strdup (get_selected_ebook_id ());
 }
 
-gchar **
+char **
 evolution_get_sub_books (void)
 {
   GList *source, *sources;
-  gchar **ret = NULL;
+  char **ret = NULL;
 
   sources = get_ebook_list ();
 
@@ -641,7 +633,7 @@ evolution_get_sub_books (void)
 }
 
 gboolean
-evolution_set_sub_book (gchar *name)
+evolution_set_sub_book (char *name)
 {
   g_settings_set_string (ebook_settings, "book", name);
 

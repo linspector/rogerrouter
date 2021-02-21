@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -21,10 +21,7 @@
 
 #include <gtk/gtk.h>
 
-#define HANDY_USE_UNSTABLE_API
-#include <handy.h>
-
-#include <roger/preferences.h>
+#include "preferences.h"
 
 G_BEGIN_DECLS
 

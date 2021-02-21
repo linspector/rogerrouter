@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2014 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,24 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ROGER_FAX_H
-#define ROGER_FAX_H
+#pragma once
+
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-struct fax_ui {
-	gchar *file;
-
-	GtkWidget *progress_bar;
-	GtkWidget *remote_label;
-
-	struct fax_status *status;
-};
-
-void fax_process_init(void);
-void app_show_fax_window(gchar *tiff_file);
-void fax_window_clear(gpointer priv);
+void fax_process_init    (void);
+void app_show_fax_window (char     *tiff_file);
+void fax_window_clear    (gpointer  priv);
 
 G_END_DECLS
 
-#endif

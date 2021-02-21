@@ -1,6 +1,6 @@
 /**
  * Roger Router
- * Copyright (c) 2012-2014 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,24 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
+
+#include "fax.h"
+
+#include "contacts.h"
+#include "contactsearch.h"
+#include "journal.h"
+#include "print.h"
+#include "uitools.h"
 
 #include <ctype.h>
-
-#include <gtk/gtk.h>
-#include <glib/gstdio.h>
-
 #include <ghostscript/iapi.h>
 #include <ghostscript/ierrors.h>
-
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include <glib/gstdio.h>
 #include <rm/rm.h>
 
-#include <roger/journal.h>
-#include <roger/contacts.h>
-#include <roger/contactsearch.h>
-#include <roger/print.h>
-#include <roger/main.h>
-#include <roger/uitools.h>
 
 /* Workaround to build with pre-9.18 versions */
 #if defined(e_Quit)
@@ -56,11 +56,11 @@ struct fax_ui {
   RmFaxStatus status;
   RmConnection *connection;
   RmProfile *profile;
-  gchar *file;
-  gchar *number;
+  char *file;
+  char *number;
   gint status_timer_id;
 
-  gchar *filter;
+  char *filter;
   gboolean discard;
 };
 
@@ -69,7 +69,7 @@ fax_status_timer_cb (gpointer user_data)
 {
   struct fax_ui *fax_ui = user_data;
   RmFaxStatus *fax_status = &fax_ui->status;
-  gchar buffer[256];
+  char buffer[256];
   static gdouble old_percent = 0.0f;
 
   if (!rm_fax_get_status (fax_ui->fax, fax_ui->connection, fax_status)) {
@@ -117,8 +117,8 @@ fax_status_timer_cb (gpointer user_data)
       break;
   }
 
-  gchar *time_diff;
-  gchar *buf;
+  char *time_diff;
+  char *buf;
 
   time_diff = rm_connection_get_duration_time (fax_ui->connection);
   buf = g_strdup_printf (_("Time: %s"), time_diff);
@@ -174,7 +174,7 @@ fax_pickup_button_clicked_cb (GtkWidget *button,
 {
   RmProfile *profile = rm_profile_get_active ();
   struct fax_ui *fax_ui = user_data;
-  gchar *scramble;
+  char *scramble;
 
   /* Get selected number (either number format or based on the selected name) */
   fax_ui->number = g_strdup (contact_search_get_number (CONTACT_SEARCH (fax_ui->contact_search)));
@@ -272,7 +272,7 @@ app_show_fax_window_idle (gpointer data)
   GtkBuilder *builder;
   RmProfile *profile = rm_profile_get_active ();
   struct fax_ui *fax_ui;
-  gchar *fax_file = data;
+  char *fax_file = data;
 
   if (!profile) {
     g_unlink (fax_file);
@@ -343,12 +343,12 @@ app_show_fax_window_idle (gpointer data)
   return FALSE;
 }
 
-gchar *
-convert_to_fax (gchar *file_name)
+char *
+convert_to_fax (char *file_name)
 {
-  gchar *args[13];
-  gchar *output;
-  gchar *out_file;
+  char *args[13];
+  char *output;
+  char *out_file;
   RmProfile *profile = rm_profile_get_active ();
   gint ret;
   gint ret1;
@@ -362,7 +362,7 @@ convert_to_fax (gchar *file_name)
   args[4] = "-dBATCH";
 
   {
-    gchar *ofile = g_strdup_printf ("%s.tif", g_path_get_basename (file_name));
+    char *ofile = g_strdup_printf ("%s.tif", g_path_get_basename (file_name));
     args[5] = "-sDEVICE=tiffg4";
     out_file = g_build_filename (rm_get_user_cache_dir (), ofile, NULL);
     g_free (ofile);
@@ -422,10 +422,10 @@ convert_to_fax (gchar *file_name)
 
 void
 fax_process_cb (GtkWidget *widget,
-                gchar     *file_name,
+                char      *file_name,
                 gpointer   user_data)
 {
-  gchar *out_file;
+  char *out_file;
 
   out_file = convert_to_fax (file_name);
   /*g_unlink(file_name); */

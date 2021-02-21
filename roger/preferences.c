@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,17 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
+#include "preferences.h"
+#include "preferences-audio.h"
+#include "preferences-telephony.h"
+#include "preferences-plugins.h"
+
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
-
 #include <rm/rm.h>
-
-#include <roger/main.h>
-#include <roger/preferences.h>
-#include <roger/preferences-audio.h>
-#include <roger/preferences-telephony.h>
-#include <roger/preferences-plugins.h>
 
 G_DEFINE_TYPE (RogerPreferencesWindow, roger_preferences_window, HDY_TYPE_PREFERENCES_WINDOW)
 
@@ -64,11 +63,11 @@ roger_notification_incoming_get_mapping (GValue   *value,
                                          gpointer  user_data)
 {
   RogerNotificationHelper *helper = user_data;
-  const gchar **numbers;
+  const char **numbers;
   gboolean active;
 
   numbers = g_variant_get_strv (variant, NULL);
-  active = rm_strv_contains ((const gchar * const *)numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
+  active = rm_strv_contains ((const char * const *)numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
   g_value_set_boolean (value, active);
 
   return TRUE;
@@ -91,7 +90,7 @@ roger_notification_incoming_set_mapping (const GValue       *value,
   else
     numbers = rm_strv_remove (numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
 
-  return g_variant_new_strv ((const gchar * const *)numbers, -1);
+  return g_variant_new_strv ((const char * const *)numbers, -1);
 }
 
 static gboolean
@@ -100,11 +99,11 @@ roger_notification_outgoing_get_mapping (GValue   *value,
                                          gpointer  user_data)
 {
   RogerNotificationHelper *helper = user_data;
-  const gchar **numbers;
+  const char **numbers;
   gboolean active;
 
   numbers = g_variant_get_strv (variant, NULL);
-  active = rm_strv_contains ((const gchar * const *)numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
+  active = rm_strv_contains ((const char * const *)numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
   g_value_set_boolean (value, active);
 
   return TRUE;
@@ -127,7 +126,7 @@ roger_notification_outgoing_set_mapping (const GValue       *value,
   else
     numbers = rm_strv_remove (numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
 
-  return g_variant_new_strv ((const gchar * const *)numbers, -1);
+  return g_variant_new_strv ((const char * const *)numbers, -1);
 }
 
 static void

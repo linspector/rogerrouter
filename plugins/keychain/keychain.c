@@ -39,11 +39,11 @@ RM_PLUGIN_REGISTER (RM_TYPE_KEYCHAIN_PLUGIN, RmKeyChainPlugin, rm_keychain_plugi
 
 #define SERVICE_NAME "roger"
 
-static gboolean keychain_remove_password (RmProfile   *profile,
-                                          const gchar *type);
+static gboolean keychain_remove_password (RmProfile  *profile,
+                                          const char *type);
 
 OSStatus
-keychain_get (gchar               *pwd_name,
+keychain_get (char                *pwd_name,
               void               **password,
               UInt32              *pwd_len,
               SecKeychainItemRef  *item_ref)
@@ -69,15 +69,15 @@ keychain_get (gchar               *pwd_name,
  * \param type password type
  * \return password or NULL on error
  */
-static gchar *
-keychain_get_password (RmProfile   *profile,
-                       const gchar *type)
+static char *
+keychain_get_password (RmProfile  *profile,
+                       const char *type)
 {
   OSStatus status;
   UInt32 pwd_length;
   void *password = NULL;
-  gchar *pwd_name;
-  gchar *secret_password = NULL;
+  char *pwd_name;
+  char *secret_password = NULL;
   SecKeychainItemRef ref;
 
   if (profile == NULL || profile->name == NULL || type == NULL) {
@@ -108,13 +108,13 @@ keychain_get_password (RmProfile   *profile,
  * \param password password text
  */
 static void
-keychain_store_password (RmProfile   *profile,
-                         const gchar *type,
-                         const gchar *password)
+keychain_store_password (RmProfile  *profile,
+                         const char *type,
+                         const char *password)
 {
   OSStatus status;
   SecKeychainItemRef item_ref = NULL;
-  gchar *pwd_name;
+  char *pwd_name;
   UInt32 pwd_len = 0;
   void *pwd_data = NULL;
 
@@ -163,12 +163,12 @@ keychain_store_password (RmProfile   *profile,
  * \return TRUE on success, otherwise FALSE on error
  */
 static gboolean
-keychain_remove_password (RmProfile   *profile,
-                          const gchar *type)
+keychain_remove_password (RmProfile  *profile,
+                          const char *type)
 {
   OSStatus status;
   SecKeychainItemRef item_ref = NULL;
-  gchar *pwd_name;
+  char *pwd_name;
   gboolean ret = TRUE;
 
   if (profile == NULL || profile->name == NULL) {

@@ -1,6 +1,6 @@
 /**
  * Roger Router
- * Copyright (c) 2012-2014 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,17 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EBOOK_SOURCES_H
-#define EBOOK_SOURCES_H
+#pragma once
+
+#include <glib.h>
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+#include <libebook/libebook.h>
+G_GNUC_END_IGNORE_DEPRECATIONS
+
+G_BEGIN_DECLS
 
 struct ebook_data {
-	gchar *name;
-	gchar *id;
+	char *name;
+	char *id;
 };
 
-const gchar *get_selected_ebook_id(void);
+const char *get_selected_ebook_id(void);
 EBookClient *get_selected_ebook_client(void);
 GList *get_ebook_list(void);
 void free_ebook_list(GList *ebook_list);
 
-#endif
+G_END_DECLS
+

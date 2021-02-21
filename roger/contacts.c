@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,19 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
-#include <string.h>
+#include "contacts.h"
+
+#include "contactsearch.h"
+#include "journal.h"
+#include "phone.h"
+#include "uitools.h"
+
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
-
 #include <rm/rm.h>
-
-#include <roger/contacts.h>
-#include <roger/contactsearch.h>
-#include <roger/main.h>
-#include <roger/uitools.h>
-#include <roger/phone.h>
-#include <roger/journal.h>
+#include <string.h>
 
 typedef struct {
   GtkWidget *window;
@@ -69,8 +69,8 @@ contacts_dial_clicked_cb (GtkWidget *button,
                           gpointer   user_data)
 {
   RmContact *contact;
-  gchar *full_number;
-  gchar *number = user_data;
+  char *full_number;
+  char *number = user_data;
 
   /* Create full number including prefixes */
   full_number = rm_number_full (number, FALSE);
@@ -102,7 +102,7 @@ contacts_update_details (RmContact *contact)
   GSList *numbers;
   GSList *addresses;
   GtkWidget *grid;
-  gchar *markup;
+  char *markup;
   gint detail_row = 1;
 
   grid = gtk_grid_new ();
@@ -305,7 +305,7 @@ contacts_update_list (void)
   GSList *list;
   RmAddressBook *book = contacts->book;
   GSList *contact_list = rm_addressbook_get_contacts (book);
-  const gchar *text = gtk_entry_get_text (GTK_ENTRY (contacts->search_entry));
+  const char *text = gtk_entry_get_text (GTK_ENTRY (contacts->search_entry));
   gint pos = 0;
   RmContact *selected_contact;
 
@@ -444,7 +444,7 @@ name_entry_changed_cb (GtkWidget *entry,
                        gpointer   user_data)
 {
   RmContact *contact = user_data;
-  const gchar *text = gtk_entry_get_text (GTK_ENTRY (entry));
+  const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
 
   gtk_widget_set_sensitive (contacts->save_button, strlen (text) > 0);
 
@@ -457,7 +457,7 @@ number_entry_changed_cb (GtkWidget *entry,
                          gpointer   user_data)
 {
   RmPhoneNumber *number = user_data;
-  const gchar *text = gtk_entry_get_text (GTK_ENTRY (entry));
+  const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
 
   g_free (number->number);
   number->number = g_strdup (text);
@@ -468,7 +468,7 @@ street_entry_changed_cb (GtkWidget *entry,
                          gpointer   user_data)
 {
   RmContactAddress *address = user_data;
-  const gchar *text = gtk_entry_get_text (GTK_ENTRY (entry));
+  const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
 
   g_free (address->street);
   address->street = g_strdup (text);
@@ -479,7 +479,7 @@ zip_entry_changed_cb (GtkWidget *entry,
                       gpointer   user_data)
 {
   RmContactAddress *address = user_data;
-  const gchar *text = gtk_entry_get_text (GTK_ENTRY (entry));
+  const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
 
   g_free (address->zip);
   address->zip = g_strdup (text);
@@ -490,7 +490,7 @@ city_entry_changed_cb (GtkWidget *entry,
                        gpointer   user_data)
 {
   RmContactAddress *address = user_data;
-  const gchar *text = gtk_entry_get_text (GTK_ENTRY (entry));
+  const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
 
   g_free (address->city);
   address->city = g_strdup (text);
@@ -539,7 +539,7 @@ photo_button_clicked_cb (GtkWidget *button,
   result = gtk_dialog_run (GTK_DIALOG (file_chooser));
 
   if (result == GTK_RESPONSE_ACCEPT) {
-    gchar *image_uri = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
+    char *image_uri = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (file_chooser));
     rm_contact_set_image_from_file (contact, image_uri);
   } else if (result == 1) {
     if (contact->image != NULL) {
@@ -553,7 +553,7 @@ photo_button_clicked_cb (GtkWidget *button,
 
 void
 contact_add_number (RmContact *contact,
-                    gchar     *number)
+                    char      *number)
 {
   /* Add phone number */
   RmPhoneNumber *phone_number;
@@ -567,9 +567,9 @@ contact_add_number (RmContact *contact,
 
 void
 contact_add_address (RmContact *contact,
-                     gchar     *street,
-                     gchar     *zip,
-                     gchar     *city)
+                     char      *street,
+                     char      *zip,
+                     char      *city)
 {
   /* Add address */
   RmContactAddress *address;
@@ -584,7 +584,7 @@ contact_add_address (RmContact *contact,
 }
 
 void
-contacts_add_detail (gchar *detail)
+contacts_add_detail (char *detail)
 {
   if (!strncmp (detail, "phone-", 6)) {
     /* Add phone number */
@@ -882,14 +882,14 @@ book_item_toggled_cb (GtkWidget *widget,
                       gpointer   user_data)
 {
   RmAddressBook *book = user_data;
-  const gchar *name = gtk_button_get_label (GTK_BUTTON (widget));
+  const char *name = gtk_button_get_label (GTK_BUTTON (widget));
 
   if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))) {
     g_debug ("%s(): name %s", __FUNCTION__, name);
     contacts->book = book;
 
     rm_profile_set_addressbook (rm_profile_get_active (), book);
-    gchar *sub_name = (gchar *)name + strlen (rm_addressbook_get_name (book)) + 3;
+    char *sub_name = (char *)name + strlen (rm_addressbook_get_name (book)) + 3;
     g_debug ("%s(): sub_book '%s'", __FUNCTION__, sub_name);
 
     rm_addressbook_set_sub_book (book, sub_name);
@@ -905,7 +905,7 @@ contacts_book_clicked_cb (GtkWidget *widget,
   GtkWidget *box;
   GSList *book_plugins = NULL;
   GSList *book_radio_list = NULL;
-  gchar *sub_book = rm_addressbook_get_sub_name (contacts->book);
+  char *sub_book = rm_addressbook_get_sub_name (contacts->book);
 
   g_debug ("%s(): called", __FUNCTION__);
 
@@ -923,8 +923,8 @@ contacts_book_clicked_cb (GtkWidget *widget,
   /* Traverse book list */
   for (; book_plugins != NULL; book_plugins = book_plugins->next) {
     RmAddressBook *book = book_plugins->data;
-    gchar *name = rm_addressbook_get_name (book);
-    gchar **sub_books = rm_addressbook_get_sub_books (book);
+    char *name = rm_addressbook_get_name (book);
+    char **sub_books = rm_addressbook_get_sub_books (book);
     gint i;
 
     if (!sub_books) {
@@ -932,7 +932,7 @@ contacts_book_clicked_cb (GtkWidget *widget,
     }
 
     for (i = 0; sub_books[i] != NULL; i++) {
-      gchar *label = g_strdup_printf ("%s - %s", name, sub_books[i]);
+      char *label = g_strdup_printf ("%s - %s", name, sub_books[i]);
       item = gtk_radio_button_new_with_label (book_radio_list, label);
 
       book_radio_list = gtk_radio_button_get_group (GTK_RADIO_BUTTON (item));
@@ -1093,8 +1093,8 @@ static void
 contacts_contacts_changed_cb (RmObject *object,
                               gpointer  user_data)
 {
-  gchar *name;
-  gchar *tmp;
+  char *name;
+  char *tmp;
 
   name = rm_addressbook_get_name (contacts->book);
 
@@ -1134,9 +1134,9 @@ contacts_add_detail_activated (GSimpleAction *action,
                                GVariant      *parameter,
                                gpointer       user_data)
 {
-  const gchar *name = g_action_get_name (G_ACTION (action));
+  const char *name = g_action_get_name (G_ACTION (action));
 
-  contacts_add_detail ((gchar *)name);
+  contacts_add_detail ((char *)name);
 }
 
 static const GActionEntry contacts_entries [] = {
@@ -1162,7 +1162,7 @@ app_contacts (RmContact *contact)
   GtkWidget *parent;
   GtkWidget *placeholder_image;
   GSimpleActionGroup *simple_action_group;
-  gchar *name;
+  char *name;
   RmAddressBook *book;
   RmProfile *profile = rm_profile_get_active ();
 
@@ -1234,7 +1234,7 @@ app_contacts (RmContact *contact)
   name = rm_addressbook_get_name (book);
   gtk_header_bar_set_title (GTK_HEADER_BAR (contacts_header_bar_left), name);
 
-  gchar *tmp = g_strdup_printf ("<b>%s</b>", name);
+  char *tmp = g_strdup_printf ("<b>%s</b>", name);
   gtk_label_set_markup (GTK_LABEL (contacts->book_name_label), tmp);
   g_free (tmp);
   g_free (name);
@@ -1261,7 +1261,7 @@ app_contacts (RmContact *contact)
   gtk_window_set_titlebar (GTK_WINDOW (contacts->window), header_bar);
   gtk_header_bar_set_show_close_button (GTK_HEADER_BAR (contacts_header_bar_right), TRUE);
 
-  gchar *css_data = g_strdup_printf (".round-corner { border-top-right-radius: 7px; }");
+  char *css_data = g_strdup_printf (".round-corner { border-top-right-radius: 7px; }");
   GtkCssProvider *css_provider = gtk_css_provider_new ();
   gtk_css_provider_load_from_data (css_provider, css_data, -1, NULL);
   g_free (css_data);

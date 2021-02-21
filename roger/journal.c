@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,29 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
-#include <string.h>
-#include <stdlib.h>
+#include "journal.h"
 
-#include <gtk/gtk.h>
-#include <gio/gio.h>
+#include "answeringmachine.h"
+#include "application.h"
+#include "contacts.h"
+#include "phone.h"
+#include "print.h"
+#include "uitools.h"
+
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdk.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <glib/gstdio.h>
+#include <gtk/gtk.h>
+#include <gio/gio.h>
 #include <handy.h>
-
 #include <rm/rm.h>
-
-#include "roger/main.h"
-#include "roger/phone.h"
-#include "roger/journal.h"
-#include "roger/print.h"
-#include "roger/contacts.h"
-#include "roger/application.h"
-#include "roger/uitools.h"
-#include "roger/answeringmachine.h"
+#include <string.h>
+#include <stdlib.h>
 
 struct _RogerJournal {
   HdyWindow parent_instance;
@@ -186,7 +185,7 @@ journal_redraw (RogerJournal *self)
 {
   GSList *list;
   gint duration = 0;
-  gchar *text = NULL;
+  char *text = NULL;
   gint count = 0;
   RmProfile *profile;
 
@@ -226,7 +225,7 @@ journal_redraw (RogerJournal *self)
       GtkWidget *name;
       GtkWidget *date;
       GtkWidget *phone;
-      g_autofree gchar *tmp = NULL;
+      g_autofree char *tmp = NULL;
 
       gtk_container_set_border_width (GTK_CONTAINER (grid), 6);
 
@@ -291,7 +290,7 @@ journal_redraw (RogerJournal *self)
   profile = rm_profile_get_active ();
 
   hdy_header_bar_set_title (HDY_HEADER_BAR (self->headerbar), profile ? profile->name : _("<No profile>"));
-  g_autofree gchar *markup = g_strdup_printf (_("%d calls, %d:%2.2dh"), count, duration / 60, duration % 60);
+  g_autofree char *markup = g_strdup_printf (_("%d calls, %d:%2.2dh"), count, duration / 60, duration % 60);
   hdy_header_bar_set_subtitle (HDY_HEADER_BAR (self->headerbar), markup);
 
   g_free (text);
@@ -577,7 +576,7 @@ on_search_entry_changed (GtkEditable *entry,
 {
   RogerJournal *self = ROGER_JOURNAL (user_data);
   RmProfile *profile = rm_profile_get_active ();
-  const gchar *text = gtk_entry_get_text (GTK_ENTRY (entry));
+  const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
 
   if (self->search_filter != NULL) {
     rm_filter_remove (profile, self->search_filter);
@@ -588,9 +587,9 @@ on_search_entry_changed (GtkEditable *entry,
     self->search_filter = rm_filter_new (profile, "internal_search");
 
     if (g_ascii_isdigit (text[0])) {
-      rm_filter_rule_add (self->search_filter, RM_FILTER_REMOTE_NUMBER, RM_FILTER_CONTAINS, (gchar *)text);
+      rm_filter_rule_add (self->search_filter, RM_FILTER_REMOTE_NUMBER, RM_FILTER_CONTAINS, (char *)text);
     } else {
-      rm_filter_rule_add (self->search_filter, RM_FILTER_REMOTE_NAME, RM_FILTER_CONTAINS, (gchar *)text);
+      rm_filter_rule_add (self->search_filter, RM_FILTER_REMOTE_NAME, RM_FILTER_CONTAINS, (char *)text);
     }
   }
 
@@ -605,7 +604,7 @@ journal_filter_box_changed (GtkComboBox *box,
   RogerJournal *self = ROGER_JOURNAL (user_data);
   RmProfile *profile = rm_profile_get_active ();
   GSList *filter_list;
-  const gchar *text = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (box));
+  const char *text = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (box));
 
   self->filter = NULL;
   journal_clear (self);
@@ -658,7 +657,7 @@ row_activated_foreach (GtkTreeModel *model,
 
   switch (call->type) {
     case RM_CALL_ENTRY_TYPE_FAX_REPORT: {
-      g_autofree gchar *uri = g_strdup_printf ("file:///%s", call->priv);
+      g_autofree char *uri = g_strdup_printf ("file:///%s", call->priv);
 
       if (!gtk_show_uri_on_window (GTK_WINDOW (journal_get_window ()), uri, GDK_CURRENT_TIME, &error)) {
         g_debug ("%s(): Could not open uri '%s'", __FUNCTION__, uri);
@@ -670,13 +669,13 @@ row_activated_foreach (GtkTreeModel *model,
     }
     case RM_CALL_ENTRY_TYPE_FAX: {
       gsize len = 0;
-      g_autofree gchar *data = NULL;
+      g_autofree char *data = NULL;
 
       data = rm_router_load_fax (rm_profile_get_active (), call->priv, &len);
 
       if (data && len) {
-        g_autofree gchar *path = g_build_filename (rm_get_user_cache_dir (), G_DIR_SEPARATOR_S, "fax.pdf", NULL);
-        g_autofree gchar *uri = g_strdup_printf ("file:///%s", path);
+        g_autofree char *path = g_build_filename (rm_get_user_cache_dir (), G_DIR_SEPARATOR_S, "fax.pdf", NULL);
+        g_autofree char *uri = g_strdup_printf ("file:///%s", path);
 
         rm_file_save (path, data, len);
 
@@ -690,7 +689,7 @@ row_activated_foreach (GtkTreeModel *model,
       break;
     }
     case RM_CALL_ENTRY_TYPE_RECORD: {
-      gchar *tmp = call->priv;
+      char *tmp = call->priv;
 
       if (!gtk_show_uri_on_window (GTK_WINDOW (journal_get_window ()), tmp, GDK_CURRENT_TIME, &error)) {
         g_debug ("%s(): Could not open uri '%s'", __FUNCTION__, tmp);
@@ -980,7 +979,7 @@ window_cmd_export (GSimpleAction *action,
 
   res = gtk_native_dialog_run (GTK_NATIVE_DIALOG (native));
   if (res == GTK_RESPONSE_ACCEPT) {
-    g_autofree gchar *file = gtk_file_chooser_get_filename (chooser);
+    g_autofree char *file = gtk_file_chooser_get_filename (chooser);
 
     rm_journal_save_as (self->list, file);
   }
@@ -1017,7 +1016,7 @@ journal_column_restore_default (GtkMenuItem *item,
 
   for (index = JOURNAL_COL_DATETIME; index <= JOURNAL_COL_DURATION; index++) {
     GtkTreeViewColumn *column;
-    gchar *key;
+    char *key;
 
     key = g_strdup_printf ("col-%d-width", index);
     g_settings_set_uint (app_settings, key, 0);

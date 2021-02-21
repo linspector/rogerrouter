@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,32 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
+#include "application.h"
+
+#include <gtk/gtk.h>
+#include <rm/rm.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <gtk/gtk.h>
-
-#include <rm/rm.h>
-
-#include <roger/application.h>
-#include <roger/main.h>
-
-#include <config.h>
-
 GtkApplication *application_new (void);
-gchar *argv0 = NULL;
+char *argv0 = NULL;
 
-/**
- * main:
- * @argc: argument count
- * @argv: argument vector
- *
- * Main function
- *
- * Returns: error code
- */
 int
 main (int    argc,
       char **argv)

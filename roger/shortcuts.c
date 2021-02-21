@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,18 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
+
+#include "shortcuts.h"
+
+#include "journal.h"
 
 #include <gtk/gtk.h>
 
-#include <roger/shortcuts.h>
-#include <roger/journal.h>
-
-/**
- * app_shortcuts:
- *
- * Entry for application shortcuts window
- */
 void
 app_shortcuts (void)
 {

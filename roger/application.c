@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,28 +17,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
+#include "application.h"
+
+#include "about.h"
+#include "assistant.h"
+#include "contacts.h"
+#include "debug.h"
+#include "fax.h"
+#include "journal.h"
+#include "phone.h"
+#include "plugins.h"
+#include "preferences.h"
+#include "shortcuts.h"
+#include "uitools.h"
+
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include <rm/rm.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gtk/gtk.h>
-
-#include <rm/rm.h>
-
-#include <roger/journal.h>
-#include "assistant.h"
-#include <roger/application.h>
-#include <roger/main.h>
-#include <roger/phone.h>
-#include <roger/settings.h>
-#include <roger/about.h>
-#include <roger/fax.h>
-#include <roger/contacts.h>
-#include <roger/shortcuts.h>
-#include <roger/uitools.h>
-#include <roger/plugins.h>
-#include <roger/debug.h>
-#include <roger/preferences.h>
 
 GtkApplication *roger_app;
 static gboolean startup_called = FALSE;
@@ -50,8 +49,8 @@ struct cmd_line_option_state {
   gboolean start_hidden;
   gboolean quit;
   gboolean force_online;
-  gchar *number;
-  gchar *profile;
+  char *number;
+  char *profile;
 };
 
 static struct cmd_line_option_state option_state;
@@ -74,7 +73,7 @@ app_show_preferences (void)
 void
 app_show_help (void)
 {
-  gchar *uri = "http://www.tabos.org/forum";
+  char *uri = "http://www.tabos.org/forum";
 
   gtk_show_uri_on_window (GTK_WINDOW (journal_get_window ()), uri, gtk_get_current_event_time (), NULL);
 }
@@ -89,7 +88,7 @@ void
 app_copy_ip (void)
 {
   RmProfile *profile = rm_profile_get_active ();
-  gchar *ip;
+  char *ip;
 
   ip = rm_router_get_ip (profile);
   if (ip) {
@@ -138,7 +137,7 @@ app_authenticate_cb (RmObject   *app,
   GtkWidget *description_label;
   GtkWidget *realm_label;
   GtkWidget *tmp;
-  gchar *description;
+  char *description;
   SoupURI *uri;
 
   g_debug ("%s(): called", __FUNCTION__);
@@ -224,7 +223,7 @@ donate_activated (GSimpleAction *action,
                   GVariant      *parameter,
                   gpointer       user_data)
 {
-  gchar *uri = "http://www.tabos.org/";
+  char *uri = "http://www.tabos.org/";
 
   gtk_show_uri_on_window (GTK_WINDOW (journal_get_window ()), uri, gtk_get_current_event_time (), NULL);
 }
@@ -403,8 +402,8 @@ application_startup (GtkApplication *application)
 
 static void
 rm_object_message_cb (RmObject *object,
-                      gchar    *title,
-                      gchar    *message,
+                      char     *title,
+                      char     *message,
                       gpointer  user_data)
 {
   GtkWidget *dialog = gtk_message_dialog_new_with_markup (roger_app ? gtk_application_get_active_window (roger_app) : NULL, GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE, "<span weight=\"bold\" size=\"larger\">%s</span>", title);
@@ -429,8 +428,8 @@ app_init (GtkApplication *app)
 {
   GError *error = NULL;
 
-  const gchar *user_plugins = g_get_user_data_dir ();
-  gchar *path = g_build_filename (user_plugins, "roger", G_DIR_SEPARATOR_S, "plugins", NULL);
+  const char *user_plugins = g_get_user_data_dir ();
+  char *path = g_build_filename (user_plugins, "roger", G_DIR_SEPARATOR_S, "plugins", NULL);
 
   rm_plugins_add_search_path (path);
   rm_plugins_add_search_path (rm_get_directory (APP_PLUGINS));
@@ -453,7 +452,7 @@ app_init (GtkApplication *app)
   textdomain (GETTEXT_PACKAGE);
 
 #if GTK_CHECK_VERSION (3, 14, 0)
-  const gchar *accels[] = { NULL, NULL, NULL, NULL };
+  const char *accels[] = { NULL, NULL, NULL, NULL };
 
   accels[0] = "<Primary>p";
   gtk_application_set_accels_for_action (app, "app.phone", accels);
@@ -521,10 +520,10 @@ app_init (GtkApplication *app)
 }
 
 G_GNUC_NORETURN static gboolean
-option_version_cb (const gchar  *option_name,
-                   const gchar  *value,
-                   gpointer      data,
-                   GError      **error)
+option_version_cb (const char  *option_name,
+                   const char  *value,
+                   gpointer     data,
+                   GError     **error)
 {
   g_message ("%s %s\n", PACKAGE_NAME, PACKAGE_VERSION);
   exit (0);
@@ -599,7 +598,7 @@ application_command_line_cb (GtkApplication          *app,
   /* In case we have more than one argument, guess that it is a number */
   if (argc > 1) {
     /* Guess it is a number to call */
-    gchar *number = argv[1];
+    char *number = argv[1];
     option_state.number = number;
   }
 
@@ -623,7 +622,7 @@ application_command_line_cb (GtkApplication          *app,
     /* In case we have a number, setup phone window */
     if (option_state.number) {
       RmContact *contact;
-      gchar *full_number;
+      char *full_number;
 
       g_debug ("%s(): number: %s", __FUNCTION__, option_state.number);
       full_number = rm_number_full (option_state.number, FALSE);

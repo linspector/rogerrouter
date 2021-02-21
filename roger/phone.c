@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,22 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
+
+#include "phone.h"
+
+#include "contacts.h"
+#include "contactsearch.h"
+#include "journal.h"
+#include "uitools.h"
 
 #include <ctype.h>
 #include <string.h>
-
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
-
 #include <rm/rm.h>
-
-#include <roger/main.h>
-#include <roger/journal.h>
-#include <roger/phone.h>
-#include <roger/uitools.h>
-#include <roger/contactsearch.h>
-
-#include <roger/contacts.h>
 
 typedef struct _phone_state {
   GtkWidget *window;
@@ -64,8 +62,8 @@ static gboolean
 phone_status_timer_cb (gpointer data)
 {
   PhoneState *phone_state = data;
-  gchar *time_diff;
-  gchar *buf;
+  char *time_diff;
+  char *buf;
 
   time_diff = rm_connection_get_duration_time (phone_state->connection);
   buf = g_strdup_printf (_("Time: %s"), time_diff);
@@ -198,7 +196,7 @@ static void
 phone_pickup_button_clicked_cb (GtkWidget  *button,
                                 PhoneState *phone_state)
 {
-  gchar *number;
+  char *number;
 
   /* Get selected number (either number format or based on the selected name) */
   number = contact_search_get_number (CONTACT_SEARCH (phone_state->contact_search));
@@ -255,7 +253,7 @@ phone_item_toggled_cb (GtkToggleButton *button,
 {
   /* If item is active, adjust phone port accordingly */
   if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
-    const gchar *name = gtk_button_get_label (GTK_BUTTON (button));
+    const char *name = gtk_button_get_label (GTK_BUTTON (button));
     RmPhone *phone = rm_phone_get (name);
 
     rm_profile_set_phone (phone_state->profile, phone);
@@ -339,7 +337,7 @@ static void
 phone_dtmf_button_clicked_cb (GtkWidget  *widget,
                               PhoneState *phone_state)
 {
-  const gchar *name = gtk_widget_get_name (widget);
+  const char *name = gtk_widget_get_name (widget);
   gint num = name[7];
 
   if (phone_state->connection) {
@@ -347,8 +345,8 @@ phone_dtmf_button_clicked_cb (GtkWidget  *widget,
     rm_phone_dtmf (phone_state->phone, phone_state->connection, num);
   } else {
     /* Add number to entry */
-    const gchar *text = contact_search_get_text (CONTACT_SEARCH (phone_state->contact_search));
-    gchar *tmp = g_strdup_printf ("%s%c", text, num);
+    const char *text = contact_search_get_text (CONTACT_SEARCH (phone_state->contact_search));
+    char *tmp = g_strdup_printf ("%s%c", text, num);
 
     contact_search_set_text (CONTACT_SEARCH (phone_state->contact_search), tmp);
     g_free (tmp);
@@ -411,11 +409,11 @@ static void
 phone_clear_button_clicked_cb (GtkWidget  *widget,
                                PhoneState *phone_state)
 {
-  const gchar *text = contact_search_get_text (CONTACT_SEARCH (phone_state->contact_search));
+  const char *text = contact_search_get_text (CONTACT_SEARCH (phone_state->contact_search));
 
   /* If there is text within the entry, remove last char */
   if (!RM_EMPTY_STRING (text)) {
-    gchar *new = g_strdup (text);
+    char *new = g_strdup (text);
 
     new[strlen (text) - 1] = '\0';
     contact_search_set_text (CONTACT_SEARCH (phone_state->contact_search), new);

@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,20 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
-#include <gtk/gtk.h>
-
-#include <rm/rm.h>
-
-#include <roger/main.h>
-#include <roger/preferences.h>
-#include <roger/preferences-audio.h>
-#include <roger/preferences-telephony.h>
-
+#include "preferences.h"
+#include "preferences-audio.h"
+#include "preferences-telephony.h"
 #include "roger-type-builtins.h"
 
-static gchar *
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include <rm/rm.h>
+
+static char *
 controller_get_name (HdyEnumValueObject *value,
                      gpointer            user_data)
 {
@@ -94,7 +92,7 @@ roger_phone_number_set_mapping (const GValue       *value,
   return g_variant_new_string (numbers[idx]);
 }
 
-static gchar *
+static char *
 resolution_get_name (HdyEnumValueObject *value,
                      gpointer            user_data)
 {
@@ -110,7 +108,7 @@ resolution_get_name (HdyEnumValueObject *value,
   }
 }
 
-static gchar *
+static char *
 service_get_name (HdyEnumValueObject *value,
                   gpointer            user_data)
 {

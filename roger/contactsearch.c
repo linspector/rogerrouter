@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,14 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "contactsearch.h"
+
+#include "contacts.h"
+#include "gd-two-lines-renderer.h"
+
 #include <ctype.h>
-
+#include <glib/gi18n.h>
 #include <rm/rm.h>
-
-#include <roger/contactsearch.h>
-#include <roger/contacts.h>
-#include <roger/main.h>
-#include <roger/gd-two-lines-renderer.h>
 
 struct _ContactSearch {
   GtkBox parent_instance;
@@ -51,10 +51,10 @@ G_DEFINE_TYPE (ContactSearch, contact_search, GTK_TYPE_BOX);
  *
  * Returns: phone number type as string
  */
-gchar *
+char *
 phone_number_type_to_string (RmPhoneNumber *number)
 {
-  gchar *tmp;
+  char *tmp;
 
   switch (number->type) {
     case RM_PHONE_NUMBER_TYPE_HOME:
@@ -151,12 +151,12 @@ contact_search_class_init (ContactSearchClass *klass)
  */
 static gboolean
 contact_search_match_func (GtkEntryCompletion *completion,
-                           const gchar        *key,
+                           const char         *key,
                            GtkTreeIter        *iter,
                            gpointer            user_data)
 {
   GtkTreeModel *model;
-  gchar *item = NULL;
+  char *item = NULL;
   gboolean ret = FALSE;
 
   model = gtk_entry_completion_get_model (completion);
@@ -243,7 +243,7 @@ contact_search_init (ContactSearch *widget)
 
       for (numbers = contact->numbers; numbers != NULL; numbers = numbers->next) {
         RmPhoneNumber *phone_number = numbers->data;
-        gchar *num_str = g_strdup_printf ("%s: %s", phone_number_type_to_string (phone_number), phone_number->number);
+        char *num_str = g_strdup_printf ("%s: %s", phone_number_type_to_string (phone_number), phone_number->number);
 
         gtk_list_store_insert_with_values (store, &iter, -1, 0, pixbuf, 1, contact->name, 2, num_str, 3, phone_number, -1);
       }
@@ -294,10 +294,10 @@ contact_search_new (void)
  *
  * Returns: current phone number
  */
-gchar *
+char *
 contact_search_get_number (ContactSearch *widget)
 {
-  return (gchar *)gtk_entry_get_text (GTK_ENTRY (widget->entry));
+  return (char *)gtk_entry_get_text (GTK_ENTRY (widget->entry));
 }
 
 /**
@@ -321,7 +321,7 @@ contact_search_clear (ContactSearch *widget)
  */
 void
 contact_search_set_text (ContactSearch *widget,
-                         gchar         *text)
+                         char          *text)
 {
   gtk_entry_set_text (GTK_ENTRY (widget->entry), text);
 }
@@ -334,7 +334,7 @@ contact_search_set_text (ContactSearch *widget,
  *
  * Returns: current text
  */
-const gchar *
+const char *
 contact_search_get_text (ContactSearch *widget)
 {
   return gtk_entry_get_text (GTK_ENTRY (widget->entry));

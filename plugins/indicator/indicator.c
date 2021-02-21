@@ -45,7 +45,6 @@ typedef struct {
   GAction *contacts;
   GAction *about;
   GAction *phone;
-  GAction *plugins;
   GAction *quit;
   GAction *copy_ip;
   GAction *reconnect;
@@ -166,22 +165,6 @@ indicator_contacts_activate_cb (GtkWidget *widget,
 }
 
 /**
- * indicator_plugins_activate_cb:
- * @widget: a #GtkWidget
- * @user_data: a #RmIndicatorPlugin
- *
- * Acticates action "plugins"
- */
-void
-indicator_plugins_activate_cb (GtkWidget *widget,
-                               gpointer   user_data)
-{
-  RmIndicatorPlugin *indicator_plugin = user_data;
-
-  g_action_activate (indicator_plugin->plugins, NULL);
-}
-
-/**
  * indicator_about_activate_cb:
  * @widget: a #GtkWidget
  * @user_data: a #RmIndicatorPlugin
@@ -271,11 +254,6 @@ indicator_popup_menu_cb (RmIndicatorPlugin *indicator_plugin)
   item = gtk_separator_menu_item_new ();
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
-  /* Plugins */
-  item = gtk_menu_item_new_with_label (_("Plugins"));
-  gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-  g_signal_connect (G_OBJECT (item), "activate", G_CALLBACK (indicator_plugins_activate_cb), indicator_plugin);
-
   /* Preferences */
   item = gtk_menu_item_new_with_label (_("Preferences"));
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
@@ -339,7 +317,7 @@ indicator_combobox_default_changed_cb (GtkComboBox *widget,
   g_settings_set_string (indicator_plugin->settings, "default-icon", gtk_combo_box_get_active_id (GTK_COMBO_BOX (widget)));
 
   /* Update indicator icon */
-  gchar *iconname = g_strconcat ("org.tabos.roger.", g_settings_get_string (indicator_plugin->settings, "default-icon"), NULL);
+  char *iconname = g_strconcat ("org.tabos.roger.", g_settings_get_string (indicator_plugin->settings, "default-icon"), NULL);
   app_indicator_set_icon_full (indicator_plugin->indicator, iconname, "default-icon");
   g_free (iconname);
 }
@@ -361,7 +339,7 @@ indicator_combobox_notify_changed_cb (GtkComboBox *widget,
   g_settings_set_string (indicator_plugin->settings, "notify-icon", gtk_combo_box_get_active_id (GTK_COMBO_BOX (widget)));
 
   /* Update indicator attention icon */
-  gchar *iconname = g_strconcat ("org.tabos.roger.", g_settings_get_string (indicator_plugin->settings, "notify-icon"), NULL);
+  char *iconname = g_strconcat ("org.tabos.roger.", g_settings_get_string (indicator_plugin->settings, "notify-icon"), NULL);
   app_indicator_set_attention_icon_full (indicator_plugin->indicator, iconname, "notify-icon");
   g_free (iconname);
 }
@@ -411,7 +389,6 @@ indicator_plugin_init (RmPlugin *plugin)
   indicator_plugin->quit = g_action_map_lookup_action (G_ACTION_MAP (app), "quit");
   indicator_plugin->phone = g_action_map_lookup_action (G_ACTION_MAP (app), "phone");
   indicator_plugin->about = g_action_map_lookup_action (G_ACTION_MAP (app), "about");
-  indicator_plugin->plugins = g_action_map_lookup_action (G_ACTION_MAP (app), "plugins");
   indicator_plugin->copy_ip = g_action_map_lookup_action (G_ACTION_MAP (app), "copy_ip");
   indicator_plugin->reconnect = g_action_map_lookup_action (G_ACTION_MAP (app), "reconnect");
   indicator_plugin->journal = g_action_map_lookup_action (G_ACTION_MAP (app), "journal");
@@ -424,7 +401,7 @@ indicator_plugin_init (RmPlugin *plugin)
   indicator_plugin->settings = rm_settings_new ("org.tabos.roger.plugins.indicator");
 
   /* Create Application Indicator */
-  gchar *iconname = g_strconcat ("org.tabos.roger.", g_settings_get_string (indicator_plugin->settings, "default-icon"), NULL);
+  char *iconname = g_strconcat ("org.tabos.roger.", g_settings_get_string (indicator_plugin->settings, "default-icon"), NULL);
   indicator_plugin->indicator = app_indicator_new ("org.tabos.roger", iconname, APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 
   iconname = g_strconcat ("org.tabos.roger.", g_settings_get_string (indicator_plugin->settings, "notify-icon"), NULL);

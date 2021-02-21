@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,14 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEBUG_H
-#define DEBUG_H
+#pragma once
+
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-void app_debug_window(void);
+void app_debug_window (void);
 
 G_END_DECLS
-
-#endif
 

@@ -19,12 +19,9 @@
 
 #pragma once
 
+#include "preferences.h"
+
 #include <gtk/gtk.h>
-
-#define HANDY_USE_UNSTABLE_API
-#include <handy.h>
-
-#include <roger/preferences.h>
 
 G_BEGIN_DECLS
 

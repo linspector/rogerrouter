@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,14 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
+
+#include "preferences.h"
 
 #include <gtk/gtk.h>
-
 #include <rm/rm.h>
-
-#include <roger/main.h>
-#include <roger/preferences.h>
 
 static GSList *
 get_audio_devices (void)
@@ -102,9 +100,9 @@ roger_preferences_setup_audio (RogerPreferencesWindow *self)
   GListStore *microphone_list;
   GListStore *speaker_list;
   GListStore *ringer_list;
-  g_autofree gchar *microphone_name = NULL;
-  g_autofree gchar *speaker_name = NULL;
-  g_autofree gchar *ringer_name = NULL;
+  g_autofree char *microphone_name = NULL;
+  g_autofree char *speaker_name = NULL;
+  g_autofree char *ringer_name = NULL;
 
   g_settings_bind (self->profile->settings, "notification-play-ringtone", self->ringtone, "active", G_SETTINGS_BIND_DEFAULT);
 

@@ -89,7 +89,7 @@ osxab_read_book (void)
     CFTypeRef addresses = ABRecordCopyValue (person, kABAddressProperty);
     CFTypeRef phones = ABRecordCopyValue (person, kABPhoneProperty);
     CFTypeRef uid = ABRecordCopyUniqueId (person);
-    gchar *lastname_cstr;
+    char *lastname_cstr;
     RmContact *contact;
 
     if (!firstName && !lastName) {
@@ -118,7 +118,7 @@ osxab_read_book (void)
         CFStringRef city = CFDictionaryGetValue (an_address, kABAddressCityKey);
         CFStringRef zip = CFDictionaryGetValue (an_address, kABAddressZIPKey);
         RmContactAddress *address = g_slice_new0 (RmContactAddress);
-        gchar *tmp;
+        char *tmp;
 
         address->type = CFStringCompare (label, kABHomeLabel, 0);
 
@@ -222,9 +222,9 @@ osxab_save_contact (RmContact *contact)
   ABAddressBookRef ab = ABGetSharedAddressBook ();
   ABPersonRef ref;
   CFStringRef cfstring;
-  gchar *first_name = NULL;
-  gchar *last_name = NULL;
-  gchar **split;
+  char *first_name = NULL;
+  char *last_name = NULL;
+  char **split;
 
   if (!contact->priv) {
     ref = ABPersonCreate ();
@@ -324,7 +324,7 @@ osxab_save_contact (RmContact *contact)
   return TRUE;
 }
 
-gchar *
+char *
 osxab_get_active_book_name (void)
 {
   return g_strdup ("osxab");

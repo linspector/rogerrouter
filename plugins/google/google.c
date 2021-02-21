@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2014 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,17 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string.h>
-
-#include <gtk/gtk.h>
-
-#include <rm/rm.h>
-
 #include <gdata/gdata.h>
 #include <gdata/gdata-oauth1-authorizer.h>
-
-#include <roger/main.h>
-#include <roger/uitools.h>
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include <handy.h>
+#include <rm/rm.h>
+#include <string.h>
 
 typedef struct {
   guint signal_id;
@@ -46,7 +42,7 @@ static GDataContactsService *service = NULL;
 static GDataOAuth2Authorizer *authorizer = NULL;
 
 struct auth_code_data {
-  const gchar *auth_uri;
+  const char *auth_uri;
   GtkWidget *entry;
 };
 
@@ -74,16 +70,16 @@ auth_code_entry_changed_cb (GtkEditable *entry,
   gtk_widget_set_sensitive (GTK_WIDGET (data), gtk_entry_get_text_length (GTK_ENTRY (entry)) > 0);
 }
 
-gchar *
-ask_user_for_auth_code (const gchar *auth_uri)
+char *
+ask_user_for_auth_code (const char *auth_uri)
 {
   GtkWidget *dialog;
   GtkWidget *grid;
   GtkWidget *link_button;
   GtkWidget *label;
   GtkWidget *entry;
-  gchar *str;
-  gchar *retval = NULL;
+  char *str;
+  char *retval = NULL;
   gint dlg_res;
   GtkWidget *btn_ok;
   struct auth_code_data *auth_code_data;
@@ -157,7 +153,7 @@ ask_user_for_auth_code (const gchar *auth_uri)
 static void
 google_interactive_auth (void)
 {
-  gchar *authentication_uri, *authorization_code;
+  char *authentication_uri, *authorization_code;
 
   authentication_uri = gdata_oauth2_authorizer_build_authentication_uri (authorizer, NULL, FALSE);
 
@@ -185,8 +181,8 @@ google_interactive_auth (void)
 static int
 google_init (void)
 {
-  gchar *user;
-  gchar *pwd;
+  char *user;
+  char *pwd;
 
   if (!authorizer) {
     user = g_settings_get_string (google_settings, "user");
@@ -215,7 +211,7 @@ google_init (void)
 
   if (!gdata_service_is_authorized (GDATA_SERVICE (service))) {
     /* Try to use refresh token */
-    gchar *token = g_settings_get_string (google_settings, "token");
+    char *token = g_settings_get_string (google_settings, "token");
 
     if (!RM_EMPTY_STRING (token)) {
       GError *error = NULL;
@@ -249,7 +245,7 @@ google_init (void)
 static int
 google_shutdown (void)
 {
-  gchar *token = NULL;
+  char *token = NULL;
 
   if (service != NULL) {
     g_object_unref (service);
@@ -315,11 +311,11 @@ google_read_book (void)
       GDataGDName *name = NULL;
       GList *number_list = NULL;
       GList *address_list = NULL;
-      const gchar *id;
+      const char *id;
       GHashTable *table;
       guint8 *photo;
       gsize photo_len;
-      gchar *photo_type;
+      char *photo_type;
       RmContact *contact;
 
       if (list->data == NULL) {
@@ -363,8 +359,8 @@ google_read_book (void)
       number_list = gdata_contacts_contact_get_phone_numbers (gcontact);
       while (number_list != NULL && number_list->data != NULL) {
         GDataGDPhoneNumber *number = number_list->data;
-        const gchar *type = gdata_gd_phone_number_get_relation_type (number);
-        const gchar *num = gdata_gd_phone_number_get_number (number);
+        const char *type = gdata_gd_phone_number_get_relation_type (number);
+        const char *num = gdata_gd_phone_number_get_number (number);
         const char *label = gdata_gd_phone_number_get_label (number);
         RmPhoneNumber *phone_number;
 
@@ -406,7 +402,7 @@ google_read_book (void)
       address_list = gdata_contacts_contact_get_postal_addresses (gcontact);
       while (address_list != NULL && address_list->data != NULL) {
         GDataGDPostalAddress *gaddress = address_list->data;
-        const gchar *type = gdata_gd_postal_address_get_relation_type (gaddress);
+        const char *type = gdata_gd_postal_address_get_relation_type (gaddress);
         RmContactAddress *address;
 
         if (type == NULL) {
@@ -421,7 +417,7 @@ google_read_book (void)
           address->type = 0;
         }
 
-        const gchar *tmp = gdata_gd_postal_address_get_street (gaddress);
+        const char *tmp = gdata_gd_postal_address_get_street (gaddress);
         address->street = g_strdup (tmp ? tmp : "");
         tmp = gdata_gd_postal_address_get_city (gaddress);
         address->city = g_strdup (tmp ? tmp : "");
@@ -461,7 +457,7 @@ google_set_image (GDataContactsContact *gcontact,
                   struct sPerson       *contact)
 {
   if (contact->pnNewImage != NULL) {
-    gchar *pnData;
+    char *pnData;
     gsize nLength;
 
     if (g_file_get_contents (contact->pnNewImage, &pnData, &nLength, NULL)) {
@@ -502,7 +498,7 @@ googleSaveBook (void)
       GDataContactsContact *contact;
       GDataGDPostalAddress *psAddress;
       GDataGDOrganization *organization;
-      gchar *idUrl = NULL;
+      char *idUrl = NULL;
 
       g_debug ("Adding new person");
 
@@ -619,7 +615,7 @@ googleSaveBook (void)
       google_set_image (contact, contact);
 
       /* Update person id */
-      contact->id = (gchar *)gdata_entry_get_id (GDATA_ENTRY (contact));
+      contact->id = (char *)gdata_entry_get_id (GDATA_ENTRY (contact));
     }
 
     if (contact->nFlags & PERSON_FLAG_DELETED) {
@@ -664,7 +660,7 @@ googleSaveBook (void)
       contact = GDATA_CONTACTS_CONTACT (psEntry);
 
       /* Update title */
-      gchar *pnDisplayName = g_strdup_printf ("%s %s", contact->pnFirstName, contact->pnLastName);
+      char *pnDisplayName = g_strdup_printf ("%s %s", contact->pnFirstName, contact->pnLastName);
       gdata_entry_set_title (GDATA_ENTRY (contact), pnDisplayName);
 
       /* Get name information and update name information */
@@ -846,7 +842,7 @@ google_get_contacts (void)
   return list;
 }
 
-gchar *
+char *
 google_get_active_book_name (void)
 {
   return g_strdup ("Google");
@@ -905,39 +901,29 @@ google_plugin_shutdown (RmPlugin *plugin)
 gpointer
 google_plugin_configure (RmPlugin *config)
 {
+  GList *list = NULL;
   GtkWidget *user_entry;
   GtkWidget *password_entry;
-  GtkWidget *label;
-  GtkWidget *grid;
-  GtkWidget *group;
+  GtkWidget *row;
 
-  grid = gtk_grid_new ();
-  gtk_widget_set_margin (grid, 18, 18, 18, 18);
-
-  gtk_grid_set_row_spacing (GTK_GRID (grid), 6);
-  gtk_grid_set_column_spacing (GTK_GRID (grid), 12);
-
-  label = gtk_label_new (_("User"));
-  gtk_widget_set_sensitive (label, FALSE);
-  gtk_grid_attach (GTK_GRID (grid), label, 0, 0, 1, 1);
+  row = hdy_action_row_new ();
+  hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), _("User"));
 
   user_entry = gtk_entry_new ();
-  gtk_grid_attach (GTK_GRID (grid), user_entry, 1, 0, 1, 1);
+  gtk_container_add (GTK_CONTAINER (row), user_entry);
   g_settings_bind (google_settings, "user", user_entry, "text", G_SETTINGS_BIND_DEFAULT);
+  list = g_list_append (list, row);
 
-  label = gtk_label_new (_("Password"));
-  gtk_widget_set_sensitive (label, FALSE);
-  gtk_grid_attach (GTK_GRID (grid), label, 0, 1, 1, 1);
+  row = hdy_action_row_new ();
+  hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), _("Password"));
 
   password_entry = gtk_entry_new ();
   gtk_entry_set_visibility (GTK_ENTRY (password_entry), FALSE);
-  gtk_grid_attach (GTK_GRID (grid), password_entry, 1, 1, 1, 1);
+  gtk_container_add (GTK_CONTAINER (row), password_entry);
   g_settings_bind (google_settings, "password", password_entry, "text", G_SETTINGS_BIND_DEFAULT);
+  list = g_list_append (list, row);
 
-  group = ui_group_create (grid, _("Access data"), TRUE, FALSE);
-
-  return NULL;
-  return group;
+  return list;
 }
 
 RM_PLUGIN_CONFIG (google);

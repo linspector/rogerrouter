@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,8 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PHONE_H
-#define PHONE_H
+#pragma once
 
 #include <rm/rm.h>
 
@@ -28,4 +27,3 @@ void app_phone(RmContact *contact, RmConnection *connection);
 
 G_END_DECLS
 
-#endif

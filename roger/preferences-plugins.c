@@ -17,60 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
+#include "preferences.h"
+#include "uitools.h"
+
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
-
 #include <rm/rm.h>
 #include <rm/rmplugins.h>
-
-#include <roger/main.h>
-#include <roger/preferences.h>
-#include <uitools.h>
-
-/**
- * plugins_configure_button_clicked_cb:
- * @button: button #GtkWidget
- * @user_data: a #GtkListBox
- *
- * Creates and opens configure window of selected plugin
- */
-static void
-plugins_configure_button_clicked_cb (GtkWidget *button,
-                                     gpointer   user_data)
-{
-  /*GtkListBoxRow *row = gtk_list_box_get_selected_row(GTK_LIST_BOX(user_data));
-   *  GtkWidget *child = gtk_container_get_children(GTK_CONTAINER(row))->data;
-   *  RmPlugin *plugin = g_object_get_data(G_OBJECT(child), "plugin");
-   *
-   *  if (!plugin) {
-   *       return;
-   *  }
-   *
-   *  if (plugin->configure) {
-   *       GtkWidget *config = plugin->configure(plugin);
-   *       GtkWidget *win;
-   *       GtkWidget *headerbar;
-   *
-   *       if (!config) {
-   *               return;
-   *       }
-   *
-   *       win = g_object_new(GTK_TYPE_DIALOG, "use-header-bar", TRUE, NULL);;
-   *       gtk_window_set_transient_for(GTK_WINDOW(win), GTK_WINDOW(plugins_window));
-   *       gtk_window_set_modal(GTK_WINDOW(win), TRUE);
-   *
-   *       headerbar = gtk_dialog_get_header_bar(GTK_DIALOG(win));
-   *       gtk_header_bar_set_title(GTK_HEADER_BAR (headerbar), plugin->name);
-   *       gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(headerbar), TRUE);
-   *
-   *       gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(win))), config);
-   *
-   *       gtk_widget_show_all(config);
-   *       gtk_dialog_run(GTK_DIALOG(win));
-   *       gtk_widget_destroy(win);
-   *  }*/
-}
 
 static gboolean
 plugins_switch_state_set_cb (GtkSwitch *widget,
@@ -90,7 +45,7 @@ plugins_switch_state_set_cb (GtkSwitch *widget,
 void
 roger_preferences_setup_plugins (RogerPreferencesWindow *self)
 {
-  for (GList *list = rm_plugins_get (); list != NULL; list = list->next) {
+  for (GSList *list = rm_plugins_get (); list != NULL; list = list->next) {
     RmPlugin *plugin = list->data;
     GtkWidget *row;
     GtkWidget *toggle;
@@ -104,7 +59,7 @@ roger_preferences_setup_plugins (RogerPreferencesWindow *self)
     row = hdy_expander_row_new ();
 
     hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), plugin->name);
-    hdy_expander_row_set_subtitle (HDY_ACTION_ROW (row), plugin->description);
+    hdy_expander_row_set_subtitle (HDY_EXPANDER_ROW (row), plugin->description);
 
     toggle = gtk_switch_new ();
     gtk_switch_set_active (GTK_SWITCH (toggle), plugin->enabled);

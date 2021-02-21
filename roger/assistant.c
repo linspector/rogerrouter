@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,17 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#include "config.h"
 
 #include "assistant.h"
-#include "main.h"
 
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <rm/rm.h>
 #include <string.h>
 
 typedef struct {
-  gchar *name;
+  char *name;
   void (*setup)(RogerAssistant *assistant);
 } AssistantPage;
 
@@ -73,7 +73,7 @@ roger_assistant_profile_entry_changed (GtkEditable *entry,
   RogerAssistant *self = ROGER_ASSISTANT (user_data);
   RmProfile *profile;
   GSList *profile_list = rm_profile_get_list ();
-  const gchar *text = gtk_entry_get_text (GTK_ENTRY (entry));
+  const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
 
   /* Loop through all known profiles and check for duplicate profile name */
   while (profile_list != NULL) {
@@ -123,7 +123,7 @@ assistant_scan_router (gpointer user_data)
   for (list = routers; list != NULL; list = list->next) {
     RmRouterInfo *router_info = list->data;
     GtkWidget *new_device;
-    g_autofree gchar *tmp = NULL;
+    g_autofree char *tmp = NULL;
 
     tmp = g_strdup_printf ("<b>%s</b>\n<small>%s %s</small>", router_info->name, _("on"), router_info->host);
 
@@ -184,7 +184,7 @@ roger_assistant_router_listbox_row_selected (GtkListBox    *box,
   if (row) {
     /* We have a selected row, get child and set host internally */
     GtkWidget *child = gtk_container_get_children (GTK_CONTAINER (row))->data;
-    gchar *host = g_object_get_data (G_OBJECT (child), "host");
+    char *host = g_object_get_data (G_OBJECT (child), "host");
 
     g_clear_pointer (&self->router_uri, g_free);
     self->router_uri = g_strdup (host);
@@ -198,7 +198,7 @@ roger_assistant_router_entry_changed (GtkEditable *entry,
                                       gpointer     user_data)
 {
   RogerAssistant *self = ROGER_ASSISTANT (user_data);
-  const gchar *text = gtk_entry_get_text (GTK_ENTRY (entry));
+  const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
   gboolean valid;
 
   /* Check for valid ip entry */
@@ -218,7 +218,7 @@ roger_assistant_router_stack_switcher_button_release_event (GtkWidget *entry,
 {
   RogerAssistant *self = ROGER_ASSISTANT (user_data);
   GtkListBoxRow *row;
-  const gchar *name = gtk_stack_get_visible_child_name (GTK_STACK (self->router_stack));
+  const char *name = gtk_stack_get_visible_child_name (GTK_STACK (self->router_stack));
 
   gtk_widget_set_sensitive (self->next_button, FALSE);
 
@@ -235,7 +235,7 @@ roger_assistant_router_stack_switcher_button_release_event (GtkWidget *entry,
 static void
 assistant_router_page_setup (RogerAssistant *self)
 {
-  const gchar *name = gtk_entry_get_text (GTK_ENTRY (self->profile_name_entry));
+  const char *name = gtk_entry_get_text (GTK_ENTRY (self->profile_name_entry));
 
   gtk_widget_set_sensitive (self->back_button, TRUE);
   gtk_widget_set_sensitive (self->next_button, FALSE);
@@ -261,10 +261,10 @@ assistant_get_settings_thread (GTask        *task,
     ret = TRUE;
 
   if (self->needs_ftp) {
-    const gchar *host = g_object_get_data (G_OBJECT (self->router_stack), "server");
-    const gchar *ftp_user = gtk_entry_get_text (GTK_ENTRY (self->ftp_user_entry));
-    const gchar *ftp_password = gtk_entry_get_text (GTK_ENTRY (self->ftp_password_entry));
-    gchar *message;
+    const char *host = g_object_get_data (G_OBJECT (self->router_stack), "server");
+    const char *ftp_user = gtk_entry_get_text (GTK_ENTRY (self->ftp_user_entry));
+    const char *ftp_password = gtk_entry_get_text (GTK_ENTRY (self->ftp_password_entry));
+    char *message;
     RmFtp *ftp;
 
     /* Test ftp login */
@@ -340,8 +340,8 @@ static void
 assistant_loading_page_setup (RogerAssistant *self)
 {
   g_autoptr (GTask) task = NULL;
-  const gchar *user = gtk_entry_get_text (GTK_ENTRY (self->user_entry));
-  const gchar *password = gtk_entry_get_text (GTK_ENTRY (self->password_entry));
+  const char *user = gtk_entry_get_text (GTK_ENTRY (self->user_entry));
+  const char *password = gtk_entry_get_text (GTK_ENTRY (self->password_entry));
 
   gtk_widget_set_visible (self->back_button, FALSE);
   gtk_widget_set_visible (self->next_button, FALSE);

@@ -1,6 +1,6 @@
 /**
  * Roger Router
- * Copyright (c) 2012-2014 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,16 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONTACTS_H
-#define CONTACTS_H
+#pragma once
+
+#include <gtk/gtk.h>
+#include <rm/rm.h>
 
 G_BEGIN_DECLS
 
 #define AVATAR_DEFAULT "avatar-default-symbolic"
 
-void app_contacts(RmContact *contact);
-void contacts_add_detail(gchar *detail);
+void app_contacts        (RmContact *contact);
+void contacts_add_detail (char      *detail);
 
 G_END_DECLS
 
-#endif

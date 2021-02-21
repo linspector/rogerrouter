@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,14 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SHORTCUTS_H
-#define SHORTCUTS_H
+#pragma once
+
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-void app_shortcuts(void);
+void app_shortcuts (void);
 
 G_END_DECLS
-
-#endif
 

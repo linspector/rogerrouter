@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2017 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -17,19 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "debug.h"
+
+#include "application.h"
+
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
-
 #include <rm/rm.h>
-
-#include <roger/application.h>
-#include <roger/main.h>
 
 /** Debug window */
 static GtkWidget *debug_window = NULL;
 
 typedef struct debug_data {
   GLogLevelFlags flags;
-  gchar *message;
+  char *message;
 } DebugData;
 
 /**
@@ -47,11 +48,11 @@ debug_log_idle (gpointer user_data)
   GtkTextBuffer *text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview));
   DebugData *data = user_data;
   GtkTextIter iter;
-  gchar *type;
-  gchar *tag;
+  char *type;
+  char *tag;
   GDateTime *datetime;
   GString *output;
-  gchar *time;
+  char *time;
 
   output = g_string_new ("");
   datetime = g_date_time_new_now_local ();
@@ -116,7 +117,7 @@ debug_log_idle (gpointer user_data)
  */
 static void
 debug_log_handler (GLogLevelFlags  flags,
-                   const gchar    *message)
+                   const char     *message)
 {
   DebugData *data = g_slice_new0 (struct debug_data);
 
@@ -182,8 +183,8 @@ debug_save_clicked_cb (GtkWidget *widget,
   GtkTextBuffer *text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (textview));
   GtkFileChooserNative *native;
   GtkFileChooser *chooser;
-  gchar *time;
-  gchar *buf;
+  char *time;
+  char *buf;
   GDateTime *datetime = g_date_time_new_now_local ();
   gint res;
 

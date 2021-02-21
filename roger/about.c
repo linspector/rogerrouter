@@ -19,7 +19,9 @@
 
 #include "config.h"
 
-#include <glib/gi18n-lib.h>
+#include "about.h"
+
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
 #define ABOUT_GROUP "About"
