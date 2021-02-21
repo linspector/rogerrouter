@@ -23,9 +23,8 @@
 
 G_BEGIN_DECLS
 
-void fax_process_init    (void);
-void app_show_fax_window (char     *tiff_file);
-void fax_window_clear    (gpointer  priv);
+void fax_process_init (void);
+void app_show_fax_window (char *tiff_file);
+void fax_window_clear (gpointer priv);
 
 G_END_DECLS
-

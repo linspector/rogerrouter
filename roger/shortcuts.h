@@ -26,4 +26,3 @@ G_BEGIN_DECLS
 void app_shortcuts (void);
 
 G_END_DECLS
-

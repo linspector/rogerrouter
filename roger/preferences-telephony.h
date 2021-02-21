@@ -26,8 +26,7 @@
 G_BEGIN_DECLS
 
 /* Those typedefs needs to be moved to librm */
-typedef enum
-{
+typedef enum {
   RM_CONTROLLER_ISDN1,
   RM_CONTROLLER_ISDN2,
   RM_CONTROLLER_SYSTEM_ISDN,
@@ -50,4 +49,3 @@ typedef enum {
 void roger_preferences_setup_telephony (RogerPreferencesWindow *self);
 
 G_END_DECLS
-

@@ -26,42 +26,46 @@ G_BEGIN_DECLS
 #define GTK_DIALOG_USE_HEADER_BAR 0
 #endif
 
-#define ui_bold_text(text) g_strdup_printf("<b>%s</b>", text)
-#define ui_set_suggested_style(widget) gtk_style_context_add_class(gtk_widget_get_style_context(widget), GTK_STYLE_CLASS_SUGGESTED_ACTION)
-#define ui_set_destructive_style(widget) gtk_style_context_add_class(gtk_widget_get_style_context(widget), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION)
-#define ui_set_button_style(widget) gtk_style_context_add_class(gtk_widget_get_style_context(widget), GTK_STYLE_CLASS_BUTTON_ACTION)
+#define ui_bold_text(text) g_strdup_printf ("<b>%s</b>", text)
+#define ui_set_suggested_style(widget) gtk_style_context_add_class (gtk_widget_get_style_context (widget), GTK_STYLE_CLASS_SUGGESTED_ACTION)
+#define ui_set_destructive_style(widget) gtk_style_context_add_class (gtk_widget_get_style_context (widget), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION)
+#define ui_set_button_style(widget) gtk_style_context_add_class (gtk_widget_get_style_context (widget), GTK_STYLE_CLASS_BUTTON_ACTION)
 
 #define gtk_widget_set_margin(widget, x1, y1, x2, y2) { \
-		gtk_widget_set_margin_top(widget, y1); \
-		gtk_widget_set_margin_bottom(widget, y2); \
-		gtk_widget_set_margin_start(widget, x1); \
-		gtk_widget_set_margin_end(widget, x2); \
+    gtk_widget_set_margin_top (widget, y1); \
+    gtk_widget_set_margin_bottom (widget, y2); \
+    gtk_widget_set_margin_start (widget, x1); \
+    gtk_widget_set_margin_end (widget, x2); \
 }
 
-static inline GtkWidget *ui_group_create(GtkWidget *box, gchar *title_str, gboolean hexpand, gboolean vexpand)
+static inline GtkWidget *
+ui_group_create (GtkWidget *box,
+                 gchar     *title_str,
+                 gboolean   hexpand,
+                 gboolean   vexpand)
 {
-	GtkWidget *group;
-	GtkWidget *title;
-	gchar *title_markup = ui_bold_text(title_str);
+  GtkWidget *group;
+  GtkWidget *title;
+  gchar *title_markup = ui_bold_text (title_str);
 
-	group = gtk_grid_new();
+  group = gtk_grid_new ();
 
-	/* Set standard spacing to 5 */
-	gtk_grid_set_row_spacing(GTK_GRID(group), 5);
+  /* Set standard spacing to 5 */
+  gtk_grid_set_row_spacing (GTK_GRID (group), 5);
 
-	/* Configure plugins label */
-	title = gtk_label_new("");
-	gtk_widget_set_halign(title, GTK_ALIGN_START);
-	gtk_widget_set_margin(title, 10, 5, 10, 5);
-	gtk_label_set_markup(GTK_LABEL(title), title_markup);
-	gtk_grid_attach(GTK_GRID(group), title, 0, 0, 1, 1);
+  /* Configure plugins label */
+  title = gtk_label_new ("");
+  gtk_widget_set_halign (title, GTK_ALIGN_START);
+  gtk_widget_set_margin (title, 10, 5, 10, 5);
+  gtk_label_set_markup (GTK_LABEL (title), title_markup);
+  gtk_grid_attach (GTK_GRID (group), title, 0, 0, 1, 1);
 
-	gtk_widget_set_margin(box, 20, 0, 20, 10);
-	gtk_grid_attach(GTK_GRID(group), box, 0, 1, 1, 1);
+  gtk_widget_set_margin (box, 20, 0, 20, 10);
+  gtk_grid_attach (GTK_GRID (group), box, 0, 1, 1, 1);
 
-	g_free(title_markup);
+  g_free (title_markup);
 
-	return group;
+  return group;
 }
 
 /**
@@ -72,18 +76,18 @@ static inline GtkWidget *ui_group_create(GtkWidget *box, gchar *title_str, gbool
  *
  * Returns: new ui label
  */
-static inline GtkWidget *ui_label_new(gchar *text)
+static inline GtkWidget *
+ui_label_new (gchar *text)
 {
-	GtkWidget *label;
+  GtkWidget *label;
 
-	label = gtk_label_new(text);
-	gtk_widget_set_sensitive(label, FALSE);
-	gtk_widget_set_halign(label, GTK_ALIGN_END);
+  label = gtk_label_new (text);
+  gtk_widget_set_sensitive (label, FALSE);
+  gtk_widget_set_halign (label, GTK_ALIGN_END);
 
-	return label;
+  return label;
 }
 
 G_END_DECLS
 
 #endif
-

@@ -24,8 +24,9 @@
 
 G_BEGIN_DECLS
 
-void print_journal(GtkWidget *view_widget);
-void print_fax_report(RmFaxStatus *status, char *file, const char *report_dir);
+void print_journal (GtkWidget *view_widget);
+void print_fax_report (RmFaxStatus *status,
+                       char        *file,
+                       const char  *report_dir);
 
 G_END_DECLS
-

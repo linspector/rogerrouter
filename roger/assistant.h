@@ -30,4 +30,3 @@ G_DECLARE_FINAL_TYPE (RogerAssistant, roger_assistant, ROGER, ASSISTANT, GtkWind
 GtkWidget *roger_assistant_new (void);
 
 G_END_DECLS
-

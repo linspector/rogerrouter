@@ -23,7 +23,7 @@
 
 G_BEGIN_DECLS
 
-void app_phone(RmContact *contact, RmConnection *connection);
+void app_phone (RmContact    *contact,
+                RmConnection *connection);
 
 G_END_DECLS
-

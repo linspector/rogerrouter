@@ -84,4 +84,3 @@ G_DECLARE_FINAL_TYPE (RogerPreferencesWindow, roger_preferences_window, ROGER, P
 RogerPreferencesWindow *roger_preferences_window_new (void);
 
 G_END_DECLS
-

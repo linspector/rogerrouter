@@ -28,14 +28,13 @@ G_GNUC_END_IGNORE_DEPRECATIONS
 G_BEGIN_DECLS
 
 struct ebook_data {
-	char *name;
-	char *id;
+  char *name;
+  char *id;
 };
 
-const char *get_selected_ebook_id(void);
-EBookClient *get_selected_ebook_client(void);
-GList *get_ebook_list(void);
-void free_ebook_list(GList *ebook_list);
+const char *get_selected_ebook_id (void);
+EBookClient *get_selected_ebook_client (void);
+GList *get_ebook_list (void);
+void free_ebook_list (GList *ebook_list);
 
 G_END_DECLS
-

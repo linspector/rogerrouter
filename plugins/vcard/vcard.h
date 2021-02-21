@@ -25,26 +25,25 @@ G_BEGIN_DECLS
 
 /** States in parser */
 enum {
-	STATE_NEW = 0,
-	STATE_TAG,
-	STATE_OPTIONS,
-	STATE_ENTRY
+  STATE_NEW = 0,
+  STATE_TAG,
+  STATE_OPTIONS,
+  STATE_ENTRY
 };
 
 struct vcard_data {
-	gint state;
-	char *header;
-	char *options;
-	char *entry;
+  gint state;
+  char *header;
+  char *options;
+  char *entry;
 };
 
 struct vcard {
-	GSList *data;
+  GSList *data;
 };
 
-GString *vcard_create_uid(void);
-void vcard_load_file(char *file_name);
-void vcard_write_file(char *file_name);
+GString *vcard_create_uid (void);
+void vcard_load_file (char *file_name);
+void vcard_write_file (char *file_name);
 
 G_END_DECLS
-

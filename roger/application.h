@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2020 Jan-Michael Brummer
+ * Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -29,15 +29,14 @@ G_BEGIN_DECLS
 extern GSettings * app_settings;
 extern GtkApplication *roger_app;
 
-void app_show_contacts(void);
-void app_show_preferences(void);
-void app_show_help(void);
-void app_quit(void);
-void app_copy_ip(void);
-void app_reconnect(void);
-void app_hangup(RmConnection *connection);
-void app_pickup(RmConnection *connection);
+void app_show_contacts (void);
+void app_show_preferences (void);
+void app_show_help (void);
+void app_quit (void);
+void app_copy_ip (void);
+void app_reconnect (void);
+void app_hangup (RmConnection *connection);
+void app_pickup (RmConnection *connection);
 void app_present_journal (void);
 
 G_END_DECLS
-

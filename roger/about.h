@@ -26,4 +26,3 @@ G_BEGIN_DECLS
 void app_show_about (GtkWidget *parent);
 
 G_END_DECLS
-

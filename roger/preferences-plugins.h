@@ -28,4 +28,3 @@ G_BEGIN_DECLS
 void roger_preferences_setup_plugins (RogerPreferencesWindow *self);
 
 G_END_DECLS
-

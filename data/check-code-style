@@ -27,8 +27,7 @@ rm -f /tmp/$prefix*.patch
 pushd $SOURCE_ROOT
 for DIR in platform plugins roger
 do
-   # Aligning prototypes is not working yet, so avoid headers
-   for FILE in $(find "$DIR" -name "*.c" ! -path "*/contrib/*")
+   for FILE in $(find "$DIR" -name "*.[c|h]" ! -path "*/contrib/*")
     do
         "$UNCRUSTIFY" -q -c "data/uncrustify.cfg" -f "$FILE" -o "$FILE.uncrustify"
         "$LINEUP_PARAMETERS" "$FILE.uncrustify" > "$FILE.temp" && mv "$FILE.temp" "$FILE.uncrustify"

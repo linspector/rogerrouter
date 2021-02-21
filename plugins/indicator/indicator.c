@@ -20,21 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string.h>
+#include "about.h"
+#include "application.h"
+#include "journal.h"
+#include "phone.h"
+#include "uitools.h"
 
 #include <gtk/gtk.h>
-
-#include <rm/rm.h>
-
 #include <libayatana-appindicator/app-indicator.h>
-
-#include <roger/about.h>
-#include <roger/application.h>
-#include <roger/journal.h>
-#include <roger/main.h>
-#include <roger/phone.h>
-#include <roger/uitools.h>
-#include <roger/settings.h>
+#include <rm/rm.h>
+#include <string.h>
 
 typedef struct {
   /*< private >*/
