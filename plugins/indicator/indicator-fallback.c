@@ -20,12 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "about.h"
-#include "application.h"
-#include "journal.h"
-#include "phone.h"
-#include "uitools.h"
-
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <libappindicator/app-indicator.h>
 #include <rm/rm.h>
@@ -459,6 +454,7 @@ indicator_plugin_shutdown (RmPlugin *plugin)
 gpointer
 indicator_plugin_configure (RmPlugin *plugin)
 {
+#if NON_WORKING_CODE
   GtkWidget *settings_grid;
   GtkWidget *label;
   GtkWidget *switch_journal;
@@ -512,6 +508,9 @@ indicator_plugin_configure (RmPlugin *plugin)
   group = ui_group_create (settings_grid, _("Settings for Application Indicator"), TRUE, TRUE);
 
   return group;
+#else
+  return NULL;
+#endif
 }
 
 RM_PLUGIN_CONFIG (indicator);
