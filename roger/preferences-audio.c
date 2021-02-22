@@ -100,15 +100,8 @@ roger_preferences_setup_audio (RogerPreferencesWindow *self)
   GListStore *microphone_list;
   GListStore *speaker_list;
   GListStore *ringer_list;
-  g_autofree char *microphone_name = NULL;
-  g_autofree char *speaker_name = NULL;
-  g_autofree char *ringer_name = NULL;
 
   g_settings_bind (self->profile->settings, "notification-play-ringtone", self->ringtone, "active", G_SETTINGS_BIND_DEFAULT);
-
-  microphone_name = g_settings_get_string (self->profile->settings, "audio-input");
-  speaker_name = g_settings_get_string (self->profile->settings, "audio-output");
-  ringer_name = g_settings_get_string (self->profile->settings, "audio-output-ringtone");
 
   microphone_list = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
   speaker_list = g_list_store_new (HDY_TYPE_VALUE_OBJECT);

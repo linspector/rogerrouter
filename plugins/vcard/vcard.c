@@ -138,8 +138,9 @@ process_formatted_name (struct vcard_data *card_data,
   gint len = 0;
   gint index = 0;
 
-  g_assert (card_data != NULL);
-  g_assert (card_data->entry != NULL);
+  g_assert (contact);
+  g_assert (card_data);
+  g_assert (card_data->entry);
 
   len = strlen (card_data->entry);
 
@@ -235,6 +236,8 @@ process_uid (struct vcard_data *card_data,
   gint index = 0;
   GString *uid;
 
+  g_assert (contact);
+
   if (card_data == NULL || card_data->entry == NULL) {
     return;
   }
@@ -269,6 +272,8 @@ process_address (struct vcard_data *card_data,
   RmContactAddress *address;
   GString *tmp_str;
   char *tmp = NULL;
+
+  g_assert (contact);
 
   if (card_data == NULL || card_data->entry == NULL) {
     return;
@@ -358,6 +363,8 @@ process_telephone (struct vcard_data *card_data,
 {
   char *tmp = card_data->entry;
   RmPhoneNumber *number;
+
+  g_assert (contact);
 
   if (card_data->options == NULL) {
     g_warning ("No option field in telephone entry");
@@ -808,7 +815,7 @@ vcard_put_char (GString *data,
     current_position = 0;
   }
 
-  data = g_string_append_c (data, chr);
+  g_string_append_c (data, chr);
   current_position++;
 }
 
