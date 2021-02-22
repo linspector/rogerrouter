@@ -28,7 +28,6 @@
 #include "fax.h"
 #include "journal.h"
 #include "phone.h"
-#include "plugins.h"
 #include "preferences.h"
 #include "shortcuts.h"
 #include "uitools.h"
