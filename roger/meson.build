@@ -15,8 +15,6 @@ sourcelist = []
 sourcelist += 'about.c'
 sourcelist += 'about.h'
 sourcelist += 'main_ui.c'
-sourcelist += 'answeringmachine.c'
-sourcelist += 'answeringmachine.h'
 sourcelist += 'application.c'
 sourcelist += 'application.h'
 sourcelist += 'assistant.c'
@@ -49,6 +47,8 @@ sourcelist += 'print.h'
 sourcelist += 'shortcuts.c'
 sourcelist += 'shortcuts.h'
 sourcelist += 'uitools.h'
+sourcelist += 'roger-voice-mail.c'
+sourcelist += 'roger-voice-mail.h'
 sourcelist += resources
 sourcelist += enums
 

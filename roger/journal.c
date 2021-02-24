@@ -21,11 +21,11 @@
 
 #include "journal.h"
 
-#include "answeringmachine.h"
 #include "application.h"
 #include "contacts.h"
 #include "phone.h"
 #include "print.h"
+#include "roger-voice-mail.h"
 #include "uitools.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -644,22 +644,49 @@ journal_update_filter_box (RogerJournal *self)
   gtk_combo_box_set_active (GTK_COMBO_BOX (self->filter_combobox), 0);
 }
 
-void
-row_activated_foreach (GtkTreeModel *model,
-                       GtkTreePath  *path,
-                       GtkTreeIter  *iter,
-                       gpointer      data)
+static void
+roger_journal_voice_loaded_cb (GObject      *source_object,
+                               GAsyncResult *res,
+                               gpointer      user_data)
 {
+  RogerJournal *self = ROGER_JOURNAL (user_data);
+  g_autoptr (GError) error = NULL;
+  g_autofree GBytes *bytes = rm_router_load_voice_mail_finish (source_object, res, &error);
+  GtkWidget *voice_mail = NULL;
+
+  if (!bytes) {
+    g_warning ("Could not load voice file: %s", error ? error->message : "?");
+    return;
+  }
+
+  voice_mail = roger_voice_mail_new ();
+  gtk_window_set_transient_for (GTK_WINDOW (voice_mail), GTK_WINDOW (self));
+  gtk_widget_show (voice_mail);
+  roger_voice_mail_play (ROGER_VOICE_MAIL (voice_mail), g_steal_pointer (&bytes));
+}
+
+static void
+on_view_row_activated (GtkTreeView       *view,
+                       GtkTreePath       *path,
+                       GtkTreeViewColumn *column,
+                       gpointer           user_data)
+{
+  RogerJournal *self = ROGER_JOURNAL (user_data);
+  GtkTreeModel *model = gtk_tree_view_get_model (view);
   RmCallEntry *call;
   GError *error = NULL;
+  GtkTreeIter iter;
 
-  gtk_tree_model_get (model, iter, JOURNAL_COL_CALL_PTR, &call, -1);
+  if (!gtk_tree_model_get_iter (model, &iter, path))
+    return;
+
+  gtk_tree_model_get (model, &iter, JOURNAL_COL_CALL_PTR, &call, -1);
 
   switch (call->type) {
     case RM_CALL_ENTRY_TYPE_FAX_REPORT: {
       g_autofree char *uri = g_strdup_printf ("file:///%s", call->priv);
 
-      if (!gtk_show_uri_on_window (GTK_WINDOW (journal_get_window ()), uri, GDK_CURRENT_TIME, &error)) {
+      if (!gtk_show_uri_on_window (GTK_WINDOW (self), uri, GDK_CURRENT_TIME, &error)) {
         g_debug ("%s(): Could not open uri '%s'", __FUNCTION__, uri);
         g_debug ("%s(): '%s'", __FUNCTION__, error->message);
       } else {
@@ -679,7 +706,7 @@ row_activated_foreach (GtkTreeModel *model,
 
         rm_file_save (path, data, len);
 
-        if (!gtk_show_uri_on_window (GTK_WINDOW (journal_get_window ()), uri, GDK_CURRENT_TIME, &error)) {
+        if (!gtk_show_uri_on_window (GTK_WINDOW (self), uri, GDK_CURRENT_TIME, &error)) {
           g_debug ("%s(): Could not open uri '%s'", __FUNCTION__, uri);
           g_debug ("%s(): '%s'", __FUNCTION__, error->message);
         } else {
@@ -691,7 +718,7 @@ row_activated_foreach (GtkTreeModel *model,
     case RM_CALL_ENTRY_TYPE_RECORD: {
       char *tmp = call->priv;
 
-      if (!gtk_show_uri_on_window (GTK_WINDOW (journal_get_window ()), tmp, GDK_CURRENT_TIME, &error)) {
+      if (!gtk_show_uri_on_window (GTK_WINDOW (self), tmp, GDK_CURRENT_TIME, &error)) {
         g_debug ("%s(): Could not open uri '%s'", __FUNCTION__, tmp);
         g_debug ("%s(): '%s'", __FUNCTION__, error->message);
       } else {
@@ -700,23 +727,12 @@ row_activated_foreach (GtkTreeModel *model,
       break;
     }
     case RM_CALL_ENTRY_TYPE_VOICE:
-      app_answeringmachine (call->priv);
+      rm_router_load_voice_mail_async (rm_profile_get_active (), call->priv, NULL, roger_journal_voice_loaded_cb, self);
       break;
     default:
       app_phone (call->remote, NULL);
       break;
   }
-}
-
-static void
-on_view_row_activated (GtkTreeView       *view,
-                       GtkTreePath       *path,
-                       GtkTreeViewColumn *column,
-                       gpointer           user_data)
-{
-  GtkTreeSelection *selection = gtk_tree_view_get_selection (view);
-
-  gtk_tree_selection_selected_foreach (selection, row_activated_foreach, NULL);
 }
 
 void
@@ -1160,7 +1176,7 @@ roger_journal_class_init (RogerJournalClass *klass)
   object_class->constructed = roger_journal_constructed;
   object_class->dispose = roger_journal_dispose;
 
-  gtk_widget_class_set_template_from_resource (widget_class, "/org/tabos/roger/ui/roger-journal.ui");
+  gtk_widget_class_set_template_from_resource (widget_class, "/org/tabos/roger/ui/journal.ui");
 
   gtk_widget_class_bind_template_child (widget_class, RogerJournal, header_bars_stack);
   gtk_widget_class_bind_template_child (widget_class, RogerJournal, headerbar);

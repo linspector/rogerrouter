@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
 	<gresource prefix="/org/tabos/roger">
-		<file preprocess="xml-stripblanks">ui/roger-journal.ui</file>
+		<file preprocess="xml-stripblanks">ui/assistant.ui</file>
 		<file preprocess="xml-stripblanks">ui/journal-popover.ui</file>
-		<file preprocess="xml-stripblanks">ui/roger-assistant.ui</file>
+		<file preprocess="xml-stripblanks">ui/journal.ui</file>
 		<file preprocess="xml-stripblanks">ui/preferences.ui</file>
 		<file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
+		<file preprocess="xml-stripblanks">ui/voice-mail.ui</file>
 
-	  <file preprocess="xml-stripblanks">authenticate.glade</file>
-		<file preprocess="xml-stripblanks">answeringmachine.glade</file>
+		<file preprocess="xml-stripblanks">authenticate.glade</file>
 		<file preprocess="xml-stripblanks">contacts.glade</file>
-		<file preprocess="xml-stripblanks">settings.glade</file>
-		<file preprocess="xml-stripblanks">phone.glade</file>
-		<file preprocess="xml-stripblanks">fax.glade</file>
 		<file preprocess="xml-stripblanks">contactsearch.glade</file>
+		<file preprocess="xml-stripblanks">fax.glade</file>
+		<file preprocess="xml-stripblanks">phone.glade</file>
+
 		<file preprocess="xml-stripblanks">images/org.tabos.roger.svg</file>
 		<file preprocess="xml-stripblanks">images/org.tabos.roger-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">images/address-book.svg</file>
@@ -25,6 +25,7 @@
 		<file preprocess="xml-stripblanks">images/roger-fax.svg</file>
 		<file preprocess="xml-stripblanks">images/roger-fax-report.svg</file>
 		<file preprocess="xml-stripblanks">images/roger-record.svg</file>
+
 		<file>about.ini</file>
 		<file>images/address-book.png</file>
 		<file>images/roger-call-blocked.png</file>

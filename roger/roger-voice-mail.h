@@ -19,10 +19,18 @@
 
 #pragma once
 
-#include <glib.h>
+#include <gtk/gtk.h>
+#include <handy.h>
 
 G_BEGIN_DECLS
 
-void app_answeringmachine (const char *name);
+#define ROGER_TYPE_VOICE_MAIL (roger_voice_mail_get_type ())
+
+G_DECLARE_FINAL_TYPE (RogerVoiceMail, roger_voice_mail, ROGER, VOICE_MAIL, HdyWindow)
+
+GtkWidget *roger_voice_mail_new (void);
+
+void roger_voice_mail_play (RogerVoiceMail *self,
+                            GBytes         *voice_mail);
 
 G_END_DECLS

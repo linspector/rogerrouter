@@ -444,7 +444,7 @@ roger_assistant_class_init (RogerAssistantClass *klass)
 {
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  gtk_widget_class_set_template_from_resource (widget_class, "/org/tabos/roger/ui/roger-assistant.ui");
+  gtk_widget_class_set_template_from_resource (widget_class, "/org/tabos/roger/ui/assistant.ui");
 
   gtk_widget_class_bind_template_child (widget_class, RogerAssistant, back_button);
   gtk_widget_class_bind_template_child (widget_class, RogerAssistant, next_button);
