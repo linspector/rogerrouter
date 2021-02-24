@@ -29,7 +29,6 @@
 #include "journal.h"
 #include "phone.h"
 #include "preferences.h"
-#include "shortcuts.h"
 #include "uitools.h"
 
 #include <glib/gi18n.h>
@@ -272,7 +271,24 @@ shortcuts_activated (GSimpleAction *action,
                      GVariant      *parameter,
                      gpointer       user_data)
 {
-  app_shortcuts ();
+  static GtkWidget *shortcuts_window;
+  GtkWindow *window;
+
+  window = gtk_application_get_active_window (GTK_APPLICATION (g_application_get_default ()));
+
+  if (!shortcuts_window) {
+    g_autoptr (GtkBuilder) builder = NULL;
+
+    builder = gtk_builder_new_from_resource ("/org/tabos/roger/ui/shortcuts.ui");
+    shortcuts_window = GTK_WIDGET (gtk_builder_get_object (builder, "shortcuts_window"));
+
+    g_signal_connect (shortcuts_window, "destroy", G_CALLBACK (gtk_widget_destroyed), &shortcuts_window);
+  }
+
+  if (gtk_window_get_transient_for (GTK_WINDOW (shortcuts_window)) != window)
+    gtk_window_set_transient_for (GTK_WINDOW (shortcuts_window), window);
+
+  gtk_window_present_with_time (GTK_WINDOW (shortcuts_window), gtk_get_current_event_time ());
 }
 
 void
