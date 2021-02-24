@@ -4,7 +4,7 @@ vcard_sources += 'vcard.c'
 vcard_dep = []
 vcard_dep += plugins_dep
 
-vcard_inc = [roger_inc]
+vcard_inc = [plugins_inc]
 
 libvcard = shared_module('vcard',
                         vcard_sources,

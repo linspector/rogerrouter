@@ -16,7 +16,7 @@ indicator_dep += indicator
 
 libindicator = shared_module('indicator',
                         indicator_sources,
-                        include_directories : roger_inc,
+                        include_directories : plugins_inc,
                         dependencies : indicator_dep,
                         install : true,
                         install_dir : get_option('prefix') + '/' + get_option('libdir') + '/roger/indicator/')

@@ -11,7 +11,7 @@ evolution_dep += dependency('libebook-1.2')
 
 evolution_inc = []
 evolution_inc += include_directories('../../..')
-evolution_inc += roger_inc
+evolution_inc += plugins_inc
 
 libevolution = shared_module('evolution',
                         evolution_sources,

@@ -4,7 +4,7 @@ thunderbird_sources += 'thunderbird.c'
 thunderbird_dep = []
 thunderbird_dep += plugins_dep
 
-thunderbird_inc = [roger_inc]
+thunderbird_inc = [plugins_inc]
 
 libthunderbird = shared_module('thunderbird',
                         thunderbird_sources,

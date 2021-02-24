@@ -5,6 +5,8 @@ plugins_dep += dependency('libhandy-1')
 plugins_dep += librm_dep
 plugins_dep += libhandy_dep
 
+plugins_inc = include_directories('.', '..')
+
 subdir('google')
 
 if host_machine.system().contains('linux')

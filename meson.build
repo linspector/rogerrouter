@@ -51,8 +51,6 @@ configure_file(
   output : 'config.h',
   configuration : cdata)
 
-roger_inc = include_directories('.')
-
 librm_dep = dependency('librm', version : '>=2.1.4', fallback : ['librm', 'rm_dep'])
 libhandy_dep = dependency('libhandy-1', version: '>= 0.90.0')
 

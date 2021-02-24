@@ -12,6 +12,8 @@ enums = gnome.mkenums_simple('roger-type-builtins',
 )
 
 sourcelist = []
+sourcelist += 'contrib/gd-two-lines-renderer.c'
+sourcelist += 'contrib/gd-two-lines-renderer.h'
 sourcelist += 'about.c'
 sourcelist += 'about.h'
 sourcelist += 'main_ui.c'
@@ -27,8 +29,6 @@ sourcelist += 'debug.c'
 sourcelist += 'debug.h'
 sourcelist += 'fax.c'
 sourcelist += 'fax.h'
-sourcelist += 'gd-two-lines-renderer.c'
-sourcelist += 'gd-two-lines-renderer.h'
 sourcelist += 'journal.c'
 sourcelist += 'journal.h'
 sourcelist += 'main_ui.c'
@@ -62,6 +62,8 @@ roger_dep += librm_dep
 roger_dep += cc.find_library('m', required: true)
 roger_dep += cc.find_library('gs', required: false)
 roger_dep += libhandy_dep
+
+roger_inc = include_directories('.', '..', 'contrib')
 
 executable('roger', sources : sourcelist, dependencies : roger_dep, include_directories : roger_inc, gui_app : true, install : true)
 

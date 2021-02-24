@@ -10,7 +10,7 @@ google_dep += gdata
 
 libgoogle = shared_module('google',
                         google_sources,
-                        include_directories : roger_inc,
+                        include_directories : plugins_inc,
                         dependencies : google_dep,
                         install : true,
                         install_dir : get_option('prefix') + '/' + get_option('libdir') + '/roger/google/')
