@@ -21,7 +21,6 @@
 
 #include "application.h"
 
-#include "about.h"
 #include "assistant.h"
 #include "contacts.h"
 #include "debug.h"
@@ -234,12 +233,56 @@ forum_activated (GSimpleAction *action,
   app_show_help ();
 }
 
+#define ABOUT_GROUP "About"
+
 static void
 about_activated (GSimpleAction *action,
                  GVariant      *parameter,
                  gpointer       user_data)
 {
-  app_show_about (GTK_WIDGET (journal));
+  GtkWidget *dialog = NULL;
+  GtkWindow *window;
+  g_autoptr (GKeyFile) key_file = NULL;
+  g_autoptr (GError) error = NULL;
+  g_autoptr (GBytes) bytes = NULL;
+  g_auto (GStrv) authors = NULL;
+  g_auto (GStrv) documenters = NULL;
+  g_auto (GStrv) artists = NULL;
+
+  key_file = g_key_file_new ();
+  bytes = g_resources_lookup_data ("/org/tabos/roger/about.ini", 0, NULL);
+  if (!g_key_file_load_from_data (key_file, g_bytes_get_data (bytes, NULL), -1, 0, &error)) {
+    g_warning ("Couldn't load about data: %s\n", error ? error->message : "");
+    return;
+  }
+
+  authors = g_key_file_get_string_list (key_file, ABOUT_GROUP, "Author", NULL, NULL);
+  documenters = g_key_file_get_string_list (key_file, ABOUT_GROUP, "Documenters", NULL, NULL);
+  artists = g_key_file_get_string_list (key_file, ABOUT_GROUP, "Artists", NULL, NULL);
+
+  dialog = gtk_about_dialog_new ();
+
+  gtk_about_dialog_set_program_name (GTK_ABOUT_DIALOG (dialog), PACKAGE_NAME);
+  gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (dialog), PACKAGE_VERSION);
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (dialog), "(C) 2012-2021, Jan-Michael Brummer <jan.brummer@tabos.org>");
+  gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (dialog), _("FRITZ!Box Journal, Soft/phone, and Fax\nDedicated to my father"));
+  gtk_about_dialog_set_license_type (GTK_ABOUT_DIALOG (dialog), GTK_LICENSE_GPL_2_0_ONLY);
+  gtk_about_dialog_set_wrap_license (GTK_ABOUT_DIALOG (dialog), TRUE);
+  gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (dialog), (const char **)authors);
+  gtk_about_dialog_set_documenters (GTK_ABOUT_DIALOG (dialog), (const char **)documenters);
+  gtk_about_dialog_set_artists (GTK_ABOUT_DIALOG (dialog), (const char **)artists);
+  gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (dialog), PACKAGE_BUGREPORT);
+  gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (dialog), _("Website"));
+  gtk_about_dialog_set_logo (GTK_ABOUT_DIALOG (dialog), gdk_pixbuf_new_from_resource ("/org/tabos/roger/images/org.tabos.roger.svg", NULL));
+
+  window = gtk_application_get_active_window (GTK_APPLICATION (user_data));
+  if (window) {
+    gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
+    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+  }
+
+  gtk_dialog_run (GTK_DIALOG (dialog));
+  gtk_widget_destroy (dialog);
 }
 
 static void
@@ -274,7 +317,7 @@ shortcuts_activated (GSimpleAction *action,
   static GtkWidget *shortcuts_window;
   GtkWindow *window;
 
-  window = gtk_application_get_active_window (GTK_APPLICATION (g_application_get_default ()));
+  window = gtk_application_get_active_window (GTK_APPLICATION (user_data));
 
   if (!shortcuts_window) {
     g_autoptr (GtkBuilder) builder = NULL;
@@ -466,11 +509,13 @@ app_init (GtkApplication *app)
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 
-#if GTK_CHECK_VERSION (3, 14, 0)
   const char *accels[] = { NULL, NULL, NULL, NULL };
 
   accels[0] = "<Primary>p";
   gtk_application_set_accels_for_action (app, "app.phone", accels);
+
+  accels[0] = "F1";
+  gtk_application_set_accels_for_action (app, "app.about", accels);
 
   accels[0] = "<Primary>b";
   gtk_application_set_accels_for_action (app, "app.addressbook", accels);
@@ -489,13 +534,6 @@ app_init (GtkApplication *app)
 
   accels[0] = "<Primary>d";
   gtk_application_set_accels_for_action (app, "app.debug", accels);
-#else
-  gtk_application_add_accelerator (app, "<Control>p", "app.phone", NULL);
-  gtk_application_add_accelerator (app, "<Control>b", "app.addressbook", NULL);
-  gtk_application_add_accelerator (app, "<Control>q", "app.quit", NULL);
-  gtk_application_add_accelerator (app, "<Control>s", "app.preferences", NULL);
-  gtk_application_add_accelerator (app, "<Control>d", "app.debug", NULL);
-#endif
 
   g_action_map_add_action_entries (G_ACTION_MAP (app), apps_entries, G_N_ELEMENTS (apps_entries), app);
 
