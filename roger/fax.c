@@ -310,10 +310,10 @@ app_show_fax_window_idle (gpointer data)
   fax_ui->progress_bar = GTK_WIDGET (gtk_builder_get_object (builder, "fax_status_progress_bar"));
   gtk_progress_bar_set_text (GTK_PROGRESS_BAR (fax_ui->progress_bar), "");
 
-  //GtkWidget *grid2 = GTK_WIDGET (gtk_builder_get_object (builder, "fax_grid"));
-  //fax_ui->contact_search = contact_search_new ();
+  /*GtkWidget *grid2 = GTK_WIDGET (gtk_builder_get_object (builder, "fax_grid")); */
+  /*fax_ui->contact_search = contact_search_new (); */
   gtk_window_set_default (GTK_WINDOW (fax_ui->window), fax_ui->pickup_button);
-  //gtk_grid_attach (GTK_GRID (grid2), fax_ui->contact_search, 0, 0, 1, 1);
+  /*gtk_grid_attach (GTK_GRID (grid2), fax_ui->contact_search, 0, 0, 1, 1); */
 
   GtkWidget *menu_button = GTK_WIDGET (gtk_builder_get_object (builder, "fax_menu_button"));
   GtkWidget *menu = fax_create_menu (fax_ui);

@@ -61,7 +61,7 @@ phone_number_type_to_string (RmPhoneNumber *number)
         tmp = g_strdup (number->name);
         break;
       }
-      /* Fall through */
+    /* Fall through */
     default:
       tmp = g_strdup (_("Unknown"));
       break;
@@ -172,4 +172,3 @@ contact_search_completion_add (GtkWidget *entry)
 
   gtk_entry_set_completion (GTK_ENTRY (entry), completion);
 }
-

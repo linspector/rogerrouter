@@ -143,7 +143,7 @@ roger_phone_active_call_dialog (RogerPhone *self)
 
 static void
 roger_phone_dial_button_clicked_cb (GtkWidget *button,
-                                      gpointer   user_data)
+                                    gpointer   user_data)
 {
   RogerPhone *self = ROGER_PHONE (user_data);
   RmProfile *profile;
@@ -316,7 +316,8 @@ roger_phone_change_state (GSimpleAction *action,
   rm_profile_set_phone (rm_profile_get_active (), phone);
   hdy_header_bar_set_title (HDY_HEADER_BAR (self->header_bar), name);
 
-  g_simple_action_set_state (action, value);}
+  g_simple_action_set_state (action, value);
+}
 
 static void
 roger_phone_set_suppression (GSimpleAction *action,
@@ -327,8 +328,8 @@ roger_phone_set_suppression (GSimpleAction *action,
 }
 
 static const GActionEntry phone_actions [] = {
-    {"set-phone", NULL, "s", "''", roger_phone_change_state},
-    {"set-suppression", NULL, NULL, "false", roger_phone_set_suppression},
+  {"set-phone", NULL, "s", "''", roger_phone_change_state},
+  {"set-suppression", NULL, NULL, "false", roger_phone_set_suppression},
 };
 
 static void
@@ -373,8 +374,9 @@ roger_phone_set_dial_number (RogerPhone *self,
   gtk_entry_set_text (GTK_ENTRY (self->search_entry), number);
 }
 
-void roger_phone_pickup_connection (RogerPhone   *self,
-                                    RmConnection *connection)
+void
+roger_phone_pickup_connection (RogerPhone   *self,
+                               RmConnection *connection)
 {
   g_assert (connection);
   g_assert (self);
@@ -387,4 +389,3 @@ void roger_phone_pickup_connection (RogerPhone   *self,
     roger_phone_start_status_timer (self);
   }
 }
-
