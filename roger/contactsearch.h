@@ -24,19 +24,8 @@
 
 G_BEGIN_DECLS
 
-#define CONTACT_TYPE_SEARCH (contact_search_get_type ())
+void contact_search_completion_add (GtkWidget *entry);
 
-G_DECLARE_FINAL_TYPE (ContactSearch, contact_search, CONTACT, SEARCH, GtkBox)
-
-GtkWidget *contact_search_new (void);
-char *contact_search_get_number (ContactSearch *widget);
-void          contact_search_clear (ContactSearch *widget);
-void          contact_search_set_text (ContactSearch *widget,
-                                       char          *text);
-const char *contact_search_get_text (ContactSearch *widget);
-void         contact_search_set_contact (ContactSearch *widget,
-                                         RmContact     *contact,
-                                         gboolean       identify);
-gchar *phone_number_type_to_string (RmPhoneNumber *number);
+char *phone_number_type_to_string (RmPhoneNumber *number);
 
 G_END_DECLS

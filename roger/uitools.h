@@ -31,13 +31,6 @@ G_BEGIN_DECLS
 #define ui_set_destructive_style(widget) gtk_style_context_add_class (gtk_widget_get_style_context (widget), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION)
 #define ui_set_button_style(widget) gtk_style_context_add_class (gtk_widget_get_style_context (widget), GTK_STYLE_CLASS_BUTTON_ACTION)
 
-#define gtk_widget_set_margin(widget, x1, y1, x2, y2) { \
-    gtk_widget_set_margin_top (widget, y1); \
-    gtk_widget_set_margin_bottom (widget, y2); \
-    gtk_widget_set_margin_start (widget, x1); \
-    gtk_widget_set_margin_end (widget, x2); \
-}
-
 static inline GtkWidget *
 ui_group_create (GtkWidget *box,
                  gchar     *title_str,
@@ -56,11 +49,11 @@ ui_group_create (GtkWidget *box,
   /* Configure plugins label */
   title = gtk_label_new ("");
   gtk_widget_set_halign (title, GTK_ALIGN_START);
-  gtk_widget_set_margin (title, 10, 5, 10, 5);
+  //gtk_widget_set_margin (title, 10, 5, 10, 5);
   gtk_label_set_markup (GTK_LABEL (title), title_markup);
   gtk_grid_attach (GTK_GRID (group), title, 0, 0, 1, 1);
 
-  gtk_widget_set_margin (box, 20, 0, 20, 10);
+  //gtk_widget_set_margin (box, 20, 0, 20, 10);
   gtk_grid_attach (GTK_GRID (group), box, 0, 1, 1, 1);
 
   g_free (title_markup);

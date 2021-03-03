@@ -729,9 +729,15 @@ on_view_row_activated (GtkTreeView       *view,
     case RM_CALL_ENTRY_TYPE_VOICE:
       rm_router_load_voice_mail_async (rm_profile_get_active (), call->priv, NULL, roger_journal_voice_loaded_cb, self);
       break;
-    default:
-      app_phone (call->remote, NULL);
+    default: {
+      GtkWidget *phone = roger_phone_new ();
+
+      roger_phone_set_dial_number (ROGER_PHONE (phone), call->remote->number);
+
+      gtk_window_set_transient_for (GTK_WINDOW (phone), GTK_WINDOW (self));
+      gtk_widget_show_all (phone);
       break;
+    }
   }
 }
 
@@ -853,7 +859,11 @@ void
 journal_popup_call_number (GtkWidget   *widget,
                            RmCallEntry *call)
 {
-  app_phone (call->remote, NULL);
+  GtkWidget *phone = roger_phone_new ();
+
+  roger_phone_set_dial_number (ROGER_PHONE (phone), call->remote->number);
+
+  gtk_widget_show_all (phone);
 }
 
 void

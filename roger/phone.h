@@ -19,11 +19,21 @@
 
 #pragma once
 
+#include <handy.h>
 #include <rm/rm.h>
 
 G_BEGIN_DECLS
 
-void app_phone (RmContact    *contact,
-                RmConnection *connection);
+#define ROGER_TYPE_PHONE (roger_phone_get_type ())
+
+G_DECLARE_FINAL_TYPE (RogerPhone, roger_phone, ROGER, PHONE, HdyWindow)
+
+GtkWidget *roger_phone_new (void);
+
+void roger_phone_set_dial_number (RogerPhone *self,
+                                  const char *number);
+
+void roger_phone_pickup_connection (RogerPhone   *self,
+                                    RmConnection *connection);
 
 G_END_DECLS

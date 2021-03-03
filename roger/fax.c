@@ -177,7 +177,7 @@ fax_pickup_button_clicked_cb (GtkWidget *button,
   char *scramble;
 
   /* Get selected number (either number format or based on the selected name) */
-  fax_ui->number = g_strdup (contact_search_get_number (CONTACT_SEARCH (fax_ui->contact_search)));
+  fax_ui->number = g_strdup (gtk_entry_get_text (GTK_ENTRY (fax_ui->contact_search)));
   if (!RM_EMPTY_STRING (fax_ui->number) && !(isdigit (fax_ui->number[0]) || fax_ui->number[0] == '*' || fax_ui->number[0] == '#' || fax_ui->number[0] == '+')) {
     fax_ui->number = g_object_get_data (G_OBJECT (fax_ui->contact_search), "number");
   }
@@ -252,7 +252,7 @@ fax_create_menu (struct fax_ui *fax_ui)
 
   /* Create vertical box */
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-  gtk_widget_set_margin (box, 6, 6, 6, 6);
+  gtk_container_set_border_width (GTK_CONTAINER (box), 6);
 
   gtk_container_add (GTK_CONTAINER (menu), box);
 
@@ -310,10 +310,10 @@ app_show_fax_window_idle (gpointer data)
   fax_ui->progress_bar = GTK_WIDGET (gtk_builder_get_object (builder, "fax_status_progress_bar"));
   gtk_progress_bar_set_text (GTK_PROGRESS_BAR (fax_ui->progress_bar), "");
 
-  GtkWidget *grid2 = GTK_WIDGET (gtk_builder_get_object (builder, "fax_grid"));
-  fax_ui->contact_search = contact_search_new ();
+  //GtkWidget *grid2 = GTK_WIDGET (gtk_builder_get_object (builder, "fax_grid"));
+  //fax_ui->contact_search = contact_search_new ();
   gtk_window_set_default (GTK_WINDOW (fax_ui->window), fax_ui->pickup_button);
-  gtk_grid_attach (GTK_GRID (grid2), fax_ui->contact_search, 0, 0, 1, 1);
+  //gtk_grid_attach (GTK_GRID (grid2), fax_ui->contact_search, 0, 0, 1, 1);
 
   GtkWidget *menu_button = GTK_WIDGET (gtk_builder_get_object (builder, "fax_menu_button"));
   GtkWidget *menu = fax_create_menu (fax_ui);

@@ -24,16 +24,8 @@
 
 #include <ctype.h>
 #include <glib/gi18n.h>
+#include <handy.h>
 #include <rm/rm.h>
-
-struct _ContactSearch {
-  GtkBox parent_instance;
-
-  GtkWidget *entry;
-  GtkEntryCompletion *completion;
-};
-
-G_DEFINE_TYPE (ContactSearch, contact_search, GTK_TYPE_BOX);
 
 #define ROW_PADDING_VERT        4
 #define ICON_PADDING_LEFT       5
@@ -43,14 +35,6 @@ G_DEFINE_TYPE (ContactSearch, contact_search, GTK_TYPE_BOX);
 #define TEXT_PADDING_LEFT       0
 #define BKMK_PADDING_RIGHT      6
 
-/**
- * phone_number_type_to_string:
- * @number: a #RmPhoneNUmber
- *
- * Convert phone number type to string
- *
- * Returns: phone number type as string
- */
 char *
 phone_number_type_to_string (RmPhoneNumber *number)
 {
@@ -73,11 +57,11 @@ phone_number_type_to_string (RmPhoneNumber *number)
       tmp = g_strdup (_("Fax Work"));
       break;
     case RM_PHONE_NUMBER_TYPE_OTHER:
-      if (number->name && strlen (number->name) > 0)
+      if (number->name && strlen (number->name) > 0) {
         tmp = g_strdup (number->name);
-      else
-        tmp = g_strdup (_("Unknown"));
-      break;
+        break;
+      }
+      /* Fall through */
     default:
       tmp = g_strdup (_("Unknown"));
       break;
@@ -86,92 +70,22 @@ phone_number_type_to_string (RmPhoneNumber *number)
   return tmp;
 }
 
-/**
- * contact_search_set_contact:
- * @widget: a #ContactSearch
- * @contact: a #RmContact
- * @identify: identify contact flag
- *
- * Sets contact information within the widget.
- */
-void
-contact_search_set_contact (ContactSearch *widget,
-                            RmContact     *contact,
-                            gboolean       identify)
-{
-  RmContact *search_contact;
-
-  if (!widget || !contact) {
-    return;
-  }
-
-  if (identify) {
-    /* Copy contact and try to identify it */
-    search_contact = rm_contact_dup (contact);
-    rm_object_emit_contact_process (search_contact);
-  } else {
-    search_contact = contact;
-  }
-
-  gtk_entry_set_text (GTK_ENTRY (widget->entry), search_contact->number);
-
-  if (identify) {
-    rm_contact_free (search_contact);
-  }
-}
-
-/**
- * contact_search_class_init:
- * @klass: a #ContactSearchClass
- *
- * Initialize Contact Search class
- */
-static void
-contact_search_class_init (ContactSearchClass *klass)
-{
-  GtkWidgetClass *widget_class;
-
-  widget_class = GTK_WIDGET_CLASS (klass);
-
-  gtk_widget_class_set_template_from_resource (widget_class, "/org/tabos/roger/contactsearch.glade");
-
-  gtk_widget_class_bind_template_child (widget_class, ContactSearch, entry);
-}
-
-/**
- * contact_search_match_func:
- * @completion: a #GtkEntryCompletion
- * @key: key to match
- * @iter: a #GtkTreeIter
- * @user_data: unused
- *
- * Match key agains current iter item
- *
- * Returns: %TRUE if its match, otherwise %FALSE
- */
 static gboolean
-contact_search_match_func (GtkEntryCompletion *completion,
-                           const char         *key,
-                           GtkTreeIter        *iter,
-                           gpointer            user_data)
+contact_search_completion_match_func (GtkEntryCompletion *completion,
+                                      const char         *key,
+                                      GtkTreeIter        *iter,
+                                      gpointer            user_data)
 {
   GtkTreeModel *model;
-  char *item = NULL;
-  gboolean ret = FALSE;
+  g_autofree char *item = NULL;
 
   model = gtk_entry_completion_get_model (completion);
-
   gtk_tree_model_get (model, iter, 1, &item, -1);
 
-  if (item != NULL) {
-    if (rm_strcasestr (item, key) != NULL) {
-      ret = TRUE;
-    }
+  if (item && rm_strcasestr (item, key))
+    return TRUE;
 
-    g_free (item);
-  }
-
-  return ret;
+  return FALSE;
 }
 
 static gboolean
@@ -180,36 +94,23 @@ contact_search_completion_match_selected_cb (GtkEntryCompletion *completion,
                                              GtkTreeIter        *iter,
                                              gpointer            user_data)
 {
-  ContactSearch *contact_search = user_data;
   RmPhoneNumber *item;
 
   gtk_tree_model_get (model, iter, 3, &item, -1);
 
-  gtk_entry_set_text (GTK_ENTRY (contact_search->entry), item->number);
-
-  /*g_signal_emit_by_name(contact_search->entry, "activate"); */
+  gtk_entry_set_text (GTK_ENTRY (gtk_entry_completion_get_entry (completion)), item->number);
 
   return TRUE;
 }
 
-/**
- * contact_search_init:
- * @widget: a #ContactSearch
- *
- * Initialize ContactSearch widget
- */
-static void
-contact_search_init (ContactSearch *widget)
+void
+contact_search_completion_add (GtkWidget *entry)
 {
   GtkListStore *store;
   GSList *list;
   RmAddressBook *book;
   GtkCellRenderer *cell;
-
-  gtk_widget_init_template (GTK_WIDGET (widget));
-  gtk_entry_set_activates_default (GTK_ENTRY (widget->entry), TRUE);
-
-  widget->completion = gtk_entry_completion_new ();
+  GtkEntryCompletion *completion;
 
   store = gtk_list_store_new (4, GDK_TYPE_PIXBUF, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER);
 
@@ -222,9 +123,6 @@ contact_search_init (ContactSearch *widget)
     }
   }
 
-  if (book) {
-    g_debug ("%s(): book '%s'", __FUNCTION__, rm_addressbook_get_name (book));
-  }
   list = rm_addressbook_get_contacts (book);
 
   while (list != NULL) {
@@ -238,7 +136,8 @@ contact_search_init (ContactSearch *widget)
       if (contact->image) {
         pixbuf = rm_image_scale (contact->image, 32);
       } else {
-        pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (), AVATAR_DEFAULT, 32, 0, NULL);
+        GtkWidget *avatar = hdy_avatar_new (32, contact->name, TRUE);
+        pixbuf = hdy_avatar_draw_to_pixbuf (HDY_AVATAR (avatar), 32, 1);
       }
 
       for (numbers = contact->numbers; numbers != NULL; numbers = numbers->next) {
@@ -251,12 +150,14 @@ contact_search_init (ContactSearch *widget)
 
     list = list->next;
   }
-  gtk_entry_completion_set_model (widget->completion, GTK_TREE_MODEL (store));
-  g_signal_connect (widget->completion, "match-selected", G_CALLBACK (contact_search_completion_match_selected_cb), widget);
+
+  completion = gtk_entry_completion_new ();
+  gtk_entry_completion_set_model (GTK_ENTRY_COMPLETION (completion), GTK_TREE_MODEL (store));
+  g_signal_connect (completion, "match-selected", G_CALLBACK (contact_search_completion_match_selected_cb), NULL);
 
   cell = gtk_cell_renderer_pixbuf_new ();
-  gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (widget->completion), cell, FALSE);
-  gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (widget->completion), cell, "pixbuf", 0, NULL);
+  gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (completion), cell, FALSE);
+  gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (completion), cell, "pixbuf", 0, NULL);
 
   gtk_cell_renderer_set_padding (cell, ICON_PADDING_LEFT, ROW_PADDING_VERT);
   gtk_cell_renderer_set_fixed_size (cell, (ICON_PADDING_LEFT + ICON_CONTENT_WIDTH + ICON_PADDING_RIGHT), ICON_CONTENT_HEIGHT);
@@ -264,78 +165,11 @@ contact_search_init (ContactSearch *widget)
 
   cell = gd_two_lines_renderer_new ();
   g_object_set (cell, "ellipsize", PANGO_ELLIPSIZE_END, "text-lines", 2, NULL);
-  gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (widget->completion), cell, TRUE);
-  gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (widget->completion), cell, "text", 1);
-  gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (widget->completion), cell, "line-two", 2);
-  gtk_entry_completion_set_match_func (widget->completion, contact_search_match_func, NULL, NULL);
+  gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (completion), cell, TRUE);
+  gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (completion), cell, "text", 1);
+  gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (completion), cell, "line-two", 2);
+  gtk_entry_completion_set_match_func (GTK_ENTRY_COMPLETION (completion), contact_search_completion_match_func, NULL, NULL);
 
-  gtk_entry_set_completion (GTK_ENTRY (widget->entry), widget->completion);
-  /*g_object_unref(widget->completion); */
+  gtk_entry_set_completion (GTK_ENTRY (entry), completion);
 }
 
-/**
- * contact_search_new:
- *
- * Create a new contact search widget
- *
- * Returns: a ContactSearch widget
- */
-GtkWidget *
-contact_search_new (void)
-{
-  return g_object_new (CONTACT_TYPE_SEARCH, NULL);
-}
-
-/**
- * contact_search_get_number:
- * @widget: a #ContactSearch
- *
- * Get current phone number
- *
- * Returns: current phone number
- */
-char *
-contact_search_get_number (ContactSearch *widget)
-{
-  return (char *)gtk_entry_get_text (GTK_ENTRY (widget->entry));
-}
-
-/**
- * contact_search_clear:
- * @widget: a #ContactSearch
- *
- * Clear contact search entry
- */
-void
-contact_search_clear (ContactSearch *widget)
-{
-  gtk_entry_set_text (GTK_ENTRY (widget->entry), "");
-}
-
-/**
- * contact_search_set_text:
- * @widget: a #ContactSearch
- * @text: text to set in contact search widget
- *
- * Sets @text in @widget.
- */
-void
-contact_search_set_text (ContactSearch *widget,
-                         char          *text)
-{
-  gtk_entry_set_text (GTK_ENTRY (widget->entry), text);
-}
-
-/**
- * contact_search_get_text:
- * @widget: a #ContactSearch
- *
- * Retieves current text in @widget.
- *
- * Returns: current text
- */
-const char *
-contact_search_get_text (ContactSearch *widget)
-{
-  return gtk_entry_get_text (GTK_ENTRY (widget->entry));
-}

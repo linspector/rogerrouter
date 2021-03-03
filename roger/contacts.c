@@ -68,23 +68,13 @@ static void
 contacts_dial_clicked_cb (GtkWidget *button,
                           gpointer   user_data)
 {
-  RmContact *contact;
-  char *full_number;
+  GtkWidget *phone;
   char *number = user_data;
 
-  /* Create full number including prefixes */
-  full_number = rm_number_full (number, FALSE);
-  g_assert (full_number != NULL);
+  phone = roger_phone_new ();
+  roger_phone_set_dial_number (ROGER_PHONE (phone), number);
 
-  /* Find matching contact */
-  contact = rm_contact_find_by_number (full_number);
-  g_free (full_number);
-  g_assert (contact != NULL);
-
-  contact->number = number;
-
-  /* Show phone window with given contact */
-  app_phone (contact, NULL);
+  gtk_widget_show_all (phone);
 }
 
 /**
@@ -113,7 +103,7 @@ contacts_update_details (RmContact *contact)
   /* Check for an active address book */
   if (contacts->book) {
     if (contact) {
-      gtk_widget_set_margin (grid, 18, 18, 18, 18);
+      gtk_container_set_border_width (GTK_CONTAINER (grid), 18);
 
       gtk_grid_set_row_spacing (GTK_GRID (grid), 6);
       gtk_grid_set_column_spacing (GTK_GRID (grid), 12);
@@ -648,7 +638,7 @@ refresh_edit_dialog (RmContact *contact)
   GtkWidget *separator;
 
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-  gtk_widget_set_margin (box, 6, 6, 6, 6);
+  gtk_container_set_border_width (GTK_CONTAINER (box), 6);
 
   scrolled = gtk_scrolled_window_new (NULL, NULL);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled), GTK_SHADOW_NONE);
@@ -657,7 +647,7 @@ refresh_edit_dialog (RmContact *contact)
   gtk_widget_set_vexpand (scrolled, TRUE);
   gtk_widget_set_hexpand (scrolled, TRUE);
 
-  gtk_widget_set_margin (grid, 12, 12, 12, 12);
+  gtk_container_set_border_width (GTK_CONTAINER (grid), 12);
 
   gtk_container_add (GTK_CONTAINER (scrolled), grid);
 
@@ -911,7 +901,7 @@ contacts_book_clicked_cb (GtkWidget *widget,
 
   /* Create vertical box */
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-  gtk_widget_set_margin (box, 6, 6, 6, 6);
+  gtk_container_set_border_width (GTK_CONTAINER (box), 6);
 
   /* Create popover */
   menu = gtk_popover_new (contacts->sub_book_name_label);

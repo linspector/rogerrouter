@@ -4,15 +4,14 @@
 		<file preprocess="xml-stripblanks">ui/assistant.ui</file>
 		<file preprocess="xml-stripblanks">ui/journal-popover.ui</file>
 		<file preprocess="xml-stripblanks">ui/journal.ui</file>
+		<file preprocess="xml-stripblanks">ui/phone.ui</file>
 		<file preprocess="xml-stripblanks">ui/preferences.ui</file>
 		<file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
 		<file preprocess="xml-stripblanks">ui/voice-mail.ui</file>
 
 		<file preprocess="xml-stripblanks">authenticate.glade</file>
 		<file preprocess="xml-stripblanks">contacts.glade</file>
-		<file preprocess="xml-stripblanks">contactsearch.glade</file>
 		<file preprocess="xml-stripblanks">fax.glade</file>
-		<file preprocess="xml-stripblanks">phone.glade</file>
 
 		<file preprocess="xml-stripblanks">images/org.tabos.roger.svg</file>
 		<file preprocess="xml-stripblanks">images/org.tabos.roger-symbolic.svg</file>

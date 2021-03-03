@@ -32,572 +32,359 @@
 #include <gtk/gtk.h>
 #include <rm/rm.h>
 
-typedef struct _phone_state {
-  GtkWidget *window;
+struct _RogerPhone {
+  HdyWindow parent_instance;
+
+  GtkWidget *grid;
   GtkWidget *header_bar;
-  GtkWidget *contact_search;
+  GtkWidget *search_entry;
   GtkWidget *mute_button;
   GtkWidget *hold_button;
   GtkWidget *record_button;
   GtkWidget *clear_button;
-  GtkWidget *pickup_button;
-  GtkWidget *hangup_button;
+  GtkWidget *dial_button;
+  GtkWidget *menu_button;
+  GtkWidget *phone_box;
 
   gint status_timer_id;
 
-  RmPhone *phone;
   RmConnection *connection;
-  RmProfile *profile;
 } PhoneState;
 
-/**
- * phone_status_timer_cb:
- * @data: a #PhoneState
- *
- * Phone status timer: Update time label in sub title
- *
- * Returns: %TRUE
- */
+G_DEFINE_TYPE (RogerPhone, roger_phone, HDY_TYPE_WINDOW)
+
 static gboolean
-phone_status_timer_cb (gpointer data)
+roger_phone_status_timer_cb (gpointer user_data)
 {
-  PhoneState *phone_state = data;
-  char *time_diff;
-  char *buf;
+  RogerPhone *self = ROGER_PHONE (user_data);
+  g_autofree char *duration = NULL;
 
-  time_diff = rm_connection_get_duration_time (phone_state->connection);
-  buf = g_strdup_printf (_("Time: %s"), time_diff);
-  g_free (time_diff);
+  duration = rm_connection_get_duration_time (self->connection);
+  hdy_header_bar_set_subtitle (HDY_HEADER_BAR (self->header_bar), duration);
 
-  gtk_header_bar_set_subtitle (GTK_HEADER_BAR (phone_state->header_bar), buf);
-
-  g_free (buf);
-
-  return TRUE;
+  return G_SOURCE_CONTINUE;
 }
 
-/**
- * phone_dial_buttons_set_dial:
- * @phone_state: a #PhoneState
- * @allow_dial: flag indicating if pick up is allowed
- *
- * Set sensitive value of hangup/pickup button depending on @allow_dial
- */
 static void
-phone_dial_buttons_set_dial (PhoneState *phone_state,
-                             gboolean    allow_dial)
+roger_phone_update_buttons (RogerPhone *self)
 {
   gboolean control_buttons = FALSE;
+  GtkWidget *image;
 
-  gtk_widget_set_sensitive (phone_state->pickup_button, allow_dial);
-  gtk_widget_set_sensitive (phone_state->hangup_button, !allow_dial);
-
-  /* Toggle control buttons sensitive value */
-  if (phone_state->connection && phone_state->connection->type & RM_CONNECTION_TYPE_SOFTPHONE) {
-    control_buttons = !allow_dial;
+  if (self->connection) {
+    image = gtk_image_new_from_icon_name ("call-stop-symbolic", GTK_ICON_SIZE_BUTTON);
+    gtk_button_set_image (GTK_BUTTON (self->dial_button), image);
+    gtk_style_context_remove_class (gtk_widget_get_style_context (self->dial_button), GTK_STYLE_CLASS_SUGGESTED_ACTION);
+    gtk_style_context_add_class (gtk_widget_get_style_context (self->dial_button), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION);
+  } else {
+    image = gtk_image_new_from_icon_name ("call-start-symbolic", GTK_ICON_SIZE_BUTTON);
+    gtk_button_set_image (GTK_BUTTON (self->dial_button), image);
+    gtk_style_context_remove_class (gtk_widget_get_style_context (self->dial_button), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION);
+    gtk_style_context_add_class (gtk_widget_get_style_context (self->dial_button), GTK_STYLE_CLASS_SUGGESTED_ACTION);
   }
+
+  if (self->connection && self->connection->type & RM_CONNECTION_TYPE_SOFTPHONE)
+    control_buttons = !!self->connection;
 
   /* Set control button sensitive value */
-  gtk_widget_set_sensitive (phone_state->mute_button, control_buttons);
-  gtk_widget_set_sensitive (phone_state->hold_button, control_buttons);
-  gtk_widget_set_sensitive (phone_state->record_button, control_buttons);
+  gtk_widget_set_sensitive (self->mute_button, control_buttons);
+  gtk_widget_set_sensitive (self->hold_button, control_buttons);
+  gtk_widget_set_sensitive (self->record_button, control_buttons);
 }
 
-/**
- * phone_start_status_timer:
- * @phone_state: a #PhoneState
- *
- * Start status timer
- */
 static void
-phone_start_status_timer (PhoneState *phone_state)
+roger_phone_start_status_timer (RogerPhone *self)
 {
-  if (!phone_state->status_timer_id) {
-    phone_state->status_timer_id = g_timeout_add (250, phone_status_timer_cb, phone_state);
-  }
+  g_clear_handle_id (&self->status_timer_id, g_source_remove);
+  self->status_timer_id = g_timeout_add (250, roger_phone_status_timer_cb, self);
 }
 
-/**
- * phone_remove_status_timer:
- * @phone_state: a #PhoneState
- *
- * Remove status timer
- */
 static void
-phone_remove_status_timer (PhoneState *phone_state)
+roger_phone_remove_status_timer (RogerPhone *self)
 {
-  if (phone_state && phone_state->status_timer_id) {
-    g_source_remove (phone_state->status_timer_id);
-    phone_state->status_timer_id = 0;
-  }
+  g_clear_handle_id (&self->status_timer_id, g_source_remove);
+  hdy_header_bar_set_subtitle (HDY_HEADER_BAR (self->header_bar), "");
 }
 
-/**
- * phone_connection_changed_cb:
- * @object: a #RmObject
- * @type: connection type
- * @connection: a #RmConnection
- * @phone_state: a #PhoneState
- *
- * Connection changed callback
- *  - Reacts on disconnects: Update status, remove timer and update button state
- */
 static void
-phone_connection_changed_cb (RmObject     *obj,
-                             gint          type,
-                             RmConnection *connection,
-                             PhoneState   *phone_state)
+roger_phone_connection_changed_cb (RmObject     *obj,
+                                   gint          type,
+                                   RmConnection *connection,
+                                   RogerPhone   *self)
 {
-  if (!connection || !phone_state || !phone_state->connection || phone_state->connection != connection) {
+  g_assert (connection);
+  g_assert (self);
+  g_assert (self->connection);
+
+  if (self->connection != connection)
     return;
-  }
 
-  if (!(type & RM_CONNECTION_TYPE_DISCONNECT)) {
+  if (!(type & RM_CONNECTION_TYPE_DISCONNECT))
     return;
-  }
 
-  /* Remove timer source */
-  phone_remove_status_timer (phone_state);
-
-  phone_state->connection = NULL;
-  phone_dial_buttons_set_dial (phone_state, TRUE);
+  roger_phone_remove_status_timer (self);
+  self->connection = NULL;
+  roger_phone_update_buttons (self);
 }
 
-/**
- * phone_active_call_dialog:
- * @window: parent window
- *
- * Dialog showing that an active call is running.
- *
- * Returns: %TRUE if user clicked on YES, %FALSE if no is clicked
- */
-static gboolean
-phone_active_call_dialog (GtkWidget *window)
+static void
+roger_phone_active_call_dialog (RogerPhone *self)
 {
   GtkWidget *dialog;
-  gint result;
 
-  /* Create dialog and run it */
-  dialog = gtk_message_dialog_new (GTK_WINDOW (window), GTK_DIALOG_MODAL | GTK_DIALOG_USE_HEADER_BAR | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO, GTK_BUTTONS_YES_NO, _("A call is in progress, hangup first"));
-  result = gtk_dialog_run (GTK_DIALOG (dialog));
+  dialog = gtk_message_dialog_new (GTK_WINDOW (self),
+                                   GTK_DIALOG_MODAL | GTK_DIALOG_USE_HEADER_BAR | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                   GTK_MESSAGE_INFO,
+                                   GTK_BUTTONS_CLOSE,
+                                   _("Cannot close window, a call is in progress"));
+  gtk_dialog_run (GTK_DIALOG (dialog));
   gtk_widget_destroy (dialog);
-
-  return result == GTK_RESPONSE_YES;
 }
 
-/**
- * phone_pickup_button_clicked_cb:
- * @button: pickup button
- * @phone_state: a #PhoneState
- *
- * Pickup button clicked callback
- */
 static void
-phone_pickup_button_clicked_cb (GtkWidget  *button,
-                                PhoneState *phone_state)
+roger_phone_dial_button_clicked_cb (GtkWidget *button,
+                                      gpointer   user_data)
 {
-  char *number;
+  RogerPhone *self = ROGER_PHONE (user_data);
+  RmProfile *profile;
+  RmPhone *phone;
+  const char *number;
 
-  /* Get selected number (either number format or based on the selected name) */
-  number = contact_search_get_number (CONTACT_SEARCH (phone_state->contact_search));
+  if (self->connection) {
+    rm_phone_hangup (self->connection);
+    return;
+  }
 
+  number = gtk_entry_get_text (GTK_ENTRY (self->search_entry));
   if (RM_EMPTY_STRING (number)) {
     return;
   }
 
-  /* Set phone and dial out */
-  phone_state->connection = rm_phone_dial (phone_state->phone, number, rm_router_get_suppress_state (phone_state->profile));
+  g_assert (!self->connection);
 
-  /* Check if we have a connection */
-  if (phone_state->connection) {
-    phone_dial_buttons_set_dial (phone_state, FALSE);
-
-    phone_start_status_timer (phone_state);
+  profile = rm_profile_get_active ();
+  phone = rm_profile_get_phone (profile);
+  self->connection = rm_phone_dial (phone, number, rm_router_get_suppress_state (profile));
+  if (self->connection) {
+    roger_phone_update_buttons (self);
+    roger_phone_start_status_timer (self);
   }
 }
 
-/**
- * phone_hangup_button_clicked_cb:
- * @button: hangup button
- * @user_data: a #PhoneState
- *
- * Hangup button clicked callback
- */
 static void
-phone_hangup_button_clicked_cb (GtkWidget *button,
-                                gpointer   user_data)
+roger_phone_create_menu (RogerPhone *self)
 {
-  PhoneState *phone_state = user_data;
+  RmPhone *active = rm_profile_get_phone (rm_profile_get_active ());
 
-  g_return_if_fail (phone_state->connection != NULL);
-
-  /* Hangup connection */
-
-  rm_phone_hangup (phone_state->connection);
-
-  /* Allow dialing and remove status timer */
-  phone_dial_buttons_set_dial (phone_state, TRUE);
-  phone_remove_status_timer (phone_state);
-}
-
-/**
- * phone_item_toggled_cb:
- * @item: a #GtkToggleButton
- * @phone_state: a #PhoneState
- *
- * Phone toggled callback - sets selected port type to profile settings
- */
-static void
-phone_item_toggled_cb (GtkToggleButton *button,
-                       PhoneState      *phone_state)
-{
-  /* If item is active, adjust phone port accordingly */
-  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
-    const char *name = gtk_button_get_label (GTK_BUTTON (button));
-    RmPhone *phone = rm_phone_get (name);
-
-    rm_profile_set_phone (phone_state->profile, phone);
-    phone_state->phone = phone;
-
-    /* Get active name and set window title */
-    gtk_header_bar_set_title (GTK_HEADER_BAR (phone_state->header_bar), name);
-  }
-}
-
-/**
- * phone_create_menu:
- * @phone_state: a #PhoneState
- *
- * Create phone window menu which contains phone selection and suppress number toggle
- *
- * Returns: newly create phone menu
- */
-static GtkWidget *
-phone_create_menu (PhoneState *phone_state)
-{
-  GtkWidget *menu;
-  GtkWidget *item;
-  GtkWidget *box;
-  GSList *phone_radio_list = NULL;
-  GSList *list = NULL;
-
-  /* Create popover */
-  menu = gtk_popover_new (NULL);
-
-  /* Create vertical box */
-  box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-  gtk_widget_set_margin (box, 6, 6, 6, 6);
-
-  gtk_container_add (GTK_CONTAINER (menu), box);
-
-  /* Fill menu */
-  item = gtk_label_new (_("Phones"));
-  gtk_widget_set_sensitive (item, FALSE);
-  gtk_box_pack_start (GTK_BOX (box), item, FALSE, FALSE, 0);
-
-  /* Traverse phone list and add each phone */
-  for (list = rm_phone_get_plugins (); list != NULL && list->data != NULL; list = list->next) {
+  for (const GSList *list = rm_phone_get_plugins (); list && list->data; list = list->next) {
     RmPhone *phone = list->data;
+    GtkWidget *item;
 
-    item = gtk_radio_button_new_with_label (phone_radio_list, phone->name);
+    item = gtk_model_button_new ();
+    gtk_widget_set_hexpand (item, TRUE);
+    gtk_button_set_label (GTK_BUTTON (item), rm_phone_get_name (phone));
+    gtk_actionable_set_action_name (GTK_ACTIONABLE (item), "phone.set-phone");
+    gtk_actionable_set_action_target (GTK_ACTIONABLE (item), "s", rm_phone_get_name (phone));
+    g_object_set (G_OBJECT (item), "xalign", 0.0f, NULL);
+    gtk_widget_show (item);
+    gtk_box_pack_start (GTK_BOX (self->phone_box), item, FALSE, FALSE, 0);
 
-    phone_radio_list = gtk_radio_button_get_group (GTK_RADIO_BUTTON (item));
-
-    if (phone == phone_state->phone) {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (item), TRUE);
-    }
-
-    g_signal_connect (item, "toggled", G_CALLBACK (phone_item_toggled_cb), phone_state);
-
-    gtk_box_pack_start (GTK_BOX (box), item, FALSE, FALSE, 0);
+    if (g_strcmp0 (rm_phone_get_name (phone), rm_phone_get_name (active)) == 0)
+      g_object_set (item, "active", TRUE, NULL);
   }
-
-  /* Add separator */
-  item = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-  gtk_box_pack_start (GTK_BOX (box), item, FALSE, FALSE, 0);
-
-  /* Add suppress check item */
-  item = gtk_check_button_new_with_label (_("Suppress number"));
-  g_settings_bind (phone_state->profile->settings, "suppress", item, "active", G_SETTINGS_BIND_DEFAULT);
-  gtk_box_pack_start (GTK_BOX (box), item, FALSE, FALSE, 0);
-
-  gtk_widget_show_all (box);
-
-  return menu;
 }
 
-/**
- * phone_dtmf_button_clicked_cb:
- * @widget: button widget
- * @phone_state: a #PhoneState
- *
- * Dialpad button pressed - send either dtmf code or add number to entry
- */
 static void
-phone_dtmf_button_clicked_cb (GtkWidget  *widget,
-                              PhoneState *phone_state)
+roger_phone_dtmf_button_clicked_cb (GtkWidget *widget,
+                                    gpointer   user_data)
 {
+  RogerPhone *self = ROGER_PHONE (user_data);
+  RmProfile *profile = rm_profile_get_active ();
+  RmPhone *phone = rm_profile_get_phone (profile);
   const char *name = gtk_widget_get_name (widget);
   gint num = name[7];
 
-  if (phone_state->connection) {
-    /* Active connection is available, send dtmf code */
-    rm_phone_dtmf (phone_state->phone, phone_state->connection, num);
+  if (self->connection) {
+    rm_phone_dtmf (phone, self->connection, num);
   } else {
-    /* Add number to entry */
-    const char *text = contact_search_get_text (CONTACT_SEARCH (phone_state->contact_search));
-    char *tmp = g_strdup_printf ("%s%c", text, num);
+    const char *text = gtk_entry_get_text (GTK_ENTRY (self->search_entry));
+    g_autofree char *tmp = g_strdup_printf ("%s%c", text, num);
 
-    contact_search_set_text (CONTACT_SEARCH (phone_state->contact_search), tmp);
-    g_free (tmp);
+    gtk_entry_set_text (GTK_ENTRY (self->search_entry), tmp);
   }
 }
 
-/**
- * phone_record_button_clicked_cb:
- * @widget: button widget
- * @phone_state: a #PhoneState
- *
- * Record button clicked callback - toggle record call state
- */
 static void
-phone_record_button_clicked_cb (GtkWidget  *widget,
-                                PhoneState *phone_state)
+roger_phone_record_button_clicked_cb (GtkWidget *widget,
+                                      gpointer   user_data)
 {
-  /* Toggle record state */
-  rm_phone_record (phone_state->phone, phone_state->connection, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)));
+  RogerPhone *self = ROGER_PHONE (user_data);
+  RmProfile *profile = rm_profile_get_active ();
+  RmPhone *phone = rm_profile_get_phone (profile);
+
+  rm_phone_record (phone, self->connection, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)));
 }
 
-/**
- * phone_hold_button_clicked_cb:
- * @widget: button widget
- * @phone_state: a #PhoneState
- *
- * Hold button clicked callback - toggle hold call state
- */
 static void
-phone_hold_button_clicked_cb (GtkWidget  *widget,
-                              PhoneState *phone_state)
+roger_phone_hold_button_clicked_cb (GtkWidget *widget,
+                                    gpointer   user_data)
 {
-  /* Toggle hold call */
-  rm_phone_hold (phone_state->phone, phone_state->connection, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)));
+  RogerPhone *self = ROGER_PHONE (user_data);
+  RmProfile *profile = rm_profile_get_active ();
+  RmPhone *phone = rm_profile_get_phone (profile);
+
+  rm_phone_hold (phone, self->connection, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)));
 }
 
-/**
- * phone_mute_button_clicked_cb:
- * @widget: button widget
- * @phone_state: a #PhoneState
- *
- * Mute button clicked callback - toggle mute call state
- */
 static void
-phone_mute_button_clicked_cb (GtkWidget  *widget,
-                              PhoneState *phone_state)
+roger_phone_mute_button_clicked_cb (GtkWidget *widget,
+                                    gpointer   user_data)
 {
-  /* Toggle mute call */
-  rm_phone_mute (phone_state->phone, phone_state->connection, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)));
+  RogerPhone *self = ROGER_PHONE (user_data);
+  RmProfile *profile = rm_profile_get_active ();
+  RmPhone *phone = rm_profile_get_phone (profile);
+
+  rm_phone_mute (phone, self->connection, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)));
 }
 
-/**
- * phone_clear_button_clicked_cb:
- * @widget: button widget
- * @phone_state: a #PhoneState
- *
- * Clear button clicked callback - removes last char of number/name
- */
 static void
-phone_clear_button_clicked_cb (GtkWidget  *widget,
-                               PhoneState *phone_state)
+roger_phone_clear_button_clicked_cb (GtkWidget *widget,
+                                     gpointer   user_data)
 {
-  const char *text = contact_search_get_text (CONTACT_SEARCH (phone_state->contact_search));
+  RogerPhone *self = ROGER_PHONE (user_data);
+  const char *text = gtk_entry_get_text (GTK_ENTRY (self->search_entry));
 
-  /* If there is text within the entry, remove last char */
   if (!RM_EMPTY_STRING (text)) {
-    char *new = g_strdup (text);
+    g_autofree char *new = g_strdup (text);
 
     new[strlen (text) - 1] = '\0';
-    contact_search_set_text (CONTACT_SEARCH (phone_state->contact_search), new);
-    g_free (new);
+    gtk_entry_set_text (GTK_ENTRY (self->search_entry), new);
   }
 }
 
-/**
- * phone_pickup;
- * @phone_state: a #PhoneState
- * @connection: incoming #RmConnection
- *
- * Pick up incoming connection
- */
-static void
-phone_pickup (PhoneState   *phone_state,
-              RmConnection *connection)
-{
-  /* Pick up */
-  if (!rm_phone_pickup (connection)) {
-    /* Set internal connection */
-    phone_state->connection = connection;
-
-    /* Disable dial button */
-    phone_dial_buttons_set_dial (phone_state, FALSE);
-
-    phone_start_status_timer (phone_state);
-  }
-}
-
-/**
- * phone_window_delete_event_cb:
- * @window: window widget
- * @event: a #GdkEvent
- * @phone_state: a #PhoneState
- *
- * Phone window delete event callback
- *
- * Returns: %FALSE if window should be deleted
- */
 static gboolean
-phone_window_delete_event_cb (GtkWidget  *window,
-                              GdkEvent   *event,
-                              PhoneState *phone_state)
+roger_phone_delete_event_cb (GtkWidget *window,
+                             GdkEvent  *event,
+                             gpointer   user_data)
 {
-  if (!phone_state) {
-    return FALSE;
+  RogerPhone *self = ROGER_PHONE (window);
+
+  if (self->connection) {
+    roger_phone_active_call_dialog (self);
+    return TRUE;
   }
-
-  /* If there is an active connection, warn user and refuse to delete the window */
-  if (phone_state->connection) {
-    if (phone_active_call_dialog (window)) {
-      /* Keep window */
-      return TRUE;
-    }
-
-    /* Remove timer source */
-    phone_remove_status_timer (phone_state);
-  }
-
-  /* Disconnect all signal handlers */
-  g_signal_handlers_disconnect_by_data (rm_object, phone_state);
-
-  phone_state->window = NULL;
-
-  /* Free phone state structure and release phone window */
-  g_slice_free (PhoneState, phone_state);
-
-  phone_state = NULL;
 
   return FALSE;
 }
 
-/**
- * app_phone:
- * @contact: a #RmContact
- * @connection: a #RmConnection
- *
- * Opens phone dialog
- *  - If there is an incoming call, pick it up
- */
-void
-app_phone (RmContact    *contact,
-           RmConnection *connection)
+static void
+roger_phone_class_init (RogerPhoneClass *klass)
 {
-  GtkBuilder *builder;
-  GtkWidget *menu_button;
-  RmProfile *profile = rm_profile_get_active ();
-  PhoneState *phone_state = NULL;
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  g_return_if_fail (profile != NULL);
+  gtk_widget_class_set_template_from_resource (widget_class, "/org/tabos/roger/ui/phone.ui");
 
-  builder = gtk_builder_new_from_resource ("/org/tabos/roger/phone.glade");
-  if (!builder) {
-    g_warning ("Could not load phone ui");
-    return;
-  }
+  gtk_widget_class_bind_template_child (widget_class, RogerPhone, grid);
+  gtk_widget_class_bind_template_child (widget_class, RogerPhone, dial_button);
+  gtk_widget_class_bind_template_child (widget_class, RogerPhone, mute_button);
+  gtk_widget_class_bind_template_child (widget_class, RogerPhone, hold_button);
+  gtk_widget_class_bind_template_child (widget_class, RogerPhone, record_button);
+  gtk_widget_class_bind_template_child (widget_class, RogerPhone, clear_button);
+  gtk_widget_class_bind_template_child (widget_class, RogerPhone, menu_button);
+  gtk_widget_class_bind_template_child (widget_class, RogerPhone, header_bar);
+  gtk_widget_class_bind_template_child (widget_class, RogerPhone, phone_box);
+  gtk_widget_class_bind_template_child (widget_class, RogerPhone, search_entry);
 
-  /* Allocate phone state structure */
-  phone_state = g_slice_alloc0 (sizeof (PhoneState));
-
-  phone_state->profile = profile;
-  phone_state->phone = rm_profile_get_phone (phone_state->profile);
-
-  /* Connect to builder objects */
-  phone_state->window = GTK_WIDGET (gtk_builder_get_object (builder, "phone_window"));
-  gtk_window_set_transient_for (GTK_WINDOW (phone_state->window), GTK_WINDOW (journal_get_window ()));
-  gtk_window_set_position (GTK_WINDOW (phone_state->window), GTK_WIN_POS_CENTER_ALWAYS);
-
-  GtkWidget *grid2 = GTK_WIDGET (gtk_builder_get_object (builder, "phone_grid"));
-  phone_state->contact_search = contact_search_new ();
-  gtk_grid_attach (GTK_GRID (grid2), phone_state->contact_search, 0, 0, 1, 1);
-
-  phone_state->pickup_button = GTK_WIDGET (gtk_builder_get_object (builder, "call_start_button"));
-  phone_state->hangup_button = GTK_WIDGET (gtk_builder_get_object (builder, "call_stop_button"));
-  phone_state->mute_button = GTK_WIDGET (gtk_builder_get_object (builder, "phone_mute_button"));
-  phone_state->hold_button = GTK_WIDGET (gtk_builder_get_object (builder, "phone_hold_button"));
-  phone_state->record_button = GTK_WIDGET (gtk_builder_get_object (builder, "phone_record_button"));
-  phone_state->clear_button = GTK_WIDGET (gtk_builder_get_object (builder, "phone_clear_button"));
-
-  menu_button = GTK_WIDGET (gtk_builder_get_object (builder, "phone_menu_button"));
-
-  GtkWidget *menu = phone_create_menu (phone_state);
-  gtk_menu_button_set_popover (GTK_MENU_BUTTON (menu_button), menu);
-
-  phone_state->header_bar = GTK_WIDGET (gtk_builder_get_object (builder, "phone_headerbar"));
-
-  /* Create header bar and set it to window */
-  gtk_header_bar_set_title (GTK_HEADER_BAR (phone_state->header_bar), phone_state->phone ? g_strdup (phone_state->phone->name) : g_strdup (_("Phone")));
-  gtk_header_bar_set_subtitle (GTK_HEADER_BAR (phone_state->header_bar), "");
-
-  g_signal_connect (G_OBJECT (phone_state->window), "delete-event", G_CALLBACK (phone_window_delete_event_cb), phone_state);
-  g_signal_connect (G_OBJECT (phone_state->hangup_button), "clicked", G_CALLBACK (phone_hangup_button_clicked_cb), phone_state);
-  g_signal_connect (G_OBJECT (phone_state->pickup_button), "clicked", G_CALLBACK (phone_pickup_button_clicked_cb), phone_state);
-  g_signal_connect (G_OBJECT (phone_state->record_button), "clicked", G_CALLBACK (phone_record_button_clicked_cb), phone_state);
-  g_signal_connect (G_OBJECT (phone_state->hold_button), "clicked", G_CALLBACK (phone_hold_button_clicked_cb), phone_state);
-  g_signal_connect (G_OBJECT (phone_state->mute_button), "clicked", G_CALLBACK (phone_mute_button_clicked_cb), phone_state);
-  g_signal_connect (G_OBJECT (phone_state->clear_button), "clicked", G_CALLBACK (phone_clear_button_clicked_cb), phone_state);
-
-  GtkWidget *tmp;
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_0"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_1"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_2"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_3"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_4"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_5"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_6"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_7"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_8"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_9"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_*"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-  tmp = GTK_WIDGET (gtk_builder_get_object (builder, "button_#"));
-  g_signal_connect (G_OBJECT (tmp), "clicked", G_CALLBACK (phone_dtmf_button_clicked_cb), phone_state);
-
-  gtk_builder_connect_signals (builder, NULL);
-
-  g_object_unref (G_OBJECT (builder));
-
-  /* Connect connection signal */
-  g_signal_connect (rm_object, "connection-changed", G_CALLBACK (phone_connection_changed_cb), phone_state);
-
-  if (contact) {
-    /* Set contact name */
-    contact_search_set_contact (CONTACT_SEARCH (phone_state->contact_search), contact, TRUE);
-  }
-
-  /* In case there is an incoming connection, pick it up */
-  if (connection) {
-    phone_pickup (phone_state, connection);
-  } else {
-    /* No incoming call, allow dialing */
-    phone_dial_buttons_set_dial (phone_state, TRUE);
-  }
-
-  gtk_widget_show_all (phone_state->window);
+  gtk_widget_class_bind_template_callback (widget_class, roger_phone_dtmf_button_clicked_cb);
+  gtk_widget_class_bind_template_callback (widget_class, roger_phone_dial_button_clicked_cb);
+  gtk_widget_class_bind_template_callback (widget_class, roger_phone_record_button_clicked_cb);
+  gtk_widget_class_bind_template_callback (widget_class, roger_phone_hold_button_clicked_cb);
+  gtk_widget_class_bind_template_callback (widget_class, roger_phone_mute_button_clicked_cb);
+  gtk_widget_class_bind_template_callback (widget_class, roger_phone_clear_button_clicked_cb);
+  gtk_widget_class_bind_template_callback (widget_class, roger_phone_delete_event_cb);
 }
+
+static void
+roger_phone_change_state (GSimpleAction *action,
+                          GVariant      *value,
+                          gpointer       user_data)
+{
+  const char *name = g_variant_get_string (value, NULL);
+  RmPhone *phone = rm_phone_get (name);
+  RogerPhone *self = ROGER_PHONE (user_data);
+
+  rm_profile_set_phone (rm_profile_get_active (), phone);
+  hdy_header_bar_set_title (HDY_HEADER_BAR (self->header_bar), name);
+
+  g_simple_action_set_state (action, value);}
+
+static void
+roger_phone_set_suppression (GSimpleAction *action,
+                             GVariant      *value,
+                             gpointer       user_data)
+{
+  g_simple_action_set_state (action, value);
+}
+
+static const GActionEntry phone_actions [] = {
+    {"set-phone", NULL, "s", "''", roger_phone_change_state},
+    {"set-suppression", NULL, NULL, "false", roger_phone_set_suppression},
+};
+
+static void
+roger_phone_init (RogerPhone *self)
+{
+  RmProfile *profile = rm_profile_get_active ();
+  RmPhone *phone = rm_profile_get_phone (profile);
+  GSimpleActionGroup *simple_action_group;
+
+  gtk_widget_init_template (GTK_WIDGET (self));
+
+  simple_action_group = g_simple_action_group_new ();
+  g_action_map_add_action_entries (G_ACTION_MAP (simple_action_group),
+                                   phone_actions,
+                                   G_N_ELEMENTS (phone_actions),
+                                   self);
+  gtk_widget_insert_action_group (GTK_WIDGET (self),
+                                  "phone",
+                                  G_ACTION_GROUP (simple_action_group));
+
+  contact_search_completion_add (self->search_entry);
+  roger_phone_create_menu (self);
+
+  hdy_header_bar_set_title (HDY_HEADER_BAR (self->header_bar), phone ? rm_phone_get_name (phone) : _("Phone"));
+  hdy_header_bar_set_subtitle (HDY_HEADER_BAR (self->header_bar), "");
+
+  g_signal_connect_object (rm_object, "connection-changed", G_CALLBACK (roger_phone_connection_changed_cb), self, 0);
+
+  roger_phone_update_buttons (self);
+}
+
+GtkWidget *
+roger_phone_new (void)
+{
+  return g_object_new (ROGER_TYPE_PHONE, NULL);
+}
+
+void
+roger_phone_set_dial_number (RogerPhone *self,
+                             const char *number)
+{
+  gtk_entry_set_text (GTK_ENTRY (self->search_entry), number);
+}
+
+void roger_phone_pickup_connection (RogerPhone   *self,
+                                    RmConnection *connection)
+{
+  g_assert (connection);
+  g_assert (self);
+  g_assert (!self->connection);
+
+  if (!rm_phone_pickup (connection)) {
+    self->connection = connection;
+
+    roger_phone_update_buttons (self);
+    roger_phone_start_status_timer (self);
+  }
+}
+

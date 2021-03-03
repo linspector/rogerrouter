@@ -200,11 +200,17 @@ assistant_activated (GSimpleAction *action,
 }
 
 static void
-dialnumber_activated (GSimpleAction *action,
-                      GVariant      *parameter,
-                      gpointer       user_data)
+phone_activated (GSimpleAction *action,
+                 GVariant      *parameter,
+                 gpointer       user_data)
 {
-  app_phone (NULL, NULL);
+  GtkWindow *parent = gtk_application_get_active_window (GTK_APPLICATION (user_data));
+  GtkWidget *phone = roger_phone_new ();
+
+  gtk_window_set_transient_for (GTK_WINDOW (phone), parent);
+  gtk_window_set_modal (GTK_WINDOW (phone), TRUE);
+
+  gtk_widget_show_all (phone);
 }
 
 static void
@@ -338,7 +344,7 @@ void
 app_pickup (RmConnection *connection)
 {
   RmNotificationMessage *message;
-  RmContact *contact;
+  GtkWidget *phone;
 
   g_assert (connection != NULL);
 
@@ -348,11 +354,9 @@ app_pickup (RmConnection *connection)
   /* Close notification message */
   rm_notification_message_close (message);
 
-  /** Ask for contact information */
-  contact = rm_contact_find_by_number (connection->remote_number);
-
-  /* Show phone window */
-  app_phone (contact, connection);
+  phone = roger_phone_new ();
+  roger_phone_pickup_connection (ROGER_PHONE (phone), connection);
+  gtk_widget_show_all (phone);
 }
 
 static void
@@ -435,7 +439,7 @@ static GActionEntry apps_entries[] = {
   { "addressbook", addressbook_activated, NULL, NULL, NULL },
   { "assistant", assistant_activated, NULL, NULL, NULL },
   { "preferences", preferences_activated, NULL, NULL, NULL },
-  { "phone", dialnumber_activated, NULL, NULL, NULL },
+  { "phone", phone_activated, NULL, NULL, NULL },
   { "copy_ip", copy_ip_activated, NULL, NULL, NULL },
   { "reconnect", reconnect_activated, NULL, NULL, NULL },
   { "donate", donate_activated, NULL, NULL, NULL },
@@ -674,17 +678,13 @@ application_command_line_cb (GtkApplication          *app,
   if (!option_state.start_hidden) {
     /* In case we have a number, setup phone window */
     if (option_state.number) {
-      RmContact *contact;
-      char *full_number;
+      GtkWidget *phone;
 
       g_debug ("%s(): number: %s", __FUNCTION__, option_state.number);
-      full_number = rm_number_full (option_state.number, FALSE);
 
-      /** Ask for contact information */
-      contact = rm_contact_find_by_number (full_number);
-
-      app_phone (contact, NULL);
-      g_free (full_number);
+      phone = roger_phone_new ();
+      roger_phone_set_dial_number (ROGER_PHONE (phone), option_state.number);
+      gtk_widget_show_all (phone);
     }
   }
 
