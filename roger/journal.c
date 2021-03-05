@@ -1020,12 +1020,6 @@ on_contacts_changed (RmObject *object,
   reload_journal (self);
 }
 
-GtkWidget *
-journal_get_window ()
-{
-  return NULL;
-}
-
 void
 journal_set_visible (RogerJournal *self,
                      gboolean      state)
@@ -1296,7 +1290,7 @@ roger_journal_init (RogerJournal *self)
   g_signal_connect_object (rm_object, "contacts-changed", G_CALLBACK (on_contacts_changed), self, 0);
 }
 
-RogerJournal *
+GtkWidget *
 roger_journal_new (void)
 {
   return g_object_new (ROGER_TYPE_JOURNAL, NULL);

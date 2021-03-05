@@ -39,11 +39,11 @@
 GtkApplication *roger_app;
 static gboolean startup_called = FALSE;
 GSettings *app_settings = NULL;
-static RogerJournal *journal = NULL;
+static GtkWidget *journal = NULL;
 
 struct cmd_line_option_state {
   gboolean debug;
-  gboolean start_hidden;
+  gboolean start_background;
   gboolean quit;
   gboolean force_online;
   char *number;
@@ -70,9 +70,9 @@ app_show_preferences (void)
 void
 app_show_help (void)
 {
-  char *uri = "http://www.tabos.org/forum";
+  char *uri = "http://www.tabos.org";
 
-  gtk_show_uri_on_window (GTK_WINDOW (journal_get_window ()), uri, gtk_get_current_event_time (), NULL);
+  gtk_show_uri_on_window (GTK_WINDOW (journal), uri, gtk_get_current_event_time (), NULL);
 }
 
 void
@@ -228,7 +228,7 @@ donate_activated (GSimpleAction *action,
 {
   char *uri = "http://www.tabos.org/";
 
-  gtk_show_uri_on_window (GTK_WINDOW (journal_get_window ()), uri, gtk_get_current_event_time (), NULL);
+  gtk_show_uri_on_window (GTK_WINDOW (journal), uri, gtk_get_current_event_time (), NULL);
 }
 
 static void
@@ -424,7 +424,7 @@ hideonquit_activated (GSimpleAction *simple,
                       GVariant      *parameter,
                       gpointer       user_data)
 {
-  journal_set_hide_on_quit (journal, g_variant_get_boolean (parameter));
+  journal_set_hide_on_quit (ROGER_JOURNAL (journal), g_variant_get_boolean (parameter));
 }
 
 static void
@@ -432,7 +432,7 @@ hideonstart_activated (GSimpleAction *simple,
                        GVariant      *parameter,
                        gpointer       user_data)
 {
-  journal_set_hide_on_start (journal, g_variant_get_boolean (parameter));
+  journal_set_hide_on_start (ROGER_JOURNAL (journal), g_variant_get_boolean (parameter));
 }
 
 static GActionEntry apps_entries[] = {
@@ -482,7 +482,7 @@ rm_object_message_cb (RmObject *object,
 static void
 rm_object_profile_changed_cb (RmObject *object)
 {
-  journal_update_content (journal);
+  journal_update_content (ROGER_JOURNAL (journal));
 }
 
 static void
@@ -508,7 +508,6 @@ app_init (GtkApplication *app)
   }
 
   /* Set local bindings */
-  g_debug ("%s(): locale: %s, package: '%s'", __FUNCTION__, rm_get_directory (APP_LOCALE), GETTEXT_PACKAGE);
   bindtextdomain (GETTEXT_PACKAGE, rm_get_directory (APP_LOCALE));
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
@@ -565,15 +564,14 @@ app_init (GtkApplication *app)
 
   fax_process_init ();
 
-
-  if (option_state.start_hidden) {
-    journal_set_hide_on_start (journal, TRUE);
-    journal_set_hide_on_quit (journal, TRUE);
-  }
-
-  /*journal_window(G_APPLICATION(app)); */
-  gtk_widget_show (GTK_WIDGET (journal));
   gtk_application_add_window (GTK_APPLICATION (app), GTK_WINDOW (journal));
+
+  if (option_state.start_background) {
+    journal_set_hide_on_start (ROGER_JOURNAL (journal), TRUE);
+    journal_set_hide_on_quit (ROGER_JOURNAL (journal), TRUE);
+  } else {
+    gtk_widget_show (GTK_WIDGET (journal));
+  }
 }
 
 G_GNUC_NORETURN static gboolean
@@ -588,7 +586,7 @@ option_version_cb (const char  *option_name,
 
 const GOptionEntry all_options[] = {
   { "debug", 'd', 0, G_OPTION_ARG_NONE, &option_state.debug, "Enable debug", NULL },
-  { "hidden", 'i', 0, G_OPTION_ARG_NONE, &option_state.start_hidden, "Start with hidden window", NULL },
+  { "background", 'b', 0, G_OPTION_ARG_NONE, &option_state.start_background, "Start with window in background", NULL },
   { "quit", 'q', 0, G_OPTION_ARG_NONE, &option_state.quit, "Quit", NULL },
   { "call", 'c', 0, G_OPTION_ARG_STRING, &option_state.number, "Remote phone number", NULL },
   { "version", 'v', G_OPTION_FLAG_NO_ARG | G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_CALLBACK, option_version_cb, NULL, NULL },
@@ -663,7 +661,6 @@ application_command_line_cb (GtkApplication          *app,
 
   application_options_process (app, &option_state);
 
-  g_debug ("%s(): Startup_called?: %d", __FUNCTION__, startup_called);
   if (startup_called) {
     /* Initialize app and mark startup as done */
     app_init (app);
@@ -671,21 +668,16 @@ application_command_line_cb (GtkApplication          *app,
     startup_called = FALSE;
   } else {
     /* Application is already running, present journal window */
-    /*gtk_widget_set_visible(GTK_WIDGET(journal_get_window ()), TRUE); */
+    gtk_widget_set_visible (journal, TRUE);
   }
 
-  /* Check if we should start hidden */
-  if (!option_state.start_hidden) {
-    /* In case we have a number, setup phone window */
-    if (option_state.number) {
-      GtkWidget *phone;
+  /* In case we have a number, setup phone window */
+  if (option_state.number) {
+    GtkWidget *phone;
 
-      g_debug ("%s(): number: %s", __FUNCTION__, option_state.number);
-
-      phone = roger_phone_new ();
-      roger_phone_set_dial_number (ROGER_PHONE (phone), option_state.number);
-      gtk_widget_show_all (phone);
-    }
+    phone = roger_phone_new ();
+    roger_phone_set_dial_number (ROGER_PHONE (phone), option_state.number);
+    gtk_widget_show_all (phone);
   }
 
   g_strfreev (argv);
@@ -740,5 +732,5 @@ application_new (void)
 void
 app_present_journal (void)
 {
-  journal_set_visible (journal, TRUE);
+  journal_set_visible (ROGER_JOURNAL (journal), TRUE);
 }

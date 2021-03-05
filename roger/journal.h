@@ -41,7 +41,7 @@ enum {
 
 G_DECLARE_FINAL_TYPE (RogerJournal, roger_journal, ROGER, JOURNAL, HdyWindow)
 
-RogerJournal *roger_journal_new (void);
+GtkWidget *roger_journal_new (void);
 
 void journal_window (GApplication *app);
 void journal_set_visible (RogerJournal *self,

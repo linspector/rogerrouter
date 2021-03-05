@@ -1185,7 +1185,7 @@ app_contacts (RmContact *contact)
   contacts = g_malloc0 (sizeof (Contacts));
   contacts_set_contact (contacts, contact);
 
-  parent = journal_get_window ();
+  parent = NULL;/*journal_get_window (); */
 
   contacts->book = book;
   contacts->window = GTK_WIDGET (gtk_builder_get_object (builder, "contacts_window"));
