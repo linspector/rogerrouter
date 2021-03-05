@@ -10,7 +10,6 @@ plugins_inc = include_directories('.', '..')
 subdir('google')
 
 if host_machine.system().contains('linux')
-subdir('indicator')
 subdir('evolution')
 endif
 
