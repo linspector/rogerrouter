@@ -486,6 +486,19 @@ rm_object_profile_changed_cb (RmObject *object)
 }
 
 static void
+rm_object_fax_process_cb (GtkWidget *widget,
+                          char      *file_name,
+                          gpointer   user_data)
+{
+  GtkWidget *fax = roger_fax_new ();
+
+  roger_fax_set_transfer_file (ROGER_FAX (fax), file_name);
+  gtk_window_set_transient_for (GTK_WINDOW (fax), GTK_WINDOW (journal));
+  gtk_window_set_modal (GTK_WINDOW (fax), TRUE);
+  gtk_widget_show_all (fax);
+}
+
+static void
 app_init (GtkApplication *app)
 {
   GError *error = NULL;
@@ -547,6 +560,7 @@ app_init (GtkApplication *app)
   g_signal_connect (rm_object, "authenticate", G_CALLBACK (app_authenticate_cb), NULL);
   g_signal_connect (rm_object, "message", G_CALLBACK (rm_object_message_cb), NULL);
   g_signal_connect (rm_object, "profile-changed", G_CALLBACK (rm_object_profile_changed_cb), NULL);
+  g_signal_connect (rm_object, "fax-process", G_CALLBACK (rm_object_fax_process_cb), NULL);
 
   journal = roger_journal_new ();
 
@@ -561,8 +575,6 @@ app_init (GtkApplication *app)
     g_clear_error (&error);
     return;
   }
-
-  fax_process_init ();
 
   gtk_application_add_window (GTK_APPLICATION (app), GTK_WINDOW (journal));
 

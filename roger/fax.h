@@ -19,12 +19,17 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
+#include <handy.h>
 
 G_BEGIN_DECLS
 
-void fax_process_init (void);
-void app_show_fax_window (char *tiff_file);
-void fax_window_clear (gpointer priv);
+#define ROGER_TYPE_FAX (roger_fax_get_type ())
+
+G_DECLARE_FINAL_TYPE (RogerFax, roger_fax, ROGER, FAX, HdyWindow)
+
+GtkWidget *roger_fax_new (void);
+
+void roger_fax_set_transfer_file (RogerFax   *self,
+                                  const char *file);
 
 G_END_DECLS
