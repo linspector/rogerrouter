@@ -86,7 +86,6 @@ roger_phone_update_buttons (RogerPhone *self)
   if (self->connection && self->connection->type & RM_CONNECTION_TYPE_SOFTPHONE)
     control_buttons = !!self->connection;
 
-  /* Set control button sensitive value */
   gtk_widget_set_sensitive (self->mute_button, control_buttons);
   gtk_widget_set_sensitive (self->hold_button, control_buttons);
   gtk_widget_set_sensitive (self->record_button, control_buttons);
@@ -277,9 +276,23 @@ roger_phone_delete_event_cb (GtkWidget *window,
 }
 
 static void
+roger_phone_dispose (GObject *object)
+{
+  RogerPhone *self = ROGER_PHONE (object);
+
+  roger_phone_remove_status_timer (self);
+
+  G_OBJECT_CLASS (roger_phone_parent_class)->dispose (object);
+}
+
+
+static void
 roger_phone_class_init (RogerPhoneClass *klass)
 {
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+
+  object_class->dispose = roger_phone_dispose;
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/tabos/roger/ui/phone.ui");
 

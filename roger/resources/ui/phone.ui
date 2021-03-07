@@ -110,7 +110,7 @@ Author: Jan-Michael Brummer
     <property name="modal">True</property>
     <property name="window-position">center-on-parent</property>
     <property name="default-width">360</property>
-    <signal name="destroy-event" handler="roger_phone_delete_event_cb" swapped="no"/>
+    <signal name="delete-event" handler="roger_phone_delete_event_cb" swapped="no"/>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
