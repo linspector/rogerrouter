@@ -5,7 +5,7 @@ resources = gnome.compile_resources('roger-resources',
   source_dir : 'resources'
 )
 
-types_headers = ['preferences-telephony.h']
+types_headers = ['preferences/preferences-telephony.h']
 
 enums = gnome.mkenums_simple('roger-type-builtins',
   sources: types_headers
@@ -14,6 +14,14 @@ enums = gnome.mkenums_simple('roger-type-builtins',
 sourcelist = []
 sourcelist += 'contrib/gd-two-lines-renderer.c'
 sourcelist += 'contrib/gd-two-lines-renderer.h'
+sourcelist += 'preferences/preferences.c'
+sourcelist += 'preferences/preferences.h'
+sourcelist += 'preferences/preferences-audio.c'
+sourcelist += 'preferences/preferences-audio.h'
+sourcelist += 'preferences/preferences-telephony.c'
+sourcelist += 'preferences/preferences-telephony.h'
+sourcelist += 'preferences/preferences-plugins.c'
+sourcelist += 'preferences/preferences-plugins.h'
 sourcelist += 'application.c'
 sourcelist += 'application.h'
 sourcelist += 'assistant.c'
@@ -27,14 +35,6 @@ sourcelist += 'debug.h'
 sourcelist += 'journal.c'
 sourcelist += 'journal.h'
 sourcelist += 'main_ui.c'
-sourcelist += 'preferences.c'
-sourcelist += 'preferences.h'
-sourcelist += 'preferences-audio.c'
-sourcelist += 'preferences-audio.h'
-sourcelist += 'preferences-telephony.c'
-sourcelist += 'preferences-telephony.h'
-sourcelist += 'preferences-plugins.c'
-sourcelist += 'preferences-plugins.h'
 sourcelist += 'print.c'
 sourcelist += 'print.h'
 sourcelist += 'roger-fax.c'
@@ -59,7 +59,7 @@ roger_dep += cc.find_library('m', required: true)
 roger_dep += cc.find_library('gs', required: false)
 roger_dep += libhandy_dep
 
-roger_inc = include_directories('.', '..', 'contrib')
+roger_inc = include_directories('.', '..', 'contrib', 'preferences')
 
 executable('roger', sources : sourcelist, dependencies : roger_dep, include_directories : roger_inc, gui_app : true, install : true)
 

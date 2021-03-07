@@ -21,7 +21,7 @@
 
 #include <gtk/gtk.h>
 
-#include <roger/preferences.h>
+#include "preferences.h"
 
 G_BEGIN_DECLS
 
