@@ -19,7 +19,7 @@
 
 #include "config.h"
 
-#include "fax.h"
+#include "roger-fax.h"
 
 #include "contacts.h"
 #include "contactsearch.h"

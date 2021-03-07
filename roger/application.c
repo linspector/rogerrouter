@@ -24,10 +24,10 @@
 #include "assistant.h"
 #include "contacts.h"
 #include "debug.h"
-#include "fax.h"
 #include "journal.h"
-#include "phone.h"
 #include "preferences.h"
+#include "roger-fax.h"
+#include "roger-phone.h"
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>

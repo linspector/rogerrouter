@@ -23,8 +23,8 @@
 
 #include "application.h"
 #include "contacts.h"
-#include "phone.h"
 #include "print.h"
+#include "roger-phone.h"
 #include "roger-voice-mail.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>

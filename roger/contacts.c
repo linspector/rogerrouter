@@ -23,7 +23,7 @@
 
 #include "contactsearch.h"
 #include "journal.h"
-#include "phone.h"
+#include "roger-phone.h"
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>

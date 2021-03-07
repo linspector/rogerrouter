@@ -19,7 +19,7 @@
 
 #include "config.h"
 
-#include "phone.h"
+#include "roger-phone.h"
 
 #include "contacts.h"
 #include "contactsearch.h"
