@@ -32,7 +32,7 @@ typedef struct {
 } AssistantPage;
 
 struct _RogerAssistant {
-  GtkWindow parent_instance;
+  HdyWindow parent_instance;
 
   GtkWidget *next_button;
   GtkWidget *back_button;
@@ -59,7 +59,7 @@ struct _RogerAssistant {
   RmProfile *profile;
 };
 
-G_DEFINE_TYPE (RogerAssistant, roger_assistant, GTK_TYPE_WINDOW)
+G_DEFINE_TYPE (RogerAssistant, roger_assistant, HDY_TYPE_WINDOW)
 
 static void roger_assistant_back_button_clicked (GtkWidget *next,
                                                  gpointer   user_data);

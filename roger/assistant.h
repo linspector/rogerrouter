@@ -20,12 +20,13 @@
 #pragma once
 
 #include <gtk/gtk.h>
+#include <handy.h>
 
 G_BEGIN_DECLS
 
 #define ROGER_TYPE_ASSISTANT (roger_assistant_get_type ())
 
-G_DECLARE_FINAL_TYPE (RogerAssistant, roger_assistant, ROGER, ASSISTANT, GtkWindow)
+G_DECLARE_FINAL_TYPE (RogerAssistant, roger_assistant, ROGER, ASSISTANT, HdyWindow)
 
 GtkWidget *roger_assistant_new (void);
 
