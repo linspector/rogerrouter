@@ -25,7 +25,6 @@
 #include "contactsearch.h"
 #include "journal.h"
 #include "print.h"
-#include "uitools.h"
 
 #include <ctype.h>
 #include <ghostscript/iapi.h>

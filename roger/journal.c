@@ -26,7 +26,6 @@
 #include "phone.h"
 #include "print.h"
 #include "roger-voice-mail.h"
-#include "uitools.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdk.h>

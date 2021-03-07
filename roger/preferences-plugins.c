@@ -20,7 +20,6 @@
 #include "config.h"
 
 #include "preferences.h"
-#include "uitools.h"
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>

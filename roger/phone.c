@@ -24,7 +24,6 @@
 #include "contacts.h"
 #include "contactsearch.h"
 #include "journal.h"
-#include "uitools.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -284,7 +283,6 @@ roger_phone_dispose (GObject *object)
 
   G_OBJECT_CLASS (roger_phone_parent_class)->dispose (object);
 }
-
 
 static void
 roger_phone_class_init (RogerPhoneClass *klass)

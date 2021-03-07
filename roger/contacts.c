@@ -24,7 +24,6 @@
 #include "contactsearch.h"
 #include "journal.h"
 #include "phone.h"
-#include "uitools.h"
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -75,6 +74,18 @@ contacts_dial_clicked_cb (GtkWidget *button,
   roger_phone_set_dial_number (ROGER_PHONE (phone), number);
 
   gtk_widget_show_all (phone);
+}
+
+static inline GtkWidget *
+ui_label_new (gchar *text)
+{
+  GtkWidget *label;
+
+  label = gtk_label_new (text);
+  gtk_widget_set_sensitive (label, FALSE);
+  gtk_widget_set_halign (label, GTK_ALIGN_END);
+
+  return label;
 }
 
 /**
@@ -1046,7 +1057,7 @@ remove_button_clicked_cb (GtkWidget *button,
 
   /* Add remove button */
   remove_button = gtk_dialog_add_button (GTK_DIALOG (dialog), _("Delete"), GTK_RESPONSE_OK);
-  ui_set_destructive_style (remove_button);
+  gtk_style_context_add_class (gtk_widget_get_style_context (remove_button), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION);
 
   result = gtk_dialog_run (GTK_DIALOG (dialog));
   gtk_widget_destroy (dialog);
@@ -1208,7 +1219,7 @@ app_contacts (RmContact *contact)
   contacts->edit_button = GTK_WIDGET (gtk_builder_get_object (builder, "contacts_edit_button"));
   contacts->cancel_button = GTK_WIDGET (gtk_builder_get_object (builder, "contacts_cancel_button"));
   contacts->save_button = GTK_WIDGET (gtk_builder_get_object (builder, "contacts_save_button"));
-  ui_set_suggested_style (contacts->save_button);
+  gtk_style_context_add_class (gtk_widget_get_style_context (contacts->save_button), GTK_STYLE_CLASS_SUGGESTED_ACTION);
   contacts->add_button = GTK_WIDGET (gtk_builder_get_object (builder, "contacts_add_button"));
   contacts->remove_button = GTK_WIDGET (gtk_builder_get_object (builder, "contacts_remove_button"));
   contacts->view_port = GTK_WIDGET (gtk_builder_get_object (builder, "view_port"));
