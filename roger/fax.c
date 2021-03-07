@@ -344,6 +344,7 @@ static void
 roger_fax_init (RogerFax *self)
 {
   GSimpleActionGroup *simple_action_group;
+  RmProfile *profile = rm_profile_get_active ();
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -357,6 +358,8 @@ roger_fax_init (RogerFax *self)
                                   G_ACTION_GROUP (simple_action_group));
 
   contact_search_completion_add (self->search_entry);
+
+  gtk_label_set_text (GTK_LABEL (self->sender_label), g_settings_get_string (profile->settings, "fax-header"));
 
   g_signal_connect_object (rm_object, "connection-changed", G_CALLBACK (fax_connection_changed_cb), self, 0);
 }
