@@ -989,7 +989,10 @@ Author: Jan-Michael Brummer
               <object class="GtkSearchEntry" id="search_entry">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
+                <property name="has-focus">True</property>
+                <property name="is-focus">True</property>
                 <property name="valign">center</property>
+                <property name="activates-default">True</property>
                 <property name="primary-icon-name">edit-find-symbolic</property>
                 <property name="primary-icon-activatable">False</property>
                 <property name="primary-icon-sensitive">False</property>
