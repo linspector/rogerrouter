@@ -114,7 +114,6 @@ roger_phone_connection_changed_cb (RmObject     *obj,
 {
   g_assert (connection);
   g_assert (self);
-  g_assert (self->connection);
 
   if (self->connection != connection)
     return;
