@@ -58,7 +58,7 @@ subdir('po')
 subdir('share')
 subdir('plugins')
 subdir('platform')
-subdir('roger')
+subdir('src')
 
 if get_option('enable-post-install')
   meson.add_install_script('meson_post_install.sh')
