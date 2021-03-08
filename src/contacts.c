@@ -114,13 +114,15 @@ contacts_update_details (RmContact *contact)
   /* Check for an active address book */
   if (contacts->book) {
     if (contact) {
+      GdkPixbuf *pixbuf;
+
       gtk_container_set_border_width (GTK_CONTAINER (grid), 18);
 
       gtk_grid_set_row_spacing (GTK_GRID (grid), 6);
       gtk_grid_set_column_spacing (GTK_GRID (grid), 12);
 
       frame = gtk_frame_new (NULL);
-      gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
+      gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_NONE);
       gtk_grid_attach (GTK_GRID (grid), frame, 0, 0, 1, 1);
 
       detail_photo_image = gtk_image_new ();
@@ -133,12 +135,13 @@ contacts_update_details (RmContact *contact)
       gtk_grid_attach (GTK_GRID (grid), detail_name_label, 1, 0, 1, 1);
 
       if (contact->image) {
-        GdkPixbuf *buf = rm_image_scale (contact->image, 96);
-        gtk_image_set_from_pixbuf (GTK_IMAGE (detail_photo_image), buf);
+        pixbuf = rm_image_scale (contact->image, 96);
       } else {
-        gtk_image_set_from_icon_name (GTK_IMAGE (detail_photo_image), AVATAR_DEFAULT, GTK_ICON_SIZE_DIALOG);
-        gtk_image_set_pixel_size (GTK_IMAGE (detail_photo_image), 96);
+        GtkWidget *avatar = hdy_avatar_new (96, contact->name, TRUE);
+
+        pixbuf = hdy_avatar_draw_to_pixbuf (HDY_AVATAR (avatar), 96, 1);
       }
+      gtk_image_set_from_pixbuf (GTK_IMAGE (detail_photo_image), pixbuf);
 
       markup = g_markup_printf_escaped ("<span size=\"x-large\">%s</span>", contact->name);
       gtk_label_set_markup (GTK_LABEL (detail_name_label), markup);
@@ -336,7 +339,9 @@ contacts_update_list (void)
       gtk_icon_size_lookup (GTK_ICON_SIZE_DIALOG, &size, NULL);
       img = gtk_image_new_from_pixbuf (rm_image_scale (contact->image, size));
     } else {
-      img = gtk_image_new_from_icon_name (AVATAR_DEFAULT, GTK_ICON_SIZE_DIALOG);
+        GtkWidget *avatar = hdy_avatar_new (48, contact->name, TRUE);
+        GdkPixbuf *pixbuf = hdy_avatar_draw_to_pixbuf (HDY_AVATAR (avatar), 48, 1);
+        img = gtk_image_new_from_pixbuf (pixbuf);
     }
     gtk_box_pack_start (GTK_BOX (child_box), img, FALSE, FALSE, 6);
 
@@ -647,6 +652,7 @@ refresh_edit_dialog (RmContact *contact)
   GtkWidget *detail_name_label = NULL;
   GtkWidget *box;
   GtkWidget *separator;
+  GdkPixbuf *pixbuf;
 
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
   gtk_container_set_border_width (GTK_CONTAINER (box), 6);
@@ -679,12 +685,12 @@ refresh_edit_dialog (RmContact *contact)
   gtk_grid_attach (GTK_GRID (grid), detail_name_label, 1, 0, 1, 1);
 
   if (contact && contact->image) {
-    GdkPixbuf *buf = rm_image_scale (contact->image, 96);
-    gtk_image_set_from_pixbuf (GTK_IMAGE (detail_photo_image), buf);
+    pixbuf = rm_image_scale (contact->image, 96);
   } else {
-    gtk_image_set_from_icon_name (GTK_IMAGE (detail_photo_image), AVATAR_DEFAULT, GTK_ICON_SIZE_DIALOG);
-    gtk_image_set_pixel_size (GTK_IMAGE (detail_photo_image), 96);
+    GtkWidget *avatar = hdy_avatar_new (48, contact->name, TRUE);
+    pixbuf = hdy_avatar_draw_to_pixbuf (HDY_AVATAR (avatar), 48, 1);
   }
+  gtk_image_set_from_pixbuf (GTK_IMAGE (detail_photo_image), pixbuf);
 
   for (numbers = contact ? contact->numbers : NULL; numbers != NULL; numbers = numbers->next) {
     GtkWidget *number;
