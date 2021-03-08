@@ -19,7 +19,7 @@
 
 #include "config.h"
 
-#include "assistant.h"
+#include "roger-assistant.h"
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>

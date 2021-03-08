@@ -21,11 +21,11 @@
 
 #include "application.h"
 
-#include "assistant.h"
 #include "contacts.h"
 #include "debug.h"
 #include "journal.h"
 #include "preferences.h"
+#include "roger-assistant.h"
 #include "roger-fax.h"
 #include "roger-phone.h"
 
