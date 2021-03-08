@@ -16,7 +16,6 @@ src/contacts.c
 src/contactsearch.c
 src/debug.c
 src/journal.c
-src/main_ui.c
 src/print.c
 src/roger-assistant.c
 src/roger-fax.c

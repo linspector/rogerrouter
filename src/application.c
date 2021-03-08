@@ -745,3 +745,20 @@ app_present_journal (void)
 {
   journal_set_visible (ROGER_JOURNAL (journal), TRUE);
 }
+
+int
+main (int    argc,
+      char **argv)
+{
+  int status;
+
+  roger_app = application_new ();
+
+  gdk_notify_startup_complete ();
+  status = g_application_run (G_APPLICATION (roger_app), argc, argv);
+
+  g_object_unref (roger_app);
+
+  return status;
+}
+
