@@ -13,11 +13,11 @@ src/resources/contacts.glade
 
 src/application.c
 src/contacts.c
-src/contactsearch.c
 src/debug.c
 src/journal.c
 src/print.c
 src/roger-assistant.c
+src/roger-contactsearch.c
 src/roger-fax.c
 src/roger-phone.c
 src/roger-voice-mail.c

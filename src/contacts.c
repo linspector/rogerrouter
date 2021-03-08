@@ -21,8 +21,8 @@
 
 #include "contacts.h"
 
-#include "contactsearch.h"
 #include "journal.h"
+#include "roger-contactsearch.h"
 #include "roger-phone.h"
 
 #include <glib/gi18n.h>

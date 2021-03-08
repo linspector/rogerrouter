@@ -22,9 +22,9 @@
 #include "roger-fax.h"
 
 #include "contacts.h"
-#include "contactsearch.h"
 #include "journal.h"
 #include "print.h"
+#include "roger-contactsearch.h"
 
 #include <ctype.h>
 #include <ghostscript/iapi.h>

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "contactsearch.h"
+#include "roger-contactsearch.h"
 
 #include "contacts.h"
 #include "gd-two-lines-renderer.h"
@@ -118,18 +118,17 @@ contact_search_completion_add (GtkWidget *entry)
   if (!book) {
     GSList *book_plugins = rm_addressbook_get_plugins ();
 
-    if (book_plugins) {
+    if (book_plugins)
       book = book_plugins->data;
-    }
   }
 
   list = rm_addressbook_get_contacts (book);
 
-  while (list != NULL) {
+  while (list && list->data) {
     RmContact *contact = list->data;
     GtkTreeIter iter;
 
-    if (contact != NULL) {
+    if (contact) {
       GdkPixbuf *pixbuf;
       GSList *numbers;
 
