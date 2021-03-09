@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roger 1.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-08 15:36+0100\n"
+"POT-Creation-Date: 2021-03-09 21:45+0100\n"
 "PO-Revision-Date: 2016-09-17 21:39+0200\n"
 "Last-Translator: Jan-Michael Brummer <jan.brummer@tabos.org>\n"
 "Language-Team: Deutsch <>\n"
@@ -262,15 +262,15 @@ msgstr "Typ"
 msgid "Reset to defaults"
 msgstr "Auf Vorgaben zurücksetzen"
 
-#: src/resources/ui/journal.ui:74 src/journal.c:904
+#: src/resources/ui/journal.ui:74 src/journal.c:906
 msgid "Copy number"
 msgstr "Nummer kopieren"
 
-#: src/resources/ui/journal.ui:88 src/journal.c:909
+#: src/resources/ui/journal.ui:88 src/journal.c:911
 msgid "Call number"
 msgstr "Nummer wählen"
 
-#: src/resources/ui/journal.ui:113 src/journal.c:918
+#: src/resources/ui/journal.ui:113 src/journal.c:920
 msgid "Add contact"
 msgstr "Kontakt hinzufügen"
 
@@ -294,7 +294,7 @@ msgstr "Journal durchsuchen"
 msgid "Date/Time"
 msgstr "Datum/Zeit"
 
-#: src/resources/ui/journal.ui:363 src/contacts.c:675 src/print.c:425
+#: src/resources/ui/journal.ui:363 src/contacts.c:681 src/print.c:425
 msgid "Name"
 msgstr "Name"
 
@@ -303,11 +303,11 @@ msgid "Company"
 msgstr "Firma"
 
 #: src/resources/ui/journal.ui:391 src/resources/ui/preferences.ui:218
-#: src/resources/ui/preferences.ui:239 src/contacts.c:709 src/print.c:429
+#: src/resources/ui/preferences.ui:239 src/contacts.c:715 src/print.c:429
 msgid "Number"
 msgstr "Nummer"
 
-#: src/resources/ui/journal.ui:405 src/contacts.c:751
+#: src/resources/ui/journal.ui:405 src/contacts.c:757
 msgid "City"
 msgstr "Stadt"
 
@@ -632,12 +632,12 @@ msgstr "Kontakt"
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: src/application.c:151
+#: src/application.c:152
 #, c-format
 msgid "A username and password are being requested by the site %s"
 msgstr "Ein Benutzername sowie Passwort werden von der Seite %s benötigt"
 
-#: src/application.c:273
+#: src/application.c:274
 msgid ""
 "FRITZ!Box Journal, Soft/phone, and Fax\n"
 "Dedicated to my father"
@@ -645,181 +645,169 @@ msgstr ""
 "FRITZ!Box Journal, Soft/phone und Fax\n"
 "Gewidmet meinem Vater"
 
-#: src/application.c:280
+#: src/application.c:281
 msgid "Website"
 msgstr ""
 
-#: src/contacts.c:161
+#: src/contacts.c:164
 msgid "Dial number"
 msgstr "Nummer wählen"
 
-#: src/contacts.c:183
+#: src/contacts.c:186
 msgid "Private"
 msgstr "Privat"
 
-#: src/contacts.c:186
+#: src/contacts.c:189
 msgid "Business"
 msgstr "Geschäftlich"
 
-#: src/contacts.c:189
+#: src/contacts.c:192
 msgid "Other"
 msgstr "Andere"
 
-#: src/contacts.c:228
+#: src/contacts.c:231
 msgid "<b>Choose a contact</b>"
 msgstr "<b>Einen Kontakt auswählen</b>"
 
-#: src/contacts.c:527
+#: src/contacts.c:532
 msgid "Open image"
 msgstr "Bild öffnen"
 
-#: src/contacts.c:528 plugins/google/google.c:94
+#: src/contacts.c:533 plugins/google/google.c:94
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
-#: src/contacts.c:528
+#: src/contacts.c:533
 msgid "_Open"
 msgstr "_Öffnen"
 
-#: src/contacts.c:528
+#: src/contacts.c:533
 msgid "_No image"
 msgstr "_Kein Bild"
 
-#: src/contacts.c:697 src/contacts.c:735 src/contactsearch.c:45
+#: src/contacts.c:703 src/contacts.c:741 src/roger-contactsearch.c:45
 msgid "Home"
 msgstr "Zuhause"
 
-#: src/contacts.c:698 src/contacts.c:736 src/contactsearch.c:48
+#: src/contacts.c:704 src/contacts.c:742 src/roger-contactsearch.c:48
 msgid "Work"
 msgstr "Arbeit"
 
-#: src/contacts.c:699 src/contactsearch.c:51
+#: src/contacts.c:705 src/roger-contactsearch.c:51
 msgid "Mobile"
 msgstr "Mobil"
 
-#: src/contacts.c:700 src/contacts.c:779
+#: src/contacts.c:706 src/contacts.c:785
 msgid "Home Fax"
 msgstr "Zuhause Fax"
 
-#: src/contacts.c:701 src/contacts.c:780
+#: src/contacts.c:707 src/contacts.c:786
 msgid "Work Fax"
 msgstr "Arbeit Fax"
 
-#: src/contacts.c:702 src/contacts.c:781
+#: src/contacts.c:708 src/contacts.c:787
 msgid "Pager"
 msgstr "Pager"
 
-#: src/contacts.c:715
+#: src/contacts.c:721
 msgid "Remove number"
 msgstr "Nummer entfernen"
 
-#: src/contacts.c:742
+#: src/contacts.c:748
 msgid "Remove address"
 msgstr "Adresse entfernen"
 
-#: src/contacts.c:749
+#: src/contacts.c:755
 msgid "Street"
 msgstr "Straße"
 
-#: src/contacts.c:750
+#: src/contacts.c:756
 msgid "ZIP"
 msgstr "PLZ"
 
-#: src/contacts.c:776
+#: src/contacts.c:782
 msgid "Home phone"
 msgstr "Telefon Zuhause"
 
-#: src/contacts.c:777
+#: src/contacts.c:783
 msgid "Work phone"
 msgstr "Telefon Arbeit"
 
-#: src/contacts.c:778
+#: src/contacts.c:784
 msgid "Mobile phone"
 msgstr "Mobiltelefon"
 
-#: src/contacts.c:782
+#: src/contacts.c:788
 msgid "Home address"
 msgstr "Adresse Zuhause"
 
-#: src/contacts.c:783
+#: src/contacts.c:789
 msgid "Work address"
 msgstr "Adresse Arbeit"
 
-#: src/contacts.c:788
+#: src/contacts.c:794
 msgid "Add detail"
 msgstr "Detail hinzufügen"
 
-#: src/contacts.c:846
+#: src/contacts.c:852
 msgid ""
 "Note: Depending on the address book plugin not all information might be saved"
 msgstr ""
 "Hinweis: Je nach Adressbuch-Plugin können nicht alle Informationen "
 "gespeichert werden"
 
-#: src/contacts.c:848
+#: src/contacts.c:854
 msgid "Do not show again"
 msgstr "Nicht noch einmal anzeigen"
 
-#: src/contacts.c:1005
+#: src/contacts.c:1011
 msgid "New contact"
 msgstr "Neuer Kontakt"
 
-#: src/contacts.c:1053
+#: src/contacts.c:1059
 #, c-format
 msgid "Do you want to delete contact '%s'?"
 msgstr "Wollen Sie den Kontakt '%s' löschen?"
 
-#: src/contacts.c:1056 src/debug.c:196 src/journal.c:466 src/journal.c:524
-#: src/journal.c:1001 src/preferences/preferences.c:159
+#: src/contacts.c:1062 src/debug.c:135 src/journal.c:468 src/journal.c:526
+#: src/journal.c:1003 src/preferences/preferences.c:159
 msgid "Cancel"
 msgstr "A_bbrechen"
 
-#: src/contacts.c:1059 src/journal.c:467 src/journal.c:525
+#: src/contacts.c:1065 src/journal.c:469 src/journal.c:527
 msgid "Delete"
 msgstr "Löschen"
 
-#: src/contactsearch.c:54
-msgid "Fax Home"
-msgstr "Fax Zuhause"
-
-#: src/contactsearch.c:57
-msgid "Fax Work"
-msgstr "Fax Arbeit"
-
-#: src/contactsearch.c:66 src/journal.c:239
-msgid "Unknown"
-msgstr "Unbekannt"
-
-#: src/debug.c:196 src/journal.c:1001 src/preferences/preferences.c:163
+#: src/debug.c:135 src/journal.c:1003 src/preferences/preferences.c:163
 msgid "Save"
 msgstr "Speichern"
 
-#: src/debug.c:249
-msgid "Debug"
-msgstr "Debug"
+#: src/journal.c:240 src/roger-contactsearch.c:66
+msgid "Unknown"
+msgstr "Unbekannt"
 
-#: src/journal.c:291
+#: src/journal.c:292
 msgid "<No profile>"
 msgstr "<Kein Profil>"
 
-#: src/journal.c:292
+#: src/journal.c:293
 #, c-format
 msgid "%d calls, %d:%2.2dh"
 msgstr "%d Anrufe, %d:%2.2dh"
 
-#: src/journal.c:464
+#: src/journal.c:466
 msgid "Do you want to delete the router journal?"
 msgstr "Willst Du das Journal auf dem Router wirklich löschen?"
 
-#: src/journal.c:522
+#: src/journal.c:524
 msgid "Do you really want to delete the selected entry?"
 msgstr "Willst Du den ausgewählten Eintrag wirklich löschen?"
 
-#: src/journal.c:927
+#: src/journal.c:929
 msgid "Delete entry"
 msgstr "Eintrag löschen"
 
-#: src/journal.c:1001
+#: src/journal.c:1003
 msgid "Export journal"
 msgstr "Journal exportieren"
 
@@ -919,6 +907,14 @@ msgstr "Zurück"
 #: src/roger-assistant.c:482
 msgid "No router detected"
 msgstr "Kein Router erkannt"
+
+#: src/roger-contactsearch.c:54
+msgid "Fax Home"
+msgstr "Fax Zuhause"
+
+#: src/roger-contactsearch.c:57
+msgid "Fax Work"
+msgstr "Fax Arbeit"
 
 #: src/roger-fax.c:83
 #, c-format
@@ -1144,6 +1140,9 @@ msgstr "VCard"
 #: plugins/vcard/vcard.desktop.in:5
 msgid "VCard address book support"
 msgstr "VCard Adressbuch-Support"
+
+#~ msgid "Debug"
+#~ msgstr "Debug"
 
 #~ msgid "Create a profile"
 #~ msgstr "Erstelle ein Profil"

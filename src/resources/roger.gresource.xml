@@ -2,6 +2,7 @@
 <gresources>
 	<gresource prefix="/org/tabos/roger">
 		<file preprocess="xml-stripblanks">ui/assistant.ui</file>
+		<file preprocess="xml-stripblanks">ui/debug.ui</file>
 		<file preprocess="xml-stripblanks">ui/fax.ui</file>
 		<file preprocess="xml-stripblanks">ui/journal-popover.ui</file>
 		<file preprocess="xml-stripblanks">ui/journal.ui</file>

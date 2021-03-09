@@ -19,10 +19,14 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
+#include <handy.h>
 
 G_BEGIN_DECLS
 
-void app_debug_window (void);
+#define ROGER_TYPE_DEBUG (roger_debug_get_type ())
+
+G_DECLARE_FINAL_TYPE (RogerDebug, roger_debug, ROGER, DEBUG, HdyWindow)
+
+GtkWidget *roger_debug_new (void);
 
 G_END_DECLS

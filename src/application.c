@@ -22,10 +22,10 @@
 #include "application.h"
 
 #include "contacts.h"
-#include "debug.h"
 #include "journal.h"
 #include "preferences.h"
 #include "roger-assistant.h"
+#include "roger-debug.h"
 #include "roger-fax.h"
 #include "roger-phone.h"
 
@@ -39,6 +39,7 @@ GtkApplication *roger_app;
 static gboolean startup_called = FALSE;
 GSettings *app_settings = NULL;
 static GtkWidget *journal = NULL;
+static GtkWidget *debug = NULL;
 
 struct cmd_line_option_state {
   gboolean debug;
@@ -415,7 +416,13 @@ debug_activated (GSimpleAction *action,
                  GVariant      *parameter,
                  gpointer       user_data)
 {
-  app_debug_window ();
+  if (debug) {
+    gtk_window_present (GTK_WINDOW (debug));
+    return;
+  }
+
+  debug = roger_debug_new ();
+  gtk_widget_show_all (debug);
 }
 
 static void
