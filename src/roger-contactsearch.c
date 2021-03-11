@@ -107,7 +107,7 @@ void
 contact_search_completion_add (GtkWidget *entry)
 {
   GtkListStore *store;
-  GSList *list;
+  GList *list;
   RmAddressBook *book;
   GtkCellRenderer *cell;
   GtkEntryCompletion *completion;
@@ -116,7 +116,7 @@ contact_search_completion_add (GtkWidget *entry)
 
   book = rm_profile_get_addressbook (rm_profile_get_active ());
   if (!book) {
-    GSList *book_plugins = rm_addressbook_get_plugins ();
+    GList *book_plugins = rm_addressbook_get_plugins ();
 
     if (book_plugins)
       book = book_plugins->data;
@@ -130,7 +130,7 @@ contact_search_completion_add (GtkWidget *entry)
 
     if (contact) {
       GdkPixbuf *pixbuf;
-      GSList *numbers;
+      GList *numbers;
 
       if (contact->image) {
         pixbuf = rm_image_scale (contact->image, 32);

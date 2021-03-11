@@ -39,6 +39,7 @@ roger_debug_log_handler (const gchar    *log_domain,
                          const gchar    *message,
                          gpointer        user_data)
 {
+  return;
   RogerDebug *self = ROGER_DEBUG (user_data);
   GtkTextBuffer *text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self->textview));
   GtkTextIter iter;

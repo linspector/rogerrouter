@@ -35,7 +35,7 @@ GtkWidget *pref_group_create (GtkWidget *box,
                               gboolean   hexpand,
                               gboolean   vexpand);
 
-static GSList *contacts = NULL;
+static GList *contacts = NULL;
 static GSettings *thunderbird_settings = NULL;
 static GHashTable *table = NULL;
 
@@ -786,22 +786,22 @@ parse_person (GHashTable *map,
       number = g_slice_new (RmPhoneNumber);
       number->number = rm_number_full (value, FALSE);
       number->type = RM_PHONE_NUMBER_TYPE_HOME;
-      contact->numbers = g_slist_prepend (contact->numbers, number);
+      contact->numbers = g_list_prepend (contact->numbers, number);
     } else if (!strcmp (column, "WorkPhone")) {
       number = g_slice_new (RmPhoneNumber);
       number->number = rm_number_full (value, FALSE);
       number->type = RM_PHONE_NUMBER_TYPE_WORK;
-      contact->numbers = g_slist_prepend (contact->numbers, number);
+      contact->numbers = g_list_prepend (contact->numbers, number);
     } else if (!strcmp (column, "FaxNumber")) {
       number = g_slice_new (RmPhoneNumber);
       number->number = rm_number_full (value, FALSE);
       number->type = RM_PHONE_NUMBER_TYPE_FAX_HOME;
-      contact->numbers = g_slist_prepend (contact->numbers, number);
+      contact->numbers = g_list_prepend (contact->numbers, number);
     } else if (!strcmp (column, "CellularNumber")) {
       number = g_slice_new (RmPhoneNumber);
       number->number = rm_number_full (value, FALSE);
       number->type = RM_PHONE_NUMBER_TYPE_MOBILE;
-      contact->numbers = g_slist_prepend (contact->numbers, number);
+      contact->numbers = g_list_prepend (contact->numbers, number);
     } else if (!strcmp (column, "DisplayName")) {
       contact->name = g_strdup (value);
     } else if (!strcmp (column, "HomeAddress")) {
@@ -837,7 +837,7 @@ parse_person (GHashTable *map,
     address->street = g_strdup (home_street ? home_street : "");
     address->type = 0;
 
-    contact->addresses = g_slist_prepend (contact->addresses, address);
+    contact->addresses = g_list_prepend (contact->addresses, address);
   }
 
   if (business_city || business_zip || business_street) {
@@ -848,10 +848,10 @@ parse_person (GHashTable *map,
     address->street = g_strdup (business_street ? business_street : "");
     address->type = 1;
 
-    contact->addresses = g_slist_prepend (contact->addresses, address);
+    contact->addresses = g_list_prepend (contact->addresses, address);
   }
 
-  contacts = g_slist_insert_sorted (contacts, contact, rm_contact_name_compare);
+  contacts = g_list_insert_sorted (contacts, contact, rm_contact_name_compare);
   num_persons++;
 }
 
@@ -1012,10 +1012,10 @@ thunderbird_read_book (void)
   return 0;
 }
 
-GSList *
+GList *
 thunderbird_get_contacts (void)
 {
-  GSList *list = contacts;
+  GList *list = contacts;
 
   return list;
 }

@@ -72,7 +72,7 @@ roger_assistant_profile_entry_changed (GtkEditable *entry,
 {
   RogerAssistant *self = ROGER_ASSISTANT (user_data);
   RmProfile *profile;
-  GSList *profile_list = rm_profile_get_list ();
+  GList *profile_list = rm_profile_get_list ();
   const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
 
   /* Loop through all known profiles and check for duplicate profile name */

@@ -53,7 +53,7 @@ struct _RogerJournal {
   GtkListStore *list_store;
   RmFilter *filter;
   RmFilter *search_filter;
-  GSList *list;
+  GList *list;
   GtkWidget *search_bar;
   GtkWidget *search_entry;
 
@@ -69,11 +69,13 @@ struct _RogerJournal {
   GtkCellRenderer *col2_renderer;
 
   GMutex mutex;
+  GCancellable *cancellable;
 
   gboolean hide_on_quit;
   gboolean hide_on_start;
   gboolean mobile;
   gboolean active;
+  guint update_id;
 };
 
 G_DEFINE_TYPE (RogerJournal, roger_journal, HDY_TYPE_WINDOW)
@@ -182,7 +184,7 @@ box_header_func (GtkListBoxRow *row,
 void
 journal_redraw (RogerJournal *self)
 {
-  GSList *list;
+  GList *list;
   gint duration = 0;
   char *text = NULL;
   gint count = 0;
@@ -295,55 +297,32 @@ journal_redraw (RogerJournal *self)
   g_free (text);
 }
 
-static gboolean
-update_journal (gpointer user_data)
+static void
+lookup_journal_thread_cb (GTask        *task,
+                          gpointer      source_object,
+                          gpointer      task_data,
+                          GCancellable *cancellable)
 {
-  RogerJournal *self = ROGER_JOURNAL (user_data);
-  GtkTreeIter iter;
-  gboolean valid;
-  RmCallEntry *call;
+  RogerJournal *self = ROGER_JOURNAL (task_data);
+  GList *list;
+  gboolean retval = FALSE;
 
-  valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (self->list_store), &iter);
-  while (valid) {
-    gtk_tree_model_get (GTK_TREE_MODEL (self->list_store), &iter, JOURNAL_COL_CALL_PTR, &call, -1);
-
-    if (call->remote->lookup) {
-      gtk_list_store_set (self->list_store, &iter, JOURNAL_COL_NAME, call->remote->name, -1);
-      gtk_list_store_set (self->list_store, &iter, JOURNAL_COL_CITY, call->remote->city, -1);
-    }
-
-    valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (self->list_store), &iter);
-  }
-
-  gtk_spinner_stop (GTK_SPINNER (self->spinner));
-  gtk_widget_hide (self->spinner);
-
-  g_mutex_unlock (&self->mutex);
-
-  return FALSE;
-}
-
-static gpointer
-lookup_journal (gpointer user_data)
-{
-  RogerJournal *self = ROGER_JOURNAL (user_data);
-  GSList *list;
+  if (g_task_return_error_if_cancelled (task))
+    return;
 
   for (list = self->list; list; list = list->next) {
     RmCallEntry *call = list->data;
 
-    if (!RM_EMPTY_STRING (call->remote->name)) {
+    if (!RM_EMPTY_STRING (call->remote->name))
       continue;
-    }
 
     if (rm_lookup_search (call->remote->number, call->remote)) {
       call->remote->lookup = TRUE;
+      retval = TRUE;
     }
   }
 
-  g_idle_add (update_journal, self);
-
-  return NULL;
+  g_task_return_boolean (task, retval);
 }
 
 void journal_filter_box_changed (GtkComboBox *box,
@@ -373,33 +352,83 @@ journal_update_content (RogerJournal *self)
 }
 
 static void
-on_journal_loaded (RmObject *obj,
-                   GSList   *list,
-                   gpointer  user_data)
+journal_reverse_lookup_async (GCancellable        *cancellable,
+                              GAsyncReadyCallback  callback,
+                              gpointer             user_data)
+{
+  g_autoptr (GTask) task = NULL;
+  RogerJournal *self = ROGER_JOURNAL (user_data);
+
+  g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+  task = g_task_new (NULL, cancellable, callback, user_data);
+  g_task_set_source_tag (task, journal_reverse_lookup_async);
+
+  g_task_set_return_on_cancel (task, FALSE);
+
+  g_task_set_task_data (task, g_object_ref (self), g_object_unref);
+  g_task_run_in_thread (task, lookup_journal_thread_cb);
+}
+
+static gboolean
+journal_reverse_lookup_finished (GAsyncResult  *result,
+                                 GError       **error)
+{
+  g_return_val_if_fail (g_task_is_valid (result, lookup_journal_thread_cb), -1);
+  g_return_val_if_fail (error == NULL || *error == NULL, -1);
+
+  return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+static void
+journal_reverse_lookup_cb (GObject      *source_object,
+                           GAsyncResult *res,
+                           gpointer      user_data)
+{
+  g_autoptr (GError) error = NULL;
+  gboolean lookup_found = journal_reverse_lookup_finished (res, &error);
+  RogerJournal *self = ROGER_JOURNAL (user_data);
+  GtkTreeIter iter;
+  gboolean valid;
+  RmCallEntry *call;
+
+  if (lookup_found) {
+    valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (self->list_store), &iter);
+    while (valid) {
+      gtk_tree_model_get (GTK_TREE_MODEL (self->list_store), &iter, JOURNAL_COL_CALL_PTR, &call, -1);
+
+      if (call->remote->lookup) {
+        gtk_list_store_set (self->list_store, &iter, JOURNAL_COL_NAME, call->remote->name, -1);
+        gtk_list_store_set (self->list_store, &iter, JOURNAL_COL_CITY, call->remote->city, -1);
+      }
+
+      valid = gtk_tree_model_iter_next (GTK_TREE_MODEL (self->list_store), &iter);
+    }
+  }
+
+  gtk_spinner_stop (GTK_SPINNER (self->spinner));
+  gtk_widget_hide (self->spinner);
+}
+
+static void
+roger_journal_loaded_cb (GObject      *source_object,
+                         GAsyncResult *res,
+                         gpointer      user_data)
 {
   RogerJournal *self = ROGER_JOURNAL (user_data);
-  GSList *old;
-
-  if (g_mutex_trylock (&self->mutex) == FALSE) {
-    g_debug ("%s(): Journal loading already in progress", __FUNCTION__);
-    return;
-  }
+  g_autoptr (GError) error = NULL;
+  GList *list = rm_router_load_journal_finish (source_object, res, &error);
+  GList *old;
 
   if (!self->active) {
     self->active = TRUE;
     journal_update_content (self);
   }
 
-  if (!self->list && list) {
+  if (!self->list && list)
     journal_update_filter_box (self);
-  }
 
   journal_filter_box_changed (GTK_COMBO_BOX (self->filter_combobox), self);
-
-  if (!gtk_widget_get_visible (self->spinner)) {
-    gtk_spinner_start (GTK_SPINNER (self->spinner));
-    gtk_widget_show (self->spinner);
-  }
 
   /* Clear existing liststore */
   journal_clear (self);
@@ -409,12 +438,25 @@ on_journal_loaded (RmObject *obj,
   self->list = list;
 
   if (old) {
-    g_slist_free_full (old, rm_call_entry_free);
+    rm_journal_free (old);
   }
 
   journal_redraw (self);
+  journal_reverse_lookup_async (self->cancellable, journal_reverse_lookup_cb, self);
+}
 
-  g_thread_new ("Reverse Lookup Journal", lookup_journal, self);
+static void
+reload_journal (RogerJournal *self)
+{
+  RmProfile *profile = rm_profile_get_active ();
+
+  if (!profile)
+    return;
+
+  gtk_spinner_start (GTK_SPINNER (self->spinner));
+  gtk_widget_show (self->spinner);
+
+  rm_router_load_journal_async (profile, self->cancellable, roger_journal_loaded_cb, self);
 }
 
 static void
@@ -423,36 +465,10 @@ on_connection_changed (RmObject     *obj,
                        RmConnection *connection,
                        gpointer      user_data)
 {
-  if (type == RM_CONNECTION_TYPE_DISCONNECT) {
-    rm_router_load_journal (rm_profile_get_active ());
-  }
-}
-
-static gboolean
-reload_journal_idle (gpointer user_data)
-{
   RogerJournal *self = ROGER_JOURNAL (user_data);
-  RmProfile *profile = rm_profile_get_active ();
 
-  if (profile == NULL) {
-    return FALSE;
-  }
-
-  if (rm_router_load_journal (profile) == FALSE) {
-    gtk_spinner_stop (GTK_SPINNER (self->spinner));
-    gtk_widget_hide (self->spinner);
-  }
-
-  return FALSE;
-}
-
-static void
-reload_journal (RogerJournal *self)
-{
-  gtk_spinner_start (GTK_SPINNER (self->spinner));
-  gtk_widget_show (self->spinner);
-
-  g_idle_add (reload_journal_idle, NULL);
+  if (type == RM_CONNECTION_TYPE_DISCONNECT)
+    reload_journal (self);
 }
 
 static void
@@ -504,7 +520,7 @@ delete_foreach (GtkTreeModel *model,
       g_unlink (call->priv);
       break;
     default:
-      self->list = g_slist_remove (self->list, call);
+      self->list = g_list_remove (self->list, call);
       g_debug ("Deleting: '%s'", call->date_time);
       rm_journal_save (self->list);
       break;
@@ -534,8 +550,6 @@ journal_button_delete_clicked_cb (GtkWidget *button,
   GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->view));
 
   gtk_tree_selection_selected_foreach (selection, delete_foreach, NULL);
-
-  rm_router_load_journal (rm_profile_get_active ());
 }
 
 void
@@ -602,7 +616,7 @@ journal_filter_box_changed (GtkComboBox *box,
 {
   RogerJournal *self = ROGER_JOURNAL (user_data);
   RmProfile *profile = rm_profile_get_active ();
-  GSList *filter_list;
+  GList *filter_list;
   const char *text = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (box));
 
   self->filter = NULL;
@@ -627,7 +641,7 @@ journal_filter_box_changed (GtkComboBox *box,
 static void
 journal_update_filter_box (RogerJournal *self)
 {
-  GSList *filter_list;
+  GList *filter_list;
 
   filter_list = rm_filter_get_list (rm_profile_get_active ());
 
@@ -774,8 +788,6 @@ on_delete_event (GtkWidget *widget,
 
     return TRUE;
   }
-
-  g_signal_handlers_disconnect_by_func (rm_object, on_journal_loaded, NULL);
 
   return FALSE;
 }
@@ -1135,8 +1147,12 @@ roger_journal_dispose (GObject *self)
     g_settings_set_boolean (journal_window_state, "maximized", is_maximized);
   }
 
+  g_clear_handle_id (&journal->update_id, g_source_remove);
+
+  g_cancellable_cancel (journal->cancellable);
+
   if (journal->list) {
-    g_slist_free_full (g_steal_pointer (&journal->list), rm_call_entry_free);
+    g_list_free_full (g_steal_pointer (&journal->list), rm_call_entry_free);
   }
 
   G_OBJECT_CLASS (roger_journal_parent_class)->dispose (self);
@@ -1280,11 +1296,12 @@ roger_journal_init (RogerJournal *self)
   g_settings_bind (app_settings, "col-8-width", self->col8, "fixed-width", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (app_settings, "col-8-visible", self->col8, "visible", G_SETTINGS_BIND_DEFAULT);
 
+  self->cancellable = g_cancellable_new ();
+
   self->active = FALSE;
   gtk_stack_set_visible_child_name (GTK_STACK (self->header_bars_stack), "empty");
   gtk_stack_set_visible_child_name (GTK_STACK (self->content_stack), "loading");
 
-  g_signal_connect_object (rm_object, "journal-loaded", G_CALLBACK (on_journal_loaded), self, 0);
   g_signal_connect_object (rm_object, "connection-changed", G_CALLBACK (on_connection_changed), self, 0);
   g_signal_connect_object (rm_object, "contacts-changed", G_CALLBACK (on_contacts_changed), self, 0);
 }

@@ -173,7 +173,7 @@ roger_phone_create_menu (RogerPhone *self)
 {
   RmPhone *active = rm_profile_get_phone (rm_profile_get_active ());
 
-  for (const GSList *list = rm_phone_get_plugins (); list && list->data; list = list->next) {
+  for (const GList *list = rm_phone_get_plugins (); list && list->data; list = list->next) {
     RmPhone *phone = list->data;
     GtkWidget *item;
 

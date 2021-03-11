@@ -100,8 +100,8 @@ contacts_update_details (RmContact *contact)
   GtkWidget *detail_photo_image = NULL;
   GtkWidget *detail_name_label = NULL;
   GtkWidget *frame;
-  GSList *numbers;
-  GSList *addresses;
+  GList *numbers;
+  GList *addresses;
   GtkWidget *grid;
   char *markup;
   gint detail_row = 1;
@@ -306,9 +306,9 @@ contacts_get_selected_contact (void)
 static void
 contacts_update_list (void)
 {
-  GSList *list;
+  GList *list;
   RmAddressBook *book = contacts->book;
-  GSList *contact_list = rm_addressbook_get_contacts (book);
+  GList *contact_list = rm_addressbook_get_contacts (book);
   const char *text = gtk_entry_get_text (GTK_ENTRY (contacts->search_entry));
   gint pos = 0;
   RmContact *selected_contact;
@@ -430,7 +430,7 @@ remove_phone_clicked_cb (GtkWidget *button,
   RmContact *contact = user_data;
   RmPhoneNumber *number = (RmPhoneNumber *)g_object_get_data (G_OBJECT (button), "number");
 
-  contact->numbers = g_slist_remove (contact->numbers, number);
+  contact->numbers = g_list_remove (contact->numbers, number);
   refresh_edit_dialog (contact);
 }
 
@@ -441,7 +441,7 @@ remove_address_clicked_cb (GtkWidget *button,
   RmContact *contact = user_data;
   RmContactAddress *address = (RmContactAddress *)g_object_get_data (G_OBJECT (button), "address");
 
-  contact->addresses = g_slist_remove (contact->addresses, address);
+  contact->addresses = g_list_remove (contact->addresses, address);
   refresh_edit_dialog (contact);
 }
 
@@ -568,7 +568,7 @@ contact_add_number (RmContact *contact,
   phone_number->type = RM_PHONE_NUMBER_TYPE_HOME;
   phone_number->number = g_strdup (number);
 
-  contact->numbers = g_slist_prepend (contact->numbers, phone_number);
+  contact->numbers = g_list_prepend (contact->numbers, phone_number);
 }
 
 void
@@ -586,7 +586,7 @@ contact_add_address (RmContact *contact,
   address->zip = g_strdup (zip);
   address->city = g_strdup (city);
 
-  contact->addresses = g_slist_prepend (contact->addresses, address);
+  contact->addresses = g_list_prepend (contact->addresses, address);
 }
 
 void
@@ -614,7 +614,7 @@ contacts_add_detail (char *detail)
 
     phone_number->number = g_strdup ("");
 
-    contacts->tmp_contact->numbers = g_slist_prepend (contacts->tmp_contact->numbers, phone_number);
+    contacts->tmp_contact->numbers = g_list_prepend (contacts->tmp_contact->numbers, phone_number);
   }
   if (!strncmp (detail, "address-", 8)) {
     /* Add address */
@@ -631,7 +631,7 @@ contacts_add_detail (char *detail)
     address->zip = g_strdup ("");
     address->city = g_strdup ("");
 
-    contacts->tmp_contact->addresses = g_slist_prepend (contacts->tmp_contact->addresses, address);
+    contacts->tmp_contact->addresses = g_list_prepend (contacts->tmp_contact->addresses, address);
   }
 
   refresh_edit_dialog (contacts->tmp_contact);
@@ -642,8 +642,8 @@ extern GSettings *app_settings;
 void
 refresh_edit_dialog (RmContact *contact)
 {
-  GSList *numbers;
-  GSList *addresses;
+  GList *numbers;
+  GList *addresses;
   GtkWidget *photo_button;
   GtkWidget *grid = gtk_grid_new ();
   GtkWidget *scrolled;
@@ -910,7 +910,7 @@ contacts_book_clicked_cb (GtkWidget *widget,
   GtkWidget *menu;
   GtkWidget *item;
   GtkWidget *box;
-  GSList *book_plugins = NULL;
+  GList *book_plugins = NULL;
   GSList *book_radio_list = NULL;
   char *sub_book = rm_addressbook_get_sub_name (contacts->book);
 
@@ -973,7 +973,7 @@ contact_editor (RmContact *contact)
 
     phone_number->number = g_strdup (contacts->new_contact->number);
 
-    contacts->tmp_contact->numbers = g_slist_append (contacts->tmp_contact->numbers, phone_number);
+    contacts->tmp_contact->numbers = g_list_append (contacts->tmp_contact->numbers, phone_number);
 
     if (RM_EMPTY_STRING (contacts->tmp_contact->name) && !RM_EMPTY_STRING (contacts->new_contact->name)) {
       contacts->tmp_contact->name = g_strdup (contacts->new_contact->name);
@@ -986,7 +986,7 @@ contact_editor (RmContact *contact)
       address->city = g_strdup (contacts->new_contact->city);
       address->zip = g_strdup (contacts->new_contact->zip);
 
-      contacts->tmp_contact->addresses = g_slist_append (contacts->tmp_contact->addresses, address);
+      contacts->tmp_contact->addresses = g_list_append (contacts->tmp_contact->addresses, address);
     }
   }
 
@@ -1191,7 +1191,7 @@ app_contacts (RmContact *contact)
 
   book = rm_profile_get_addressbook (profile);
   if (!book) {
-    GSList *book_plugins = rm_addressbook_get_plugins ();
+    GList *book_plugins = rm_addressbook_get_plugins ();
 
     if (book_plugins) {
       book = book_plugins->data;
@@ -1234,7 +1234,7 @@ app_contacts (RmContact *contact)
   contacts->sub_book_name_label = GTK_WIDGET (gtk_builder_get_object (builder, "contacts_sub_book_name_label"));
   contacts->select_book_button = GTK_WIDGET (gtk_builder_get_object (builder, "contacts_select_book_button"));
 
-  if (g_slist_length (rm_addressbook_get_plugins ()) > 1 || g_strv_length (rm_addressbook_get_sub_books (book))) {
+  if (g_list_length (rm_addressbook_get_plugins ()) > 1 || g_strv_length (rm_addressbook_get_sub_books (book))) {
     gtk_widget_set_visible (contacts->select_book_button, TRUE);
   }
 
