@@ -23,8 +23,8 @@
 
 #include "application.h"
 #include "contacts.h"
-#include "print.h"
 #include "roger-phone.h"
+#include "roger-print.h"
 #include "roger-voice-mail.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -112,16 +112,6 @@ init_call_icons (void)
 {
   gint width = 18;
 
-#ifdef G_OS_WIN32
-  icon_call_in = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-call-in.png", width, width, TRUE, NULL);
-  icon_call_missed = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-call-missed.png", width, width, TRUE, NULL);
-  icon_call_out = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-call-out.png", width, width, TRUE, NULL);
-  icon_fax = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-fax.png", width, width, TRUE, NULL);
-  icon_fax_report = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-fax-report.png", width, width, TRUE, NULL);
-  icon_voice = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-call-voice.png", width, width, TRUE, NULL);
-  icon_record = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-record.png", width, width, TRUE, NULL);
-  icon_blocked = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-call-blocked.png", width, width, TRUE, NULL);
-#else
   icon_call_in = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-call-in.svg", width, width, TRUE, NULL);
   icon_call_missed = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-call-missed.svg", width, width, TRUE, NULL);
   icon_call_out = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-call-out.svg", width, width, TRUE, NULL);
@@ -130,11 +120,10 @@ init_call_icons (void)
   icon_voice = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-call-voice.svg", width, width, TRUE, NULL);
   icon_record = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-record.svg", width, width, TRUE, NULL);
   icon_blocked = gdk_pixbuf_new_from_resource_at_scale ("/org/tabos/roger/images/roger-call-blocked.svg", width, width, TRUE, NULL);
-#endif
 }
 
-static GdkPixbuf *
-get_call_icon (gint type)
+GdkPixbuf *
+roger_journal_get_call_icon (RmCallEntryTypes type)
 {
   switch (type) {
     case RM_CALL_ENTRY_TYPE_INCOMING:
@@ -208,7 +197,7 @@ journal_redraw (RogerJournal *self)
       GtkTreeIter iter;
 
       gtk_list_store_insert_with_values (self->list_store, &iter, -1,
-                                         JOURNAL_COL_TYPE, get_call_icon (call->type),
+                                         JOURNAL_COL_TYPE, roger_journal_get_call_icon (call->type),
                                          JOURNAL_COL_DATETIME, call->date_time,
                                          JOURNAL_COL_NAME, call->remote->name,
                                          JOURNAL_COL_COMPANY, call->remote->company,
@@ -230,7 +219,7 @@ journal_redraw (RogerJournal *self)
 
       gtk_container_set_border_width (GTK_CONTAINER (grid), 6);
 
-      icon = gtk_image_new_from_pixbuf (get_call_icon (call->type));
+      icon = gtk_image_new_from_pixbuf (roger_journal_get_call_icon (call->type));
       gtk_grid_attach (GTK_GRID (grid), icon, 0, 0, 1, 2);
       gtk_grid_set_row_spacing (GTK_GRID (grid), 6);
       gtk_grid_set_column_spacing (GTK_GRID (grid), 12);
@@ -987,7 +976,7 @@ window_cmd_print (GSimpleAction *action,
 {
   RogerJournal *self = ROGER_JOURNAL (user_data);
 
-  print_journal (self->view);
+  roger_print_journal (self->list);
 }
 
 static void

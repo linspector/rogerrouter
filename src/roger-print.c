@@ -19,7 +19,7 @@
 
 #include "config.h"
 
-#include "print.h"
+#include "roger-print.h"
 
 #include "journal.h"
 
@@ -49,7 +49,7 @@ typedef struct {
   gdouble char_width;
   PangoLayout *layout;
 
-  GtkTreeView *view;
+  GList *journal;
   gint lines_per_page;
   gint num_lines;
   gint num_pages;
@@ -61,76 +61,24 @@ typedef struct {
   gint local_name_pos;
   gint local_number_pos;
   gint duration_pos;
-} PrintData;
+} RogerPrintData;
 
-/**
- * print_journal_check_monospace:
- * @pc: a #PangoContext
- * @desc: a #PangoFontDescription
- *
- * Check if font is monospace.
- *
- * Returns: %TRUE if font is monospace
- */
-static gboolean
-print_journal_check_monospace (PangoContext         *pc,
-                               PangoFontDescription *desc)
-{
-  PangoFontFamily **families;
-  gint num_families, i;
-  const char *font;
-  gboolean ret = TRUE;
-
-  font = pango_font_description_get_family (desc);
-  if (!font) {
-    return FALSE;
-  }
-
-  pango_context_list_families (pc, &families, &num_families);
-
-  for (i = 0; i < num_families; i++) {
-    const char *check = pango_font_family_get_name (families[i]);
-
-    if (!strcasecmp (font, check) && !pango_font_family_is_monospace (families[i])) {
-      ret = FALSE;
-      break;
-    }
-  }
-
-  g_free (families);
-
-  return ret;
-}
-
-/**
- * print_journal_get_font_width:
- * @context: a #GtkPrintContext
- * @desc: a #PangoFontDescription
- *
- * Get font width.
- *
- * Returns: font size
- */
 static gint
-print_journal_get_font_width (GtkPrintContext      *context,
-                              PangoFontDescription *desc)
+roger_print_journal_get_font_width (GtkPrintContext      *context,
+                                    PangoFontDescription *desc)
 {
   PangoContext *pc;
   PangoFontMetrics *metrics;
   gint width;
 
   pc = gtk_print_context_create_pango_context (context);
-  if (!print_journal_check_monospace (pc, desc)) {
-    g_warning ("The request font is not a monospace font!");
-  }
 
   metrics = pango_context_get_metrics (pc, desc, pango_context_get_language (pc));
   width = pango_font_metrics_get_approximate_digit_width (metrics) / PANGO_SCALE;
   if (!width) {
     width = pango_font_metrics_get_approximate_char_width (metrics) / PANGO_SCALE;
-    if (!width) {
+    if (!width)
       width = pango_font_description_get_size (desc) / PANGO_SCALE;
-    }
   }
 
   pango_font_metrics_unref (metrics);
@@ -139,26 +87,16 @@ print_journal_get_font_width (GtkPrintContext      *context,
   return width;
 }
 
-/**
- * print_journal_get_page_count:
- * @context: a #GtkPrintContext
- * @print_data: a #PrintData
- *
- * Get page count.
- *
- * Returns: page count in print data
- */
 static int
-print_journal_get_page_count (GtkPrintContext *context,
-                              PrintData       *print_data)
+roger_print_journal_get_page_count (GtkPrintContext *context,
+                                    RogerPrintData  *print_data)
 {
   gdouble width, height;
   gint layout_h;
   gint layout_v;
 
-  if (print_data == NULL) {
+  if (print_data == NULL)
     return -1;
-  }
 
   width = gtk_print_context_get_width (context);
   height = gtk_print_context_get_height (context);
@@ -186,33 +124,15 @@ print_journal_get_page_count (GtkPrintContext *context,
   return (print_data->num_lines / print_data->lines_per_page) + 1;
 }
 
-/**
- * print_journal_begin_print_cb:
- * @operation: a #GtkPrintOperation
- * @context: a #GtkPrintContext
- * @user_data: a #PrintData
- *
- * Begin printing, calculate values and store them in #PrintData.
- */
 static void
-print_journal_begin_print_cb (GtkPrintOperation *operation,
-                              GtkPrintContext   *context,
-                              gpointer           user_data)
+roger_print_journal_begin_print_cb (GtkPrintOperation *operation,
+                                    GtkPrintContext   *context,
+                                    gpointer           user_data)
 {
-  PrintData *print_data = (PrintData *)user_data;
-  GtkTreeModel *model;
-  GtkTreeIter iter;
-  gboolean valid;
+  RogerPrintData *print_data = (RogerPrintData *)user_data;
   PangoFontDescription *desc = pango_font_description_from_string (FONT);
 
-  print_data->num_lines = 0;
-
-  model = gtk_tree_view_get_model (print_data->view);
-  valid = gtk_tree_model_get_iter_first (model, &iter);
-  while (valid) {
-    valid = gtk_tree_model_iter_next (model, &iter);
-    print_data->num_lines++;
-  }
+  print_data->num_lines = g_list_length (print_data->journal);
 
   print_data->layout = gtk_print_context_create_pango_layout (context);
   pango_layout_set_wrap (print_data->layout, PANGO_WRAP_WORD_CHAR);
@@ -220,11 +140,10 @@ print_journal_begin_print_cb (GtkPrintOperation *operation,
   pango_layout_set_attributes (print_data->layout, NULL);
   pango_layout_set_font_description (print_data->layout, desc);
 
-  print_data->num_pages = print_journal_get_page_count (context, print_data);
-  print_data->font_width = print_journal_get_font_width (context, desc) + 1;
-  if (print_data->font_width == 0) {
+  print_data->num_pages = roger_print_journal_get_page_count (context, print_data);
+  print_data->font_width = roger_print_journal_get_font_width (context, desc) + 1;
+  if (print_data->font_width == 0)
     print_data->font_width = print_data->char_width;
-  }
 
   print_data->logo_pos = 4;
   print_data->date_time_pos = print_data->logo_pos + print_data->font_width * 4;
@@ -234,27 +153,17 @@ print_journal_begin_print_cb (GtkPrintOperation *operation,
   print_data->local_number_pos = print_data->local_name_pos + print_data->font_width * 11;
   print_data->duration_pos = print_data->local_number_pos + print_data->font_width * 14;
 
-  if (print_data->num_pages >= 0) {
+  if (print_data->num_pages >= 0)
     gtk_print_operation_set_n_pages (operation, print_data->num_pages);
-  }
 
   pango_font_description_free (desc);
 }
 
-/**
- * print_journal_show_text:
- * @cairo: a #cairo_t
- * @layout: a #PangoLayout
- * @text: text string
- * @width: maximum column width
- *
- * Short text name
- */
 static void
-print_journal_show_text (cairo_t     *cairo,
-                         PangoLayout *layout,
-                         char        *text,
-                         gint         width)
+roger_print_journal_show_text (cairo_t     *cairo,
+                               PangoLayout *layout,
+                               char        *text,
+                               gint         width)
 {
   gint text_width, text_height;
 
@@ -267,32 +176,22 @@ print_journal_show_text (cairo_t     *cairo,
   }
   pango_cairo_show_layout (cairo, layout);
 
-  if (text_width > width) {
+  if (text_width > width)
     pango_layout_set_width (layout, -1);
-  }
 }
 
-/**
- * print_journal_get_date_time:
- * @format: date/time format
- *
- * Get date/time in specifc format.
- *
- * Returns: date/time string
- */
 static char *
-print_journal_get_date_time (const char *format)
+roger_print_journal_get_date_time (const char *format)
 {
   const struct tm *time_m;
   static char date[1024];
-  char *locale_format;
+  g_autofree char *locale_format = NULL;
   gsize len;
 
   if (!g_utf8_validate (format, -1, NULL)) {
     locale_format = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
-    if (locale_format == NULL) {
+    if (locale_format == NULL)
       return NULL;
-    }
   } else {
     locale_format = g_strdup (format);
   }
@@ -301,48 +200,29 @@ print_journal_get_date_time (const char *format)
   time_m = localtime (&time_s);
 
   len = strftime (date, 1024, locale_format, time_m);
-  g_free (locale_format);
 
-  if (len == 0) {
+  if (len == 0)
     return NULL;
-  }
 
-  if (!g_utf8_validate (date, len, NULL)) {
+  if (!g_utf8_validate (date, len, NULL))
     return g_locale_to_utf8 (date, len, NULL, NULL, NULL);
-  }
 
   return g_strdup (date);
 }
 
-/**
- * print_journal_draw_page_cb:
- * @operation: a #GtkPrintOperation
- * @context: a #GtkPrintContext
- * @page_nr: page number to print
- * @user_data: a #PrintData
- *
- * Draw one single page
- */
 static void
-print_journal_draw_page_cb (GtkPrintOperation *operation,
-                            GtkPrintContext   *context,
-                            gint               page_nr,
-                            gpointer           user_data)
+roger_print_journal_draw_page_cb (GtkPrintOperation *operation,
+                                  GtkPrintContext   *context,
+                                  gint               page_nr,
+                                  gpointer           user_data)
 {
-  PrintData *print_data = (PrintData *)user_data;
+  RogerPrintData *print_data = (RogerPrintData *)user_data;
+  g_autofree char *title = NULL;
+  g_autofree char *page = NULL;
+  g_autofree char *date = NULL;
+  g_autofree char *tmp = NULL;
   cairo_t *cairo;
   gint line, i = 0;
-  GtkTreeModel *model;
-  GtkTreeIter iter;
-  GdkPixbuf *pix, *dst_pix;
-  gboolean valid;
-  char *date_time;
-  char *name;
-  char *number;
-  char *local_name;
-  char *local_number;
-  char *duration;
-  gint tmp;
   gint line_height = 0;
 
   cairo = gtk_print_context_get_cairo_context (context);
@@ -358,30 +238,26 @@ print_journal_draw_page_cb (GtkPrintOperation *operation,
   pango_layout_set_width (print_data->layout, (width - 8) * PANGO_SCALE);
 
   /* Title */
-  char *data = g_strdup_printf ("<b>%s - %s</b>", PACKAGE_NAME, _("Journal"));
-  pango_layout_set_markup (print_data->layout, data, -1);
+  title = g_strdup_printf ("<b>%s - %s</b>", PACKAGE_NAME, _("Journal"));
+  pango_layout_set_markup (print_data->layout, title, -1);
   pango_layout_set_alignment (print_data->layout, PANGO_ALIGN_CENTER);
   cairo_move_to (cairo, 3, print_data->line_height * 0.5);
   pango_cairo_show_layout (cairo, print_data->layout);
-  g_free (data);
 
   /* Page */
-  data = g_strdup_printf (_("<small>Page %d of %d</small>"), page_nr + 1, print_data->num_pages);
-  pango_layout_set_markup (print_data->layout, data, -1);
+  page = g_strdup_printf (_("<small>Page %d of %d</small>"), page_nr + 1, print_data->num_pages);
+  pango_layout_set_markup (print_data->layout, page, -1);
   pango_layout_set_alignment (print_data->layout, PANGO_ALIGN_LEFT);
   cairo_move_to (cairo, 4, print_data->line_height * 1.5);
   pango_cairo_show_layout (cairo, print_data->layout);
-  g_free (data);
 
   /* Date */
-  char *date = print_journal_get_date_time ("%d.%m.%Y %H:%M:%S");
-  data = g_strdup_printf ("<small>%s</small>", date);
-  pango_layout_set_markup (print_data->layout, data, -1);
+  tmp = roger_print_journal_get_date_time ("%d.%m.%Y %H:%M:%S");
+  date = g_strdup_printf ("<small>%s</small>", date);
+  pango_layout_set_markup (print_data->layout, date, -1);
   pango_layout_set_alignment (print_data->layout, PANGO_ALIGN_RIGHT);
   cairo_move_to (cairo, 2, print_data->line_height * 1.5);
   pango_cairo_show_layout (cairo, print_data->layout);
-  g_free (date);
-  g_free (data);
 
   /* Reset */
   cairo_move_to (cairo, 0, 0);
@@ -393,17 +269,6 @@ print_journal_draw_page_cb (GtkPrintOperation *operation,
 
   line = page_nr * print_data->lines_per_page;
 
-  model = gtk_tree_view_get_model (print_data->view);
-  valid = gtk_tree_model_get_iter_first (model, &iter);
-  tmp = 0;
-  if (line != 0) {
-    while (valid) {
-      valid = gtk_tree_model_iter_next (model, &iter);
-      if (++tmp == line) {
-        break;
-      }
-    }
-  }
   cairo_set_line_width (cairo, 0);
 
   /* Draw header */
@@ -442,7 +307,10 @@ print_journal_draw_page_cb (GtkPrintOperation *operation,
   pango_cairo_show_layout (cairo, print_data->layout);
 
   /* print caller rows */
-  for (i = 1; valid && i <= print_data->lines_per_page && line < print_data->num_lines; i++) {
+  for (i = 1; i <= print_data->lines_per_page && line < print_data->num_lines; i++) {
+    RmCallEntry *entry = g_list_nth_data (print_data->journal, line);
+    g_autoptr (GdkPixbuf) dst_pix = NULL;
+
     cairo_rectangle (cairo, 2, (3 + i) * print_data->line_height, width - 4, print_data->line_height);
     if (!(i & 1)) {
       cairo_set_source_rgb (cairo, 0.9, 0.9, 0.9);
@@ -452,89 +320,64 @@ print_journal_draw_page_cb (GtkPrintOperation *operation,
     }
     cairo_stroke (cairo);
 
-    gtk_tree_model_get (model, &iter, JOURNAL_COL_TYPE, &pix, JOURNAL_COL_DATETIME, &date_time, JOURNAL_COL_NAME, &name, JOURNAL_COL_NUMBER, &number, JOURNAL_COL_EXTENSION, &local_name, JOURNAL_COL_LINE, &local_number, JOURNAL_COL_DURATION, &duration, -1);
-    dst_pix = gdk_pixbuf_scale_simple (pix, 8, 8, GDK_INTERP_BILINEAR);
+    dst_pix = gdk_pixbuf_scale_simple (roger_journal_get_call_icon (entry->type), 8, 8, GDK_INTERP_BILINEAR);
 
     cairo_save (cairo);
     gdk_cairo_set_source_pixbuf (cairo, dst_pix, print_data->logo_pos, (3 + i) * print_data->line_height + 2);
     cairo_paint (cairo);
     cairo_restore (cairo);
-    g_object_unref (dst_pix);
 
     cairo_move_to (cairo, print_data->date_time_pos, (3 + i) * print_data->line_height + 1);
-    pango_layout_set_text (print_data->layout, date_time, -1);
+    pango_layout_set_text (print_data->layout, entry->date_time, -1);
     pango_cairo_show_layout (cairo, print_data->layout);
 
     cairo_move_to (cairo, print_data->name_pos, (3 + i) * print_data->line_height + 1);
-    print_journal_show_text (cairo, print_data->layout, name, print_data->number_pos - print_data->name_pos);
+    roger_print_journal_show_text (cairo, print_data->layout, entry->remote->name, print_data->number_pos - print_data->name_pos);
 
     cairo_move_to (cairo, print_data->number_pos, (3 + i) * print_data->line_height + 1);
-    print_journal_show_text (cairo, print_data->layout, number, print_data->local_name_pos - print_data->number_pos);
+    roger_print_journal_show_text (cairo, print_data->layout, entry->remote->number, print_data->local_name_pos - print_data->number_pos);
 
     cairo_move_to (cairo, print_data->local_name_pos, (3 + i) * print_data->line_height + 1);
-    if (local_name != NULL && strlen (local_name) > 0) {
-      print_journal_show_text (cairo, print_data->layout, local_name, print_data->local_number_pos - print_data->local_name_pos);
-    }
+    if (entry->local->name != NULL && strlen (entry->local->name) > 0)
+      roger_print_journal_show_text (cairo, print_data->layout, entry->local->name, print_data->local_number_pos - print_data->local_name_pos);
 
     cairo_move_to (cairo, print_data->local_number_pos, (3 + i) * print_data->line_height + 1);
-    if (local_number != NULL && strlen (local_number) > 0) {
-      print_journal_show_text (cairo, print_data->layout, local_number, print_data->duration_pos - print_data->local_number_pos);
-    }
+    if (entry->local->number != NULL && strlen (entry->local->number) > 0)
+      roger_print_journal_show_text (cairo, print_data->layout, entry->local->number, print_data->duration_pos - print_data->local_number_pos);
 
     cairo_move_to (cairo, print_data->duration_pos, (3 + i) * print_data->line_height + 1);
-    if (duration != NULL && strlen (duration) > 0) {
-      print_journal_show_text (cairo, print_data->layout, duration, width - print_data->duration_pos);
-    }
-
-    valid = gtk_tree_model_iter_next (model, &iter);
-    g_free (date_time);
-    g_free (name);
-    g_free (number);
-    g_free (local_name);
-    g_free (local_number);
-    g_free (duration);
+    if (entry->duration != NULL && strlen (entry->duration) > 0)
+      roger_print_journal_show_text (cairo, print_data->layout, entry->duration, width - print_data->duration_pos);
 
     cairo_rel_move_to (cairo, 2, line_height);
     line++;
   }
 }
 
-/**
- * print_journal_end_print_cb:
- * @operation: a #GtkPrintOperation
- * @context: a #GtkPrintContext
- * @user_data: a #PrintData
- *
- * Called on end of printing, free PrintData
- */
 static void
-print_journal_end_print_cb (GtkPrintOperation *operation,
-                            GtkPrintContext   *context,
-                            gpointer           user_data)
+roger_print_journal_end_print_cb (GtkPrintOperation *operation,
+                                  GtkPrintContext   *context,
+                                  gpointer           user_data)
 {
-  PrintData *print_data = (PrintData *)user_data;
+  RogerPrintData *print_data = (RogerPrintData *)user_data;
 
+  g_clear_pointer (&print_data->layout, g_object_unref);
   g_free (print_data);
 }
 
-/**
- * journal_print:
- * @view_widget: a text view widget
- *
- * Print treeview callback function
- */
 void
-print_journal (GtkWidget *view_widget)
+roger_print_journal (GList *journal)
 {
-  GtkTreeView *view = GTK_TREE_VIEW (view_widget);
-  GtkPrintOperation *operation;
-  GtkPrintSettings *settings;
-  PrintData *print_data;
-  GError *error = NULL;
+  g_autoptr (GtkPrintOperation) operation = NULL;
+  g_autoptr (GtkPrintSettings) settings = NULL;
+  g_autoptr (GError) error = NULL;
+  RogerPrintData *print_data;
 
   operation = gtk_print_operation_new ();
-  print_data = g_new0 (PrintData, 1);
-  print_data->view = view;
+  g_object_ref (journal);
+
+  print_data = g_new0 (RogerPrintData, 1);
+  print_data->journal = journal;
 
   settings = gtk_print_settings_new ();
   gtk_print_settings_set (settings, GTK_PRINT_SETTINGS_OUTPUT_BASENAME, _("Roger Router-Journal"));
@@ -544,36 +387,22 @@ print_journal (GtkWidget *view_widget)
 
   gtk_print_operation_set_embed_page_setup (operation, TRUE);
 
-  g_signal_connect (G_OBJECT (operation), "begin-print", G_CALLBACK (print_journal_begin_print_cb), print_data);
-  g_signal_connect (G_OBJECT (operation), "draw-page", G_CALLBACK (print_journal_draw_page_cb), print_data);
-  g_signal_connect (G_OBJECT (operation), "end-print", G_CALLBACK (print_journal_end_print_cb), print_data);
+  g_signal_connect (G_OBJECT (operation), "begin-print", G_CALLBACK (roger_print_journal_begin_print_cb), print_data);
+  g_signal_connect (G_OBJECT (operation), "draw-page", G_CALLBACK (roger_print_journal_draw_page_cb), print_data);
+  g_signal_connect (G_OBJECT (operation), "end-print", G_CALLBACK (roger_print_journal_end_print_cb), print_data);
 
   gtk_print_operation_run (operation, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, NULL, &error);
-
-  g_object_unref (operation);
-
   if (error != NULL) {
-    GtkWidget *dialog;
+    g_autoptr (GtkWidget) dialog = NULL;
 
     dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "%s", error->message);
-    g_error_free (error);
-
     g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
-
     gtk_widget_show (dialog);
   }
 }
 
-/**
- * print_load_tiff_page:
- * @tiff_file: a #TIFF
- *
- * Loads a tiff file into a #GdkPixbuf
- *
- * Returns: TIFF file as new #GdkPixbuf
- */
-GdkPixbuf *
-print_load_tiff_page (TIFF *tiff_file)
+static GdkPixbuf *
+roger_print_load_tiff_page (TIFF *tiff_file)
 {
   TIFFRGBAImage img;
   gint row, col;
@@ -604,65 +433,54 @@ print_load_tiff_page (TIFF *tiff_file)
   return gdk_pixbuf_new_from_data ((const guchar *)raster, GDK_COLORSPACE_RGB, TRUE, 8, width, height, width * 4, NULL, NULL);
 }
 
-/**
- * print_fax_report:
- * @status: a #RmFaxStatus
- * @file: tiff file name (fax document)
- * @report_dir: storage directory
- *
- * Create fax report based on give information
- */
 void
 print_fax_report (RmFaxStatus *status,
                   char        *file,
                   const char  *report_dir)
 {
+  RmProfile *profile = rm_profile_get_active ();
+  RmContact *contact = NULL;
   cairo_t *cairo;
   cairo_surface_t *out;
   time_t time_s = time (NULL);
+  g_autoptr (GdkPixbuf) pixbuf = NULL;
+  g_autoptr (GdkPixbuf) scaled_pixbuf = NULL;
+  TIFF *tiff;
   struct tm *time_ptr = localtime (&time_s);
-  char *buffer;
-  GdkPixbuf *pixbuf;
-  RmContact *contact = NULL;
+  g_autofree char *buffer = NULL;
   char *remote = status->remote_number;
   char *local = status->local_number;
   char *status_code = status->error_code == 0 ? _("SUCCESS") : _("FAILED");
   int pages = status->pages_transferred;
-  RmProfile *profile = rm_profile_get_active ();
-  TIFF *tiff;
-  GdkPixbuf *scale;
 
   if (file == NULL || !g_file_test (file, G_FILE_TEST_EXISTS)) {
-    g_warning ("file is invalid\n");
+    g_warning ("%s: File is invalid\n", __FUNCTION__);
     return;
   }
 
   if (report_dir == NULL) {
-    g_warning ("report_dir is NULL\n");
+    g_warning ("%s: report_dir is not set\n", __FUNCTION__);
     return;
   }
 
   tiff = TIFFOpen (file, "r");
 
-  pixbuf = print_load_tiff_page (tiff);
+  pixbuf = roger_print_load_tiff_page (tiff);
   if (pixbuf == NULL) {
     g_warning ("pixbuf is null (file '%s')\n", file);
     return;
   }
 
-  scale = gdk_pixbuf_scale_simple (pixbuf, MM_TO_POINTS (594) - 140, MM_TO_POINTS (841) - 200, GDK_INTERP_BILINEAR);
-  g_object_unref (pixbuf);
-  pixbuf = scale;
+  scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf, MM_TO_POINTS (594) - 140, MM_TO_POINTS (841) - 200, GDK_INTERP_BILINEAR);
 
   buffer = g_strdup_printf ("%s/fax-report_%s_%s_%02d_%02d_%d_%02d_%02d_%02d.pdf",
                             report_dir, local, remote,
                             time_ptr->tm_mday, time_ptr->tm_mon + 1, time_ptr->tm_year + 1900,
                             time_ptr->tm_hour, time_ptr->tm_min, time_ptr->tm_sec);
   out = cairo_pdf_surface_create (buffer, MM_TO_POINTS (594), MM_TO_POINTS (841));
-  g_free (buffer);
 
   if (!out) {
-    g_warning ("Could not create pdf surface - is report directory writeable?\n");
+    g_warning ("%s: Could not create pdf surface - is report directory writeable?\n", __FUNCTION__);
     return;
   }
 
@@ -685,7 +503,7 @@ print_fax_report (RmFaxStatus *status,
   cairo_move_to (cairo, 60, 95);
   cairo_show_text (cairo, _("Date/Time:"));
   cairo_move_to (cairo, 280, 95);
-  buffer = print_journal_get_date_time ("%a %b %d %Y - %X");
+  buffer = roger_print_journal_get_date_time ("%a %b %d %Y - %X");
   cairo_show_text (cairo, buffer);
 
   /* Status */
@@ -752,11 +570,11 @@ print_fax_report (RmFaxStatus *status,
   cairo_show_page (cairo);
 
   while (TIFFReadDirectory (tiff)) {
-    pixbuf = print_load_tiff_page (tiff);
+    pixbuf = roger_print_load_tiff_page (tiff);
 
-    scale = gdk_pixbuf_scale_simple (pixbuf, MM_TO_POINTS (594), MM_TO_POINTS (841), GDK_INTERP_BILINEAR);
+    scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf, MM_TO_POINTS (594), MM_TO_POINTS (841), GDK_INTERP_BILINEAR);
     g_object_unref (pixbuf);
-    pixbuf = scale;
+    pixbuf = scaled_pixbuf;
 
     gdk_cairo_set_source_pixbuf (cairo, pixbuf, 0, 0);
 
@@ -768,6 +586,4 @@ print_fax_report (RmFaxStatus *status,
 
   cairo_surface_flush (out);
   cairo_surface_destroy (out);
-
-  g_object_unref (pixbuf);
 }

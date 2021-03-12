@@ -66,4 +66,6 @@ void journal_redraw (RogerJournal *self);
 
 void journal_update_content (RogerJournal *self);
 
+GdkPixbuf *roger_journal_get_call_icon (RmCallEntryTypes type);
+
 G_END_DECLS

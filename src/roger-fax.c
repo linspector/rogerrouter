@@ -23,8 +23,8 @@
 
 #include "contacts.h"
 #include "journal.h"
-#include "print.h"
 #include "roger-contactsearch.h"
+#include "roger-print.h"
 
 #include <ctype.h>
 #include <ghostscript/iapi.h>
