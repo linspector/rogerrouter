@@ -247,6 +247,7 @@ journal_redraw (RogerJournal *self)
       gtk_widget_set_sensitive (phone, FALSE);
       gtk_label_set_xalign (GTK_LABEL (phone), 0.0f);
       gtk_grid_attach (GTK_GRID (grid), phone, 1, 1, 1, 1);
+      g_object_set_data (G_OBJECT (row), "number", call->remote->number);
 
       tmp = g_strdup (call->date_time);
       date = gtk_label_new (tmp);
@@ -1175,6 +1176,21 @@ roger_journal_size_allocate (GtkWidget     *self,
 }
 
 static void
+roger_journal_listbox_row_activated_cb (GtkListBox    *box,
+                                        GtkListBoxRow *row,
+                                        gpointer       user_data)
+{
+  RogerJournal *self = ROGER_JOURNAL (user_data);
+  GtkWidget *phone = roger_phone_new ();
+  char *number = g_object_get_data (G_OBJECT (row), "number");
+
+  roger_phone_set_dial_number (ROGER_PHONE (phone), number);
+
+  gtk_window_set_transient_for (GTK_WINDOW (phone), GTK_WINDOW (self));
+  gtk_widget_show_all (phone);
+}
+
+static void
 roger_journal_class_init (RogerJournalClass *klass)
 {
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
@@ -1217,6 +1233,7 @@ roger_journal_class_init (RogerJournalClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, on_view_button_press_event);
   gtk_widget_class_bind_template_callback (widget_class, journal_filter_box_changed);
   gtk_widget_class_bind_template_callback (widget_class, journal_column_header_button_pressed_cb);
+  gtk_widget_class_bind_template_callback (widget_class, roger_journal_listbox_row_activated_cb);
 }
 
 static void
