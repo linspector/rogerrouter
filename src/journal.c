@@ -922,13 +922,13 @@ journal_popup_menu (GtkWidget      *treeview,
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
 
   /* Separator */
-  menuitem = gtk_separator_menu_item_new ();
-  gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+  /* menuitem = gtk_separator_menu_item_new (); */
+  /* gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem); */
 
   /* Delete entry */
-  menuitem = gtk_menu_item_new_with_label (_("Delete entry"));
-  g_signal_connect (menuitem, "activate", (GCallback)journal_popup_delete_entry, call);
-  gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+  /* menuitem = gtk_menu_item_new_with_label (_("Delete entry")); */
+  /* g_signal_connect (menuitem, "activate", (GCallback)journal_popup_delete_entry, call); */
+  /* gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem); */
 
   gtk_widget_show_all (menu);
 
