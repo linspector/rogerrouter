@@ -102,7 +102,6 @@ static void
 roger_phone_remove_status_timer (RogerPhone *self)
 {
   g_clear_handle_id (&self->status_timer_id, g_source_remove);
-  hdy_header_bar_set_subtitle (HDY_HEADER_BAR (self->header_bar), "");
 }
 
 static void
