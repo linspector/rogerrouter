@@ -25,6 +25,7 @@
 #include "roger-contactsearch.h"
 #include "roger-phone.h"
 #include "roger-settings.h"
+#include "roger-shell.h"
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -1173,6 +1174,7 @@ app_contacts (RmContact *contact)
   char *name;
   RmAddressBook *book;
   RmProfile *profile = rm_profile_get_active ();
+  RogerShell *shell = roger_shell_get_default ();
 
   if (!profile) {
     return;
@@ -1203,12 +1205,13 @@ app_contacts (RmContact *contact)
   contacts = g_malloc0 (sizeof (Contacts));
   contacts_set_contact (contacts, contact);
 
-  parent = NULL;/*journal_get_window (); */
+  parent = roger_shell_get_journal (shell);
 
   contacts->book = book;
   contacts->window = GTK_WIDGET (gtk_builder_get_object (builder, "contacts_window"));
   gtk_window_set_transient_for (GTK_WINDOW (contacts->window), parent ? GTK_WINDOW (parent) : NULL);
   gtk_window_set_position (GTK_WINDOW (contacts->window), GTK_WIN_POS_CENTER_ON_PARENT);
+  gtk_window_set_modal (GTK_WINDOW (contacts->window), TRUE);
 
   simple_action_group = g_simple_action_group_new ();
   g_action_map_add_action_entries (G_ACTION_MAP (simple_action_group),
