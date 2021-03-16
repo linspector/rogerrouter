@@ -29,5 +29,6 @@ G_DECLARE_FINAL_TYPE (RogerShell, roger_shell, ROGER, SHELL, GtkApplication)
 
 RogerShell *roger_shell_get_default (void);
 GtkWidget *roger_shell_get_journal (RogerShell *self);
+void roger_shell_phone (RogerShell *self, char *number);
 
 G_END_DECLS

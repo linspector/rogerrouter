@@ -69,13 +69,10 @@ static void
 contacts_dial_clicked_cb (GtkWidget *button,
                           gpointer   user_data)
 {
-  GtkWidget *phone;
+  RogerShell *shell = roger_shell_get_default ();
   char *number = user_data;
 
-  phone = roger_phone_new ();
-  roger_phone_set_dial_number (ROGER_PHONE (phone), number);
-
-  gtk_widget_show_all (phone);
+  roger_shell_phone (shell, number);
 }
 
 static inline GtkWidget *
