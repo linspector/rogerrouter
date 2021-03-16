@@ -24,6 +24,7 @@
 #include "journal.h"
 #include "roger-contactsearch.h"
 #include "roger-phone.h"
+#include "roger-settings.h"
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -838,7 +839,7 @@ contacts_save_button_clicked_cb (GtkComboBox *box,
 {
   RmAddressBook *book = contacts->book;
   RmContact *contact;
-  gboolean ok = g_settings_get_boolean (app_settings, "contacts-hide-warning");
+  gboolean ok = g_settings_get_boolean (ROGER_SETTINGS_MAIN, "contacts-hide-warning");
 
   contact = contacts_get_selected_contact ();
 
@@ -853,7 +854,7 @@ contacts_save_button_clicked_cb (GtkComboBox *box,
     GtkWidget *content = gtk_dialog_get_content_area (GTK_DIALOG (info_dialog));
     GtkWidget *check_button = gtk_check_button_new_with_label (_("Do not show again"));
 
-    g_settings_bind (app_settings, "contacts-hide-warning", check_button, "active", G_SETTINGS_BIND_DEFAULT);
+    g_settings_bind (ROGER_SETTINGS_MAIN, "contacts-hide-warning", check_button, "active", G_SETTINGS_BIND_DEFAULT);
     gtk_widget_set_halign (check_button, GTK_ALIGN_CENTER);
     gtk_widget_show (check_button);
     gtk_container_add (GTK_CONTAINER (content), check_button);
@@ -1303,9 +1304,6 @@ app_contacts (RmContact *contact)
 
   /* Show window */
   gtk_widget_show_all (contacts->window);
-
-  extern GtkApplication *roger_app;
-  gtk_application_add_window (roger_app, GTK_WINDOW (contacts->window));
 
   g_object_unref (G_OBJECT (builder));
 }

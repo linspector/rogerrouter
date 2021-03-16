@@ -29,7 +29,7 @@ typedef struct {
   guint signal_id;
 } RmGooglePlugin;
 
-static GSList *contacts = NULL;
+static GList *contacts = NULL;
 static GSettings *google_settings = NULL;
 static GHashTable *table = NULL;
 
@@ -394,7 +394,7 @@ google_read_book (void)
         }
 
         phone_number->number = rm_number_full (num, FALSE);
-        contact->numbers = g_slist_prepend (contact->numbers, phone_number);
+        contact->numbers = g_list_prepend (contact->numbers, phone_number);
 
         number_list = number_list->next;
       }
@@ -425,7 +425,7 @@ google_read_book (void)
         tmp = gdata_gd_postal_address_get_postcode (gaddress);
         address->zip = g_strdup (tmp ? tmp : "");
 
-        contact->addresses = g_slist_prepend (contact->addresses, address);
+        contact->addresses = g_list_prepend (contact->addresses, address);
 
         address_list = address_list->next;
       }
@@ -441,7 +441,7 @@ google_read_book (void)
         gdk_pixbuf_loader_close (loader, NULL);
       }
 
-      contacts = g_slist_insert_sorted (contacts, contact, rm_contact_name_compare);
+      contacts = g_list_insert_sorted (contacts, contact, rm_contact_name_compare);
     }
 
     gdata_query_next_page (GDATA_QUERY (query));
@@ -834,10 +834,10 @@ googleSaveBook (void)
 }
 #endif
 
-GSList *
+GList *
 google_get_contacts (void)
 {
-  GSList *list = contacts;
+  GList *list = contacts;
 
   return list;
 }

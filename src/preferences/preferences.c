@@ -218,7 +218,7 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
 {
   g_autofree GStrv numbers = NULL;
   GtkWidget *row;
-  GSList *list;
+  GList *list;
   gint idx;
 
   /* Incoming Notifications */

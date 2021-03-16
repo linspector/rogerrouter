@@ -19,7 +19,8 @@
 
 #include "roger-debug.h"
 
-#include "application.h"
+#include "roger-settings.h"
+#include "roger-shell.h"
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -33,21 +34,33 @@ struct _RogerDebug {
 
 G_DEFINE_TYPE (RogerDebug, roger_debug, HDY_TYPE_WINDOW)
 
+struct log_format {
+  char *type;
+  char *tag;
+};
+
+struct log_format log_formats[6] = {
+    { "CRITICAL", "red_fg"},
+    { "ERROR", "red_fg"},
+    { "WARNING", "orange_fg"},
+    { "DEBUG", NULL},
+    { "INFO", "blue_fg"},
+    { "SYSTEM", "blue_fg"},
+};
+
 static void
 roger_debug_log_handler (const gchar    *log_domain,
                          GLogLevelFlags  log_level,
                          const gchar    *message,
                          gpointer        user_data)
 {
-  return;
   RogerDebug *self = ROGER_DEBUG (user_data);
   GtkTextBuffer *text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self->textview));
   GtkTextIter iter;
-  g_autofree char *type = NULL;
-  g_autofree char *tag = NULL;
   g_autoptr (GDateTime) datetime = NULL;
   g_autoptr (GString) output = NULL;
   g_autofree char *time = NULL;
+  int idx;
 
   output = g_string_new ("");
   datetime = g_date_time_new_now_local ();
@@ -56,39 +69,33 @@ roger_debug_log_handler (const gchar    *log_domain,
 
   switch (log_level) {
     case G_LOG_LEVEL_CRITICAL:
-      type = g_strdup (" CRITICAL: ");
-      tag = g_strdup ("red_fg");
+      idx = 0;
       break;
     case G_LOG_LEVEL_ERROR:
-      type = g_strdup (" ERROR: ");
-      tag = g_strdup ("red_fg");
+      idx = 1;
       break;
     case G_LOG_LEVEL_WARNING:
-      type = g_strdup (" WARNING: ");
-      tag = g_strdup ("orange_fg");
+      idx = 2;
       break;
     case G_LOG_LEVEL_DEBUG:
-      type = g_strdup (" DEBUG: ");
-      tag = NULL;
+      idx = 3;
       break;
     case G_LOG_LEVEL_INFO:
-      type = g_strdup (" INFO: ");
-      tag = g_strdup ("blue_fg");
+      idx = 4;
       break;
     default:
-      type = g_strdup (" SYSTEM: ");
-      tag = g_strdup ("blue_fg");
+      idx = 5;
       break;
   }
 
   gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (text_buffer), &iter);
-  gtk_text_buffer_insert_with_tags_by_name (text_buffer, &iter, output->str, output->len, tag, NULL);
+  gtk_text_buffer_insert_with_tags_by_name (text_buffer, &iter, output->str, output->len, log_formats[idx].tag, NULL);
   gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (text_buffer), &iter);
-  gtk_text_buffer_insert_with_tags_by_name (text_buffer, &iter, type, -1, "bold", tag, NULL);
+  gtk_text_buffer_insert_with_tags_by_name (text_buffer, &iter, log_formats[idx].type, -1, "bold", log_formats[idx].tag, NULL);
   gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (text_buffer), &iter);
-  gtk_text_buffer_insert_with_tags_by_name (text_buffer, &iter, message, -1, "lmarg", tag, NULL);
+  gtk_text_buffer_insert_with_tags_by_name (text_buffer, &iter, message, -1, "lmarg", log_formats[idx].tag, NULL);
   gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (text_buffer), &iter);
-  gtk_text_buffer_insert_with_tags_by_name (text_buffer, &iter, "\n", -1, tag, NULL);
+  gtk_text_buffer_insert_with_tags_by_name (text_buffer, &iter, "\n", -1, log_formats[idx].tag, NULL);
 
   /* Scroll to end */
   GtkTextMark *mark = gtk_text_buffer_get_insert (text_buffer);
@@ -100,7 +107,7 @@ roger_debug_delete_event_cb (GtkWidget *widget,
                              GdkEvent  *event,
                              gpointer   user_data)
 {
-  g_settings_set_boolean (app_settings, "debug", FALSE);
+  g_settings_set_boolean (ROGER_SETTINGS_MAIN, "debug", FALSE);
 
   rm_log_set_app_handler (NULL);
 
@@ -182,8 +189,8 @@ roger_debug_init (RogerDebug *self)
   gtk_widget_init_template (GTK_WIDGET (self));
 
   /* Persist debug state and set app handler for logging */
-  g_settings_set_boolean (app_settings, "debug", TRUE);
-  g_log_set_default_handler (roger_debug_log_handler, self);
+  g_settings_set_boolean (ROGER_SETTINGS_MAIN, "debug", TRUE);
+ // g_log_set_default_handler (roger_debug_log_handler, self);
 }
 
 GtkWidget *

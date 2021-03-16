@@ -21,10 +21,11 @@
 
 #include "journal.h"
 
-#include "application.h"
 #include "contacts.h"
 #include "roger-phone.h"
 #include "roger-print.h"
+#include "roger-settings.h"
+#include "roger-shell.h"
 #include "roger-voice-mail.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -435,8 +436,8 @@ roger_journal_loaded_cb (GObject      *source_object,
   journal_reverse_lookup_async (self->cancellable, journal_reverse_lookup_cb, self);
 }
 
-static void
-reload_journal (RogerJournal *self)
+void
+roger_journal_reload (RogerJournal *self)
 {
   RmProfile *profile = rm_profile_get_active ();
 
@@ -458,7 +459,7 @@ on_connection_changed (RmObject     *obj,
   RogerJournal *self = ROGER_JOURNAL (user_data);
 
   if (type == RM_CONNECTION_TYPE_DISCONNECT)
-    reload_journal (self);
+    roger_journal_reload (self);
 }
 
 static void
@@ -967,7 +968,7 @@ window_cmd_refresh (GSimpleAction *action,
 {
   RogerJournal *self = ROGER_JOURNAL (user_data);
 
-  reload_journal (self);
+  roger_journal_reload (self);
 }
 
 static void
@@ -1018,7 +1019,7 @@ on_contacts_changed (RmObject *object,
 {
   RogerJournal *self = ROGER_JOURNAL (user_data);
 
-  reload_journal (self);
+  roger_journal_reload (self);
 }
 
 void
@@ -1040,11 +1041,11 @@ journal_column_restore_default (GtkMenuItem *item,
     char *key;
 
     key = g_strdup_printf ("col-%d-width", index);
-    g_settings_set_uint (app_settings, key, 0);
+    g_settings_set_uint (ROGER_SETTINGS_MAIN, key, 0);
     g_free (key);
 
     key = g_strdup_printf ("col-%d-visible", index);
-    g_settings_set_boolean (app_settings, key, TRUE);
+    g_settings_set_boolean (ROGER_SETTINGS_MAIN, key, TRUE);
     g_free (key);
 
     column = gtk_tree_view_get_column (GTK_TREE_VIEW (user_data), index);
@@ -1277,30 +1278,30 @@ roger_journal_init (RogerJournal *self)
 
   sortable = GTK_TREE_SORTABLE (self->list_store);
 
-  g_settings_bind (app_settings, "col-0-width", self->col0, "fixed-width", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-0-visible", self->col0, "visible", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-0-width", self->col0, "fixed-width", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-0-visible", self->col0, "visible", G_SETTINGS_BIND_DEFAULT);
   gtk_tree_sortable_set_sort_func (sortable, JOURNAL_COL_TYPE, journal_sort_by_type, 0, NULL);
 
-  g_settings_bind (app_settings, "col-1-width", self->col1, "fixed-width", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-1-visible", self->col1, "visible", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-1-width", self->col1, "fixed-width", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-1-visible", self->col1, "visible", G_SETTINGS_BIND_DEFAULT);
   gtk_tree_sortable_set_sort_func (sortable, JOURNAL_COL_DATETIME, journal_sort_by_date, 0, NULL);
 
-  g_settings_bind (app_settings, "col-2-width", self->col2, "fixed-width", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-2-visible", self->col2, "visible", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-2-width", self->col2, "fixed-width", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-2-visible", self->col2, "visible", G_SETTINGS_BIND_DEFAULT);
   gtk_tree_view_column_set_cell_data_func (GTK_TREE_VIEW_COLUMN (self->col2), self->col2_renderer, name_column_cell_data_func, NULL, NULL);
 
-  g_settings_bind (app_settings, "col-3-width", self->col3, "fixed-width", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-3-visible", self->col3, "visible", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-4-width", self->col4, "fixed-width", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-4-visible", self->col4, "visible", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-5-width", self->col5, "fixed-width", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-5-visible", self->col5, "visible", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-6-width", self->col6, "fixed-width", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-6-visible", self->col6, "visible", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-7-width", self->col7, "fixed-width", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-7-visible", self->col7, "visible", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-8-width", self->col8, "fixed-width", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind (app_settings, "col-8-visible", self->col8, "visible", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-3-width", self->col3, "fixed-width", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-3-visible", self->col3, "visible", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-4-width", self->col4, "fixed-width", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-4-visible", self->col4, "visible", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-5-width", self->col5, "fixed-width", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-5-visible", self->col5, "visible", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-6-width", self->col6, "fixed-width", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-6-visible", self->col6, "visible", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-7-width", self->col7, "fixed-width", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-7-visible", self->col7, "visible", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-8-width", self->col8, "fixed-width", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (ROGER_SETTINGS_MAIN, "col-8-visible", self->col8, "visible", G_SETTINGS_BIND_DEFAULT);
 
   self->cancellable = g_cancellable_new ();
 

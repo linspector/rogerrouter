@@ -20,23 +20,14 @@
 #pragma once
 
 #include <gtk/gtk.h>
-#include <rm/rm.h>
 
 G_BEGIN_DECLS
 
-#define APP_GSETTINGS_SCHEMA "org.tabos.roger"
+#define ROGER_PREFS_SCHEMA    "org.tabos.roger"
+#define ROGER_SETTINGS_MAIN   roger_settings_get (ROGER_PREFS_SCHEMA)
 
-extern GSettings * app_settings;
-extern GtkApplication *roger_app;
+GSettings *roger_settings_get (const char *schema);
 
-void app_show_contacts (void);
-void app_show_preferences (void);
-void app_show_help (void);
-void app_quit (void);
-void app_copy_ip (void);
-void app_reconnect (void);
-void app_hangup (RmConnection *connection);
-void app_pickup (RmConnection *connection);
-void app_present_journal (void);
+void roger_settings_shutdown (void);
 
 G_END_DECLS

@@ -68,4 +68,6 @@ void journal_update_content (RogerJournal *self);
 
 GdkPixbuf *roger_journal_get_call_icon (RmCallEntryTypes type);
 
+void roger_journal_reload (RogerJournal *self);
+
 G_END_DECLS

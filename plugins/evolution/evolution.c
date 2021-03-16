@@ -27,7 +27,7 @@
 #include <rm/rm.h>
 #include <string.h>
 
-static GSList *contacts = NULL;
+static GList *contacts = NULL;
 static GSettings *ebook_settings = NULL;
 static EClient *e_client = NULL;
 
@@ -153,7 +153,7 @@ get_ebook_list (void)
 
 void
 ebook_objects_changed_cb (EBookClientView *view,
-                          const GSList    *ids,
+                          const GList     *ids,
                           gpointer         user_data)
 {
   g_debug ("%s(): called", __FUNCTION__);
@@ -298,7 +298,7 @@ ebook_read_data (EClient *e_client)
       phone_number = g_slice_new (RmPhoneNumber);
       phone_number->type = RM_PHONE_NUMBER_TYPE_HOME;
       phone_number->number = rm_number_full (number, FALSE);
-      contact->numbers = g_slist_prepend (contact->numbers, phone_number);
+      contact->numbers = g_list_prepend (contact->numbers, phone_number);
     }
 
     number = e_contact_get_const (e_contact, E_CONTACT_PHONE_BUSINESS);
@@ -306,7 +306,7 @@ ebook_read_data (EClient *e_client)
       phone_number = g_slice_new (RmPhoneNumber);
       phone_number->type = RM_PHONE_NUMBER_TYPE_WORK;
       phone_number->number = rm_number_full (number, FALSE);
-      contact->numbers = g_slist_prepend (contact->numbers, phone_number);
+      contact->numbers = g_list_prepend (contact->numbers, phone_number);
     }
 
     number = e_contact_get_const (e_contact, E_CONTACT_PHONE_MOBILE);
@@ -314,7 +314,7 @@ ebook_read_data (EClient *e_client)
       phone_number = g_slice_new (RmPhoneNumber);
       phone_number->type = RM_PHONE_NUMBER_TYPE_MOBILE;
       phone_number->number = rm_number_full (number, FALSE);
-      contact->numbers = g_slist_prepend (contact->numbers, phone_number);
+      contact->numbers = g_list_prepend (contact->numbers, phone_number);
     }
 
     number = e_contact_get_const (e_contact, E_CONTACT_PHONE_HOME_FAX);
@@ -322,7 +322,7 @@ ebook_read_data (EClient *e_client)
       phone_number = g_slice_new (RmPhoneNumber);
       phone_number->type = RM_PHONE_NUMBER_TYPE_FAX_HOME;
       phone_number->number = rm_number_full (number, FALSE);
-      contact->numbers = g_slist_prepend (contact->numbers, phone_number);
+      contact->numbers = g_list_prepend (contact->numbers, phone_number);
     }
 
     number = e_contact_get_const (e_contact, E_CONTACT_PHONE_BUSINESS_FAX);
@@ -330,7 +330,7 @@ ebook_read_data (EClient *e_client)
       phone_number = g_slice_new (RmPhoneNumber);
       phone_number->type = RM_PHONE_NUMBER_TYPE_FAX_WORK;
       phone_number->number = rm_number_full (number, FALSE);
-      contact->numbers = g_slist_prepend (contact->numbers, phone_number);
+      contact->numbers = g_list_prepend (contact->numbers, phone_number);
     }
 
     company = e_contact_get_const (e_contact, E_CONTACT_ORG);
@@ -345,7 +345,7 @@ ebook_read_data (EClient *e_client)
       c_address->street = g_strdup (address->street);
       c_address->zip = g_strdup (address->code);
       c_address->city = g_strdup (address->locality);
-      contact->addresses = g_slist_prepend (contact->addresses, c_address);
+      contact->addresses = g_list_prepend (contact->addresses, c_address);
     }
 
     address = e_contact_get (e_contact, E_CONTACT_ADDRESS_WORK);
@@ -355,16 +355,15 @@ ebook_read_data (EClient *e_client)
       c_address->street = g_strdup (address->street);
       c_address->zip = g_strdup (address->code);
       c_address->city = g_strdup (address->locality);
-      contact->addresses = g_slist_prepend (contact->addresses, c_address);
+      contact->addresses = g_list_prepend (contact->addresses, c_address);
     }
 
-    contacts = g_slist_insert_sorted (contacts, contact, rm_contact_name_compare);
+    contacts = g_list_insert_sorted (contacts, contact, rm_contact_name_compare);
   }
 
   g_slist_free (ebook_contacts);
 
   /* Send signal to redraw journal and update contacts view */
-  g_debug ("%s(): ********************************* loaded", __FUNCTION__);
   rm_object_emit_contacts_changed ();
 }
 
@@ -433,10 +432,10 @@ ebook_read_book_sync (void)
   return TRUE;
 }
 
-GSList *
+GList *
 evolution_get_contacts (void)
 {
-  GSList *list = contacts;
+  GList *list = contacts;
 
   return list;
 }
@@ -500,8 +499,8 @@ evolution_save_contact (RmContact *contact)
   EContact *e_contact;
   gboolean ret = FALSE;
   GError *error = NULL;
-  GSList *numbers;
-  GSList *addresses;
+  GList *numbers;
+  GList *addresses;
 
   if (!e_client) {
     return FALSE;

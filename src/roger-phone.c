@@ -24,6 +24,7 @@
 #include "contacts.h"
 #include "journal.h"
 #include "roger-contactsearch.h"
+#include "roger-shell.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -374,7 +375,9 @@ roger_phone_init (RogerPhone *self)
 GtkWidget *
 roger_phone_new (void)
 {
-  return g_object_new (ROGER_TYPE_PHONE, NULL);
+  return g_object_new (ROGER_TYPE_PHONE,
+                       "application", GTK_APPLICATION (roger_shell_get_default ()),
+                       NULL);
 }
 
 void

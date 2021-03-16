@@ -32,7 +32,7 @@
 #include <string.h>
 #include <strings.h>
 
-static GSList *contacts = NULL;
+static GList *contacts = NULL;
 
 static GSettings *vcard_settings = NULL;
 
@@ -343,7 +343,7 @@ process_address (struct vcard_data *card_data,
   g_string_free (tmp_str, FALSE);
   tmp++;
 
-  contact->addresses = g_slist_prepend (contact->addresses, address);
+  contact->addresses = g_list_prepend (contact->addresses, address);
 
   /* read country */
   /*private_country = g_string_new("");
@@ -411,7 +411,7 @@ process_telephone (struct vcard_data *card_data,
   number->number = rm_number_full (number_str->str, FALSE);
   g_string_free (number_str, TRUE);
 
-  contact->numbers = g_slist_prepend (contact->numbers, number);
+  contact->numbers = g_list_prepend (contact->numbers, number);
 }
 
 /**
@@ -516,7 +516,7 @@ process_card_end (RmContact *contact)
     contact->name = g_strdup ("");
   }
 
-  contacts = g_slist_insert_sorted (contacts, contact, rm_contact_name_compare);
+  contacts = g_list_insert_sorted (contacts, contact, rm_contact_name_compare);
 
   /* Free firstname */
   if (first_name != NULL) {
@@ -985,12 +985,12 @@ void
 vcard_write_file (char *file_name)
 {
   GString *data = NULL;
-  GSList *list = NULL;
+  GList *list = NULL;
   RmContact *contact = NULL;
   GList *entry = NULL;
   GList *list2 = NULL;
-  GSList *numbers;
-  GSList *addresses;
+  GList *numbers;
+  GList *addresses;
 
   data = g_string_new ("");
 
@@ -1150,7 +1150,7 @@ vcard_write_file (char *file_name)
   g_string_free (data, TRUE);
 }
 
-GSList *
+GList *
 vcard_get_contacts (void)
 {
   return contacts;
@@ -1174,7 +1174,7 @@ vcard_remove_contact (RmContact *contact)
 {
   char *name;
 
-  contacts = g_slist_remove (contacts, contact);
+  contacts = g_list_remove (contacts, contact);
 
   name = g_settings_get_string (vcard_settings, "filename");
   vcard_write_file (name);
@@ -1188,7 +1188,7 @@ vcard_save_contact (RmContact *contact)
   char *name;
 
   if (!contact->priv) {
-    contacts = g_slist_insert_sorted (contacts, contact, rm_contact_name_compare);
+    contacts = g_list_insert_sorted (contacts, contact, rm_contact_name_compare);
   }
 
   name = g_settings_get_string (vcard_settings, "filename");
