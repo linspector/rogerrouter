@@ -839,11 +839,7 @@ journal_column_header_button_pressed_cb (GtkTreeViewColumn *column,
   GtkMenu *menu = GTK_MENU (user_data);
 
   if (event->button == GDK_BUTTON_SECONDARY) {
-#if GTK_CHECK_VERSION (3, 21, 0)
     gtk_menu_popup_at_pointer (menu, (GdkEvent *)event);
-#else
-    gtk_menu_popup (menu, NULL, NULL, NULL, NULL, event->button, event->time);
-#endif
     return TRUE;
   }
 
@@ -1029,7 +1025,6 @@ journal_set_visible (RogerJournal *self,
   gtk_widget_set_visible (GTK_WIDGET (self), state);
 }
 
-#if 0
 void
 journal_column_restore_default (GtkMenuItem *item,
                                 gpointer     user_data)
@@ -1053,7 +1048,6 @@ journal_column_restore_default (GtkMenuItem *item,
     gtk_tree_view_column_set_fixed_width (column, -1);
   }
 }
-#endif
 
 static gboolean
 on_key_press_event (GtkWidget *widget,
@@ -1238,10 +1232,28 @@ roger_journal_class_init (RogerJournalClass *klass)
 }
 
 static void
+add_col_to_header_menu (GtkWidget *menu,
+                        GtkWidget *col)
+{
+  GtkWidget *button;
+  GtkWidget *column_item;
+
+  button = gtk_tree_view_column_get_button (GTK_TREE_VIEW_COLUMN (col));
+  g_signal_connect(button, "button-press-event", G_CALLBACK(journal_column_header_button_pressed_cb), menu);
+
+  column_item = gtk_check_menu_item_new_with_label(gtk_tree_view_column_get_title (GTK_TREE_VIEW_COLUMN (col)));
+	//gtk_widget_set_sensitive(column_item, FALSE);
+	g_object_bind_property(col, "visible", column_item, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), column_item);
+}
+
+static void
 roger_journal_init (RogerJournal *self)
 {
   GtkTreeSortable *sortable;
   GSimpleActionGroup *simple_action_group;
+  GtkWidget *header_menu = gtk_menu_new();
+  GtkWidget *column_item;
 
   journal_window_state = g_settings_new ("org.tabos.roger.window-state");
 
@@ -1277,6 +1289,22 @@ roger_journal_init (RogerJournal *self)
   journal_filter_box_changed (GTK_COMBO_BOX (self->filter_combobox), self);
 
   sortable = GTK_TREE_SORTABLE (self->list_store);
+
+  add_col_to_header_menu (header_menu, self->col0);
+  add_col_to_header_menu (header_menu, self->col1);
+  add_col_to_header_menu (header_menu, self->col2);
+  add_col_to_header_menu (header_menu, self->col3);
+  add_col_to_header_menu (header_menu, self->col4);
+  add_col_to_header_menu (header_menu, self->col5);
+  add_col_to_header_menu (header_menu, self->col6);
+  add_col_to_header_menu (header_menu, self->col7);
+  add_col_to_header_menu (header_menu, self->col8);
+
+	column_item = gtk_menu_item_new_with_label(_("Restore default"));
+	g_signal_connect(G_OBJECT(column_item), "activate", G_CALLBACK(journal_column_restore_default), self);
+	gtk_menu_shell_append(GTK_MENU_SHELL(header_menu), column_item);
+
+  gtk_widget_show_all(header_menu);
 
   g_settings_bind (ROGER_SETTINGS_MAIN, "col-0-width", self->col0, "fixed-width", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (ROGER_SETTINGS_MAIN, "col-0-visible", self->col0, "visible", G_SETTINGS_BIND_DEFAULT);
