@@ -854,17 +854,6 @@ journal_popup_copy_number (GtkWidget   *widget,
 }
 
 void
-journal_popup_call_number (GtkWidget   *widget,
-                           RmCallEntry *call)
-{
-  GtkWidget *phone = roger_phone_new ();
-
-  roger_phone_set_dial_number (ROGER_PHONE (phone), call->remote->number);
-
-  gtk_widget_show_all (phone);
-}
-
-void
 journal_popup_add_contact (GtkWidget   *widget,
                            RmCallEntry *call)
 {
@@ -902,11 +891,6 @@ journal_popup_menu (GtkWidget      *treeview,
   /* Copy phone number */
   menuitem = gtk_menu_item_new_with_label (_("Copy number"));
   g_signal_connect (menuitem, "activate", (GCallback)journal_popup_copy_number, call);
-  gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-
-  /* Call phone number */
-  menuitem = gtk_menu_item_new_with_label (_("Call number"));
-  g_signal_connect (menuitem, "activate", (GCallback)journal_popup_call_number, call);
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
 
   /* Separator */
