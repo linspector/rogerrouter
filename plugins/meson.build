@@ -1,21 +1,20 @@
-plugins_dep=[]
-plugins_dep += dependency('gtk+-3.0')
-plugins_dep += dependency('libsoup-2.4')
-plugins_dep += dependency('libhandy-1')
-plugins_dep += librm_dep
-plugins_dep += libhandy_dep
+plugin_deps = [
+  gtk3_dep,
+  libsoup_dep,
+  libhandy_dep,
+  librm_dep,
+]
 
-plugins_inc = include_directories('.', '..')
+plugin_includes = include_directories('.', '..')
 
 subdir('google')
 
 if host_machine.system().contains('linux')
-subdir('evolution')
+  subdir('evolution')
 endif
 
 subdir('keychain')
 subdir('osxab')
-
 
 subdir('thunderbird')
 subdir('vcard')

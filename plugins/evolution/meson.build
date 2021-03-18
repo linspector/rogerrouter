@@ -1,31 +1,29 @@
-dep = dependency('libebook-1.2', required: false)
+ebook_dep = dependency('libebook-1.2', required: false)
 
-if dep.found()
+if ebook_dep.found()
+  evolution_sources = [
+    'evolution.c'
+  ]
+  evolution_deps = [
+    plugin_deps,
+    ebook_dep
+  ]
+  evolution_includes = [include_directories('../../..'), plugin_includes]
 
-evolution_sources = []
-evolution_sources += 'evolution.c'
+  libevolution = shared_module('evolution',
+                          evolution_sources,
+                          include_directories : evolution_includes,
+                          dependencies : evolution_deps,
+                          install : true,
+                          install_dir : join_paths(get_option('prefix'), get_option('libdir'), 'roger', 'evolution'))
 
-evolution_dep = []
-evolution_dep += plugins_dep
-evolution_dep += dependency('libebook-1.2')
+  custom_target('evolution.plugin',
+      output : 'evolution.plugin',
+      input : 'evolution.desktop.in',
+      command : [msgfmt, '--desktop', '--template', '@INPUT@', '-d', podir, '-o', '@OUTPUT@'],
+      install : true,
+      install_dir : join_paths(get_option('prefix'), get_option('libdir'), 'roger', 'evolution'))
 
-evolution_inc = []
-evolution_inc += include_directories('../../..')
-evolution_inc += plugins_inc
-
-libevolution = shared_module('evolution',
-                        evolution_sources,
-                        include_directories : evolution_inc,
-                        dependencies : evolution_dep,
-                        install : true,
-                        install_dir : join_paths(get_option('prefix'), get_option('libdir'), 'roger', 'evolution'))
-
-custom_target('evolution.plugin',
-    output : 'evolution.plugin',
-    input : 'evolution.desktop.in',
-    command : [msgfmt, '--desktop', '--template', '@INPUT@', '-d', podir, '-o', '@OUTPUT@'],
-    install : true,
-    install_dir : join_paths(get_option('prefix'), get_option('libdir'), 'roger', 'evolution'))
-
-install_data('org.tabos.roger.plugins.evolution.gschema.xml', install_dir : join_paths(get_option('datadir'), 'glib-2.0', 'schemas'))
+  install_data('org.tabos.roger.plugins.evolution.gschema.xml', install_dir : join_paths(get_option('datadir'), 'glib-2.0', 'schemas'))
 endif
+

@@ -1,4 +1,7 @@
 # List of files that (could) contain strings for translation
+data/org.tabos.roger.desktop.in
+data/org.tabos.roger.appdata.xml.in
+
 src/resources/ui/assistant.ui
 src/resources/ui/fax.ui
 src/resources/ui/journal.ui
@@ -11,7 +14,6 @@ src/resources/ui/voice-mail.ui
 src/resources/authenticate.glade
 src/resources/contacts.glade
 
-src/application.c
 src/contacts.c
 src/journal.c
 src/roger-assistant.c
@@ -20,14 +22,12 @@ src/roger-debug.c
 src/roger-fax.c
 src/roger-phone.c
 src/roger-print.c
+src/roger-shell.c
 src/roger-voice-mail.c
 src/preferences/preferences.c
 src/preferences/preferences-audio.c
 src/preferences/preferences-plugins.c
 src/preferences/preferences-telephony.c
-
-src/org.tabos.roger.desktop.in
-src/org.tabos.roger.appdata.xml.in
 
 plugins/evolution/evolution.c
 plugins/evolution/roger-plugins-evolution.metainfo.xml.in

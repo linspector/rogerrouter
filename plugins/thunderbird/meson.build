@@ -1,15 +1,17 @@
-thunderbird_sources = []
-thunderbird_sources += 'thunderbird.c'
-
-thunderbird_dep = []
-thunderbird_dep += plugins_dep
-
-thunderbird_inc = [plugins_inc]
+thunderbird_sources = [
+  'thunderbird.c'
+]
+thunderbird_deps = [
+  plugin_deps
+]
+thunderbird_includes = [
+  plugin_includes
+]
 
 libthunderbird = shared_module('thunderbird',
                         thunderbird_sources,
-                        include_directories : thunderbird_inc,
-                        dependencies : thunderbird_dep,
+                        include_directories : thunderbird_includes,
+                        dependencies : thunderbird_deps,
                         install : true,
                         install_dir : get_option('prefix') + '/' + get_option('libdir') + '/roger/thunderbird/')
 

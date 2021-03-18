@@ -226,7 +226,7 @@ about_activated (GSimpleAction *action,
   gtk_about_dialog_set_artists (GTK_ABOUT_DIALOG (dialog), (const char **)artists);
   gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (dialog), PACKAGE_BUGREPORT);
   gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (dialog), _("Website"));
-  gtk_about_dialog_set_logo (GTK_ABOUT_DIALOG (dialog), gdk_pixbuf_new_from_resource ("/org/tabos/roger/images/org.tabos.roger.svg", NULL));
+  gtk_about_dialog_set_logo_icon_name (GTK_ABOUT_DIALOG (dialog), "org.tabos.roger");
 
   window = roger_shell_get_journal (self);
   if (window) {

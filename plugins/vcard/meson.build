@@ -1,15 +1,17 @@
-vcard_sources = []
-vcard_sources += 'vcard.c'
-
-vcard_dep = []
-vcard_dep += plugins_dep
-
-vcard_inc = [plugins_inc]
+vcard_sources = [
+  'vcard.c'
+]
+vcard_deps = [
+  plugin_deps
+]
+vcard_includes = [
+  plugin_includes
+]
 
 libvcard = shared_module('vcard',
                         vcard_sources,
-                        include_directories : vcard_inc,
-                        dependencies : vcard_dep,
+                        include_directories : vcard_includes,
+                        dependencies : vcard_deps,
                         install : true,
                         install_dir : get_option('prefix') + '/' + get_option('libdir') + '/roger/vcard/')
 

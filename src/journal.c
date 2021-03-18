@@ -690,12 +690,8 @@ on_view_row_activated (GtkTreeView       *view,
     case RM_CALL_ENTRY_TYPE_FAX_REPORT: {
       g_autofree char *uri = g_strdup_printf ("file:///%s", call->priv);
 
-      if (!gtk_show_uri_on_window (GTK_WINDOW (self), uri, GDK_CURRENT_TIME, &error)) {
-        g_debug ("%s(): Could not open uri '%s'", __FUNCTION__, uri);
-        g_debug ("%s(): '%s'", __FUNCTION__, error->message);
-      } else {
-        g_debug ("%s(): Opened '%s'", __FUNCTION__, uri);
-      }
+      if (!gtk_show_uri_on_window (GTK_WINDOW (self), uri, GDK_CURRENT_TIME, &error))
+        g_debug ("%s(): Could not open uri '%s': %s", __FUNCTION__, uri, error->message);
       break;
     }
     case RM_CALL_ENTRY_TYPE_FAX: {
@@ -710,24 +706,16 @@ on_view_row_activated (GtkTreeView       *view,
 
         rm_file_save (path, data, len);
 
-        if (!gtk_show_uri_on_window (GTK_WINDOW (self), uri, GDK_CURRENT_TIME, &error)) {
-          g_debug ("%s(): Could not open uri '%s'", __FUNCTION__, uri);
-          g_debug ("%s(): '%s'", __FUNCTION__, error->message);
-        } else {
-          g_debug ("%s(): Opened '%s'", __FUNCTION__, uri);
-        }
+        if (!gtk_show_uri_on_window (GTK_WINDOW (self), uri, GDK_CURRENT_TIME, &error))
+          g_debug ("%s(): Could not open uri '%s': %s", __FUNCTION__, uri, error->message);
       }
       break;
     }
     case RM_CALL_ENTRY_TYPE_RECORD: {
       char *tmp = call->priv;
 
-      if (!gtk_show_uri_on_window (GTK_WINDOW (self), tmp, GDK_CURRENT_TIME, &error)) {
-        g_debug ("%s(): Could not open uri '%s'", __FUNCTION__, tmp);
-        g_debug ("%s(): '%s'", __FUNCTION__, error->message);
-      } else {
-        g_debug ("%s(): Opened '%s'", __FUNCTION__, tmp);
-      }
+      if (!gtk_show_uri_on_window (GTK_WINDOW (self), tmp, GDK_CURRENT_TIME, &error))
+        g_debug ("%s(): Could not open uri '%s': %s", __FUNCTION__, tmp, error->message);
       break;
     }
     case RM_CALL_ENTRY_TYPE_VOICE:
