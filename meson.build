@@ -53,7 +53,7 @@ config_h = declare_dependency(
 
 gtk3_dep = dependency('gtk+-3.0', version : '>=3.22.0')
 libgs_dep = cc.find_library('gs')
-libhandy_dep = dependency('libhandy-1', version: '>= 1.2.0')
+libhandy_dep = dependency('libhandy-1', version: '>= 1.1.90')
 libm_dep = cc.find_library('m', required: true)
 librm_dep = dependency('librm', version : '>=2.1.4')
 libsoup_dep = dependency('libsoup-2.4')
