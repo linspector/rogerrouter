@@ -653,6 +653,8 @@ refresh_edit_dialog (RmContact *contact)
   GtkWidget *separator;
   GdkPixbuf *pixbuf;
 
+  g_assert (contact);
+
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
   gtk_container_set_border_width (GTK_CONTAINER (box), 6);
 
@@ -683,7 +685,7 @@ refresh_edit_dialog (RmContact *contact)
   gtk_widget_set_valign (detail_name_label, GTK_ALIGN_CENTER);
   gtk_grid_attach (GTK_GRID (grid), detail_name_label, 1, 0, 1, 1);
 
-  if (contact && contact->image) {
+  if (contact->image) {
     pixbuf = rm_image_scale (contact->image, 96);
   } else {
     GtkWidget *avatar = hdy_avatar_new (48, contact->name, TRUE);
