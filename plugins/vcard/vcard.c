@@ -833,10 +833,9 @@ vcard_print (GString *data,
   int len;
   int size = 100;
   char *ptr = NULL;
+  char *new = NULL;
 
-  if ((ptr = g_malloc (size)) == NULL) {
-    return;
-  }
+  ptr = g_malloc (size);
 
   while (1) {
     va_start (args, format);
@@ -861,14 +860,12 @@ vcard_print (GString *data,
       size *= 2;
     }
 
-    if ((ptr = g_realloc (ptr, size)) == NULL) {
-      break;
-    }
+    new = g_realloc (ptr, size);
+    g_clear_pointer (&ptr, g_free);
+    ptr = new;
   }
 
-  if (ptr != NULL) {
-    g_free (ptr);
-  }
+  g_free (ptr);
 }
 
 /**
