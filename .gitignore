@@ -7,20 +7,14 @@
 *.la
 *.valid
 *.nsi
-*Makefile
-*Makefile.in
-*metainfo.xml
 *.plugin
 *.1
 *.gmo
 stamp-it
 stamp-h1
-roger/roger_gresource.*
 *.rc
 *.pc
 *.desktop
-macosx/package
-macosx/roger.plist
 
 # Directories
 *.deps
@@ -29,16 +23,9 @@ macosx/roger.plist
 build
 
 # Misc
-aclocal.m4
-autom4te.cache/
-depcomp
-m4/libtool.m4
 *appdata.xml
 po/.intltool-merge-cache
 libtool
 configure
 .buildconfig
 
-# Binaries
-roger-cli/roger_cli
-roger/roger
