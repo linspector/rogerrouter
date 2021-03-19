@@ -1,34 +1,33 @@
-project('roger', 'c', version : '2.2.1', license : 'GPL2')
+project('roger', 'c',
+  version: '2.2.1',
+  license : 'GPL2',
+  meson_version: '>= 0.53.0',
+  default_options: ['c_std=gnu11',
+                    'warning_level=2']
+)
 
 gnome = import('gnome')
 i18n = import('i18n')
 msgfmt = find_program('msgfmt')
-
-app_version = meson.project_version()
-version_arr = app_version.split('.')
-app_version_major = version_arr[0]
-app_version_minor = version_arr[1]
-app_version_micro = version_arr[2]
 
 application_id = 'org.tabos.roger'
 prefix = get_option('prefix')
 datadir = join_paths(prefix, get_option('datadir'))
 
 conf = configuration_data()
-conf.set('PACKAGE_NAME', '"Roger Router"')
-conf.set('PACKAGE_VERSION', '"@0@"'.format(app_version))
-conf.set('PACKAGE_BUGREPORT', '"https://www.tabos.org/forum"')
-conf.set('GETTEXT_PACKAGE', '"roger"')
+conf.set_quoted('PACKAGE_NAME', 'Roger Router')
+conf.set_quoted('PACKAGE_VERSION', '@VCS_TAG@')
+conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 
 host_system = host_machine.system()
 if host_system == 'windows'
-  conf.set('APP_PLUGINS', '"' + get_option('libdir') + '/roger/"')
-  conf.set('APP_DATA', '"' + get_option('datadir') + '/roger/"')
-  conf.set('APP_LOCALE', '"' + get_option('localedir') + '"')
+  conf.set_quoted('APP_PLUGINS', join_paths(get_option('libdir'), 'roger'))
+  conf.set_quoted('APP_DATA', join_paths(get_option('datadir'), 'roger'))
+  conf.set_quoted('APP_LOCALE', join_paths(get_option('localedir')))
 else
-  conf.set('APP_PLUGINS', '"' + get_option('prefix') + '/' + get_option('libdir') + '/roger/"')
-  conf.set('APP_DATA', '"' + get_option('prefix') + '/' + get_option('datadir') + '/roger/"')
-  conf.set('APP_LOCALE', '"' + get_option('prefix') + '/' + get_option('localedir') + '"')
+  conf.set_quoted('APP_PLUGINS', join_paths(get_option('prefix'), get_option('libdir'), 'roger'))
+  conf.set_quoted('APP_DATA', join_paths(get_option('prefix'), get_option('datadir'), 'roger'))
+  conf.set_quoted('APP_LOCALE', join_paths(get_option('prefix'), get_option('localedir')))
 endif
 
 check_headers = [['dlfcn.h','HAVE_DLFCN_H'],
@@ -38,7 +37,7 @@ check_headers = [['dlfcn.h','HAVE_DLFCN_H'],
 cc = meson.get_compiler('c')
 foreach h : check_headers
   if cc.has_header(h.get(0))
-    conf.set(h.get(1), 1)
+    conf.set10(h.get(1), 1)
   endif
 endforeach
 
@@ -53,10 +52,10 @@ config_h = declare_dependency(
 )
 
 gtk3_dep = dependency('gtk+-3.0', version : '>=3.22.0')
-libgs_dep = cc.find_library('gs', required: false)
-libhandy_dep = dependency('libhandy-1', version: '>= 0.90.0')
+libgs_dep = cc.find_library('gs')
+libhandy_dep = dependency('libhandy-1', version: '>= 1.2.0')
 libm_dep = cc.find_library('m', required: true)
-librm_dep = dependency('librm', version : '>=2.1.4', fallback : ['librm', 'rm_dep'])
+librm_dep = dependency('librm', version : '>=2.1.4')
 libsoup_dep = dependency('libsoup-2.4')
 libtiff_dep = dependency('libtiff-4')
 

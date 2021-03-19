@@ -7,15 +7,10 @@ plugin_deps = [
 
 plugin_includes = include_directories('.', '..')
 
+subdir('evolution')
 subdir('google')
-
-if host_machine.system().contains('linux')
-  subdir('evolution')
-endif
-
 subdir('keychain')
 subdir('osxab')
-
 subdir('thunderbird')
 subdir('vcard')
 

@@ -223,7 +223,7 @@ about_activated (GSimpleAction *action,
   gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (dialog), (const char **)authors);
   gtk_about_dialog_set_documenters (GTK_ABOUT_DIALOG (dialog), (const char **)documenters);
   gtk_about_dialog_set_artists (GTK_ABOUT_DIALOG (dialog), (const char **)artists);
-  gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (dialog), PACKAGE_BUGREPORT);
+  gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (dialog), "https://www.tabos.org");
   gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (dialog), _("Website"));
   gtk_about_dialog_set_logo_icon_name (GTK_ABOUT_DIALOG (dialog), "org.tabos.roger");
 
