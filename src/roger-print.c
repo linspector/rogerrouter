@@ -253,7 +253,7 @@ roger_print_journal_draw_page_cb (GtkPrintOperation *operation,
 
   /* Date */
   tmp = roger_print_journal_get_date_time ("%d.%m.%Y %H:%M:%S");
-  date = g_strdup_printf ("<small>%s</small>", date);
+  date = g_strdup_printf ("<small>%s</small>", tmp);
   pango_layout_set_markup (print_data->layout, date, -1);
   pango_layout_set_alignment (print_data->layout, PANGO_ALIGN_RIGHT);
   cairo_move_to (cairo, 2, print_data->line_height * 1.5);
