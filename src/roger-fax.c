@@ -172,7 +172,6 @@ convert_to_fax (const char *file_name)
   char *out_file;
   RmProfile *profile = rm_profile_get_active ();
   gint ret;
-  gint ret1;
   void *minst = NULL;
 
   /* convert ps to fax */
@@ -215,12 +214,10 @@ convert_to_fax (const char *file_name)
   if (ret < 0) {
     return NULL;
   }
-  ret = gsapi_set_arg_encoding (minst, GS_ARG_ENCODING_UTF8);
-  ret = gsapi_init_with_args (minst, 12, args);
+  gsapi_set_arg_encoding (minst, GS_ARG_ENCODING_UTF8);
+  gsapi_init_with_args (minst, 12, args);
 
-  ret1 = gsapi_exit (minst);
-  if ((ret == 0) || (ret == gs_error_Quit))
-    ret = ret1;
+  gsapi_exit (minst);
 
   gsapi_delete_instance (minst);
 

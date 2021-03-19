@@ -832,14 +832,12 @@ vcard_print (GString *data,
   va_list args;
   int len;
   int size = 100;
-  char *ptr = NULL;
-  char *new = NULL;
-
-  ptr = g_malloc (size);
+  g_autofree char *ptr = NULL;
 
   while (1) {
     va_start (args, format);
 
+    ptr = g_realloc (ptr, size);
     len = vsnprintf (ptr, size, format, args);
 
     va_end (args);
@@ -859,13 +857,7 @@ vcard_print (GString *data,
     } else {
       size *= 2;
     }
-
-    new = g_realloc (ptr, size);
-    g_clear_pointer (&ptr, g_free);
-    ptr = new;
   }
-
-  g_free (ptr);
 }
 
 /**
@@ -938,9 +930,8 @@ vcard_modify_data (GList *list,
   card_data = find_card_data (list, header, NULL);
 
   if (card_data == NULL) {
-    card_data = g_malloc0 (sizeof (struct vcard_data));
-    card_data->header = g_strdup (header);
-    list = g_list_append (list, card_data);
+    g_warning ("Tried to modify an non existing vcard data, return");
+    return FALSE;
   } else {
     g_free (card_data->entry);
   }
@@ -1003,7 +994,7 @@ vcard_write_file (char *file_name)
       contact->priv = g_string_free (uid, FALSE);
       uid = NULL;
       card_data->entry = g_strdup (contact->priv);
-      vcard = g_list_append (NULL, card_data);
+      vcard = g_list_append (NULL, g_steal_pointer (&card_data));
       vcard_list = g_list_append (vcard_list, vcard);
     }
 
@@ -1032,29 +1023,30 @@ vcard_write_file (char *file_name)
     for (numbers = contact->numbers; numbers != NULL; numbers = numbers->next) {
       RmPhoneNumber *number = numbers->data;
       struct vcard_data *card_data;
-
-      card_data = g_malloc0 (sizeof (struct vcard_data));
-      card_data->header = g_strdup ("TEL");
+      g_autofree char *options = NULL;
 
       switch (number->type) {
         case RM_PHONE_NUMBER_TYPE_HOME:
-          card_data->options = g_strdup ("TYPE=HOME,VOICE");
+          options = g_strdup ("TYPE=HOME,VOICE");
           break;
         case RM_PHONE_NUMBER_TYPE_WORK:
-          card_data->options = g_strdup ("TYPE=WORK,VOICE");
+          options = g_strdup ("TYPE=WORK,VOICE");
           break;
         case RM_PHONE_NUMBER_TYPE_MOBILE:
-          card_data->options = g_strdup ("TYPE=CELL");
+          options = g_strdup ("TYPE=CELL");
           break;
         case RM_PHONE_NUMBER_TYPE_FAX_HOME:
-          card_data->options = g_strdup ("TYPE=HOME,FAX");
+          options = g_strdup ("TYPE=HOME,FAX");
           break;
         default:
           continue;
       }
 
+      card_data = g_malloc0 (sizeof (struct vcard_data));
+      card_data->options = g_strdup (options);
+      card_data->header = g_strdup ("TEL");
       card_data->entry = g_strdup (number->number);
-      entry = g_list_append (entry, card_data);
+      entry = g_list_append (entry, g_steal_pointer (&card_data));
     }
 
     /* address */
@@ -1062,28 +1054,29 @@ vcard_write_file (char *file_name)
     for (addresses = contact->addresses; addresses != NULL; addresses = addresses->next) {
       RmContactAddress *address = addresses->data;
       struct vcard_data *card_data;
-
-      card_data = g_malloc0 (sizeof (struct vcard_data));
-      card_data->header = g_strdup ("ADR");
+      g_autofree char *options = NULL;
 
       switch (address->type) {
         case 0:
-          card_data->options = g_strdup ("TYPE=HOME");
+          options = g_strdup ("TYPE=HOME");
           break;
         case 1:
-          card_data->options = g_strdup ("TYPE=WORK");
+          options = g_strdup ("TYPE=WORK");
           break;
         default:
           continue;
       }
 
+      card_data = g_malloc0 (sizeof (struct vcard_data));
+      card_data->options = g_strdup (options);
+      card_data->header = g_strdup ("ADR");
       card_data->entry = g_strdup_printf (";;%s;%s;;%s;%s",
                                           address->street,
                                           address->city,
                                           address->zip,
                                           /*address->country*/ "");
 
-      entry = g_list_append (entry, card_data);
+      entry = g_list_append (entry, g_steal_pointer (&card_data));
     }
 
     /* Handle photos with care, in case the type is url skip it */

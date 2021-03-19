@@ -265,7 +265,7 @@ gd_two_lines_renderer_render (GtkCellRenderer      *cell,
   GtkStyleContext *context;
   gint line_one_height;
   GtkStateFlags state;
-  GdkRectangle area, render_area = *cell_area;
+  GdkRectangle area, render_area;
   gint xpad, ypad, x_offset_1, x_offset_2, y_offset;
   PangoLayout *layout_one, *layout_two;
   PangoRectangle layout_rect;
