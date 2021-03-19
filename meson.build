@@ -66,10 +66,10 @@ cflags = cc.get_supported_arguments(['-Werror=implicit-function-declaration',
 add_project_arguments(cflags,
                       language: 'c')
 
+subdir('build-aux')
 subdir('data')
 subdir('po')
 subdir('plugins')
-subdir('platform')
 subdir('src')
 
 if get_option('enable-post-install')

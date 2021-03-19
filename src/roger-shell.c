@@ -478,7 +478,7 @@ roger_shell_activate (GApplication *application)
   RogerShell *self = ROGER_SHELL (application);
   GList *list = gtk_application_get_windows (GTK_APPLICATION (self));
   g_autoptr (GError) error = NULL;
-  int i;
+  guint i;
 
   if (g_list_length (list)) {
     gtk_window_present (GTK_WINDOW (roger_shell_get_journal (self)));

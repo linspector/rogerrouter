@@ -52,8 +52,8 @@
             "sources" : [
                 {
                     "type" : "archive",
-                    "url" : "https://download.gnome.org/sources/gssdp/1.2/gssdp-1.2.1.tar.xz",
-                    "sha256" : "6b57b79a96e229367981b6f00474e4bbc795909a2d3160c748cba3395b3556d3"
+                    "url" : "https://download.gnome.org/sources/gssdp/1.2/gssdp-1.2.3.tar.xz",
+                    "sha256" : "a263dcb6730e3b3dc4bbbff80cf3fab4cd364021981d419db6dd5a8e148aa7e8"
                 }
             ]
         },
@@ -66,8 +66,8 @@
             "sources" : [
                 {
                     "type" : "archive",
-                    "url" : "https://download.gnome.org/sources/gupnp/1.2/gupnp-1.2.1.tar.xz",
-                    "sha256" : "a9aa557eff415598e05999d0ab122f202a978ff827688d3f951023117a315f5e"
+                    "url" : "https://download.gnome.org/sources/gupnp/1.2/gupnp-1.2.4.tar.xz",
+                    "sha256" : "f7a0307ea51f5e44d1b832f493dd9045444a3a4e211ef85dfd9aa5dd6eaea7d1"
                 }
             ]
         },
@@ -161,7 +161,7 @@
                     "sha256" : "5c8a21c2b732ece4a33e5c862970b4f35a8548bbcda50de5695f6fc211ac4d97"
                 }
             ]
-        },
+        }
         "shared-modules/intltool/intltool-0.51.json",
         {
             "name" : "evolution-data-server",
@@ -191,8 +191,8 @@
             "sources" : [
                 {
                     "type" : "archive",
-                    "url" : "https://download.gnome.org/sources/evolution-data-server/3.34/evolution-data-server-3.34.0.tar.xz",
-                    "sha256" : "fb9db0a824ae01ecc63c82cf8e503fecdcba7118b919f04bda7d8d91f3e486cf"
+                    "url" : "https://download.gnome.org/sources/evolution-data-server/3.38/evolution-data-server-3.38.4.tar.xz",
+                    "sha256" : "ac53f16b2d51f3e7ff8025f9ca19f4a2d4ce3841d72ae9fe2bb897dc8099d705"
                 }
             ]
         },
@@ -203,8 +203,8 @@
                 {
                     "type" : "git",
                     "url" : "https://gitlab.com/tabos/libcapi.git",
-                    "tag" : "v3.2.2",
-                    "commit" : "7de497e8a74640aba8f108eb3eba3a26a1a24a3d"
+                    "tag" : "v3.2.3",
+                    "commit" : "9e7eb7789fef8ce712aa64f290aacbbececf2dfe"
                 }
             ]
         },

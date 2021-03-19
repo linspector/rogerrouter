@@ -59,7 +59,7 @@ roger_phone_number_get_mapping (GValue   *value,
 {
   RogerPreferencesWindow *self = ROGER_PREFERENCES_WINDOW (user_data);
   g_autofree GStrv numbers = NULL;
-  gint idx = 0;
+  guint idx = 0;
 
   numbers = rm_router_get_numbers (self->profile);
   for (idx = 0; idx < g_strv_length (numbers); idx++) {
@@ -80,7 +80,7 @@ roger_phone_number_set_mapping (const GValue       *value,
 {
   RogerPreferencesWindow *self = ROGER_PREFERENCES_WINDOW (user_data);
   g_autofree GStrv numbers = NULL;
-  gint idx;
+  guint idx;
 
   numbers = rm_router_get_numbers (self->profile);
 
@@ -139,7 +139,7 @@ roger_preferences_setup_telephony (RogerPreferencesWindow *self)
 {
   GListStore *number_list;
   g_autofree GStrv numbers = NULL;
-  gint idx;
+  guint idx;
 
   /* Devices */
   g_settings_bind (self->profile->settings, "phone-active", self->softphone, "active", G_SETTINGS_BIND_DEFAULT);

@@ -1,4 +1,5 @@
 plugin_deps = [
+  config_h,
   gtk3_dep,
   libsoup_dep,
   libhandy_dep,

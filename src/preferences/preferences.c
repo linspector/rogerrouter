@@ -133,6 +133,7 @@ static void
 roger_preferences_edit_filter (GtkWidget *widget,
                                gpointer   data)
 {
+#if 0
   RogerPreferencesWindow *self = ROGER_PREFERENCES_WINDOW (data);
   RmFilter *filter;
   GtkWidget *dialog;
@@ -211,6 +212,7 @@ roger_preferences_edit_filter (GtkWidget *widget,
   filter->name = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
 
   /*filter->rules = pref_filters_current_rules; */
+#endif
 }
 
 static void
@@ -219,7 +221,7 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
   g_autofree GStrv numbers = NULL;
   GtkWidget *row;
   GList *list;
-  gint idx;
+  guint idx;
 
   /* Incoming Notifications */
   numbers = rm_router_get_numbers (self->profile);
@@ -243,7 +245,7 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
                                   roger_notification_incoming_get_mapping,
                                   roger_notification_incoming_set_mapping,
                                   helper,
-                                  NULL);
+                                  (GDestroyNotify) notification_helper_free);
 
     gtk_container_add (GTK_CONTAINER (self->notification_incoming), row);
 
@@ -262,7 +264,7 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
                                   roger_notification_outgoing_get_mapping,
                                   roger_notification_outgoing_set_mapping,
                                   helper,
-                                  NULL);
+                                  (GDestroyNotify) notification_helper_free);
 
     gtk_container_add (GTK_CONTAINER (self->notification_outgoing), row);
   }
