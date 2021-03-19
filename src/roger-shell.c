@@ -25,7 +25,6 @@
 #include "journal.h"
 #include "preferences.h"
 #include "roger-assistant.h"
-#include "roger-debug.h"
 #include "roger-fax.h"
 #include "roger-phone.h"
 #include "roger-settings.h"
@@ -369,23 +368,6 @@ journal_activated (GSimpleAction *action,
   gtk_widget_set_visible (GTK_WIDGET (roger_shell_get_journal (self)), !gtk_widget_get_visible (roger_shell_get_journal (self)));
 }
 
-static void
-debug_activated (GSimpleAction *action,
-                 GVariant      *parameter,
-                 gpointer       user_data)
-{
-  RogerShell *self = ROGER_SHELL (user_data);
-
-  return;
-  if (self->debug) {
-    gtk_window_present (GTK_WINDOW (self->debug));
-    return;
-  }
-
-  self->debug = roger_debug_new ();
-  gtk_widget_show_all (self->debug);
-}
-
 static GActionEntry apps_entries[] = {
   { "addressbook", addressbook_activated, NULL, NULL, NULL },
   { "assistant", assistant_activated, NULL, NULL, NULL },
@@ -399,7 +381,6 @@ static GActionEntry apps_entries[] = {
   { "hangup", hangup_activated, "i", NULL, NULL },
   { "journal", journal_activated, NULL, NULL, NULL },
   { "shortcuts", shortcuts_activated, NULL, NULL, NULL },
-  { "debug", debug_activated, NULL, NULL, NULL },
 };
 
 static void

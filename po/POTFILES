@@ -18,7 +18,6 @@ src/contacts.c
 src/journal.c
 src/roger-assistant.c
 src/roger-contactsearch.c
-src/roger-debug.c
 src/roger-fax.c
 src/roger-phone.c
 src/roger-print.c

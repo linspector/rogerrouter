@@ -21,7 +21,6 @@ roger_sources = [
   'journal.c',
   'roger-assistant.c',
   'roger-contactsearch.c',
-  'roger-debug.c',
   'roger-fax.c',
   'roger-phone.c',
   'roger-print.c',

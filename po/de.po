@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roger 1.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-18 22:31+0100\n"
+"POT-Creation-Date: 2021-03-19 21:08+0100\n"
 "PO-Revision-Date: 2016-09-17 21:39+0200\n"
 "Last-Translator: Jan-Michael Brummer <jan.brummer@tabos.org>\n"
 "Language-Team: Deutsch <>\n"
@@ -442,10 +442,6 @@ msgstr "_IP-Adresse kopieren"
 msgid "_Reconnect"
 msgstr "_Neu verbinden"
 
-#: src/resources/ui/journal-popover.ui:298
-msgid "_Debug Window"
-msgstr "_Debug-Fenster"
-
 #: src/resources/ui/phone.ui:50
 msgid "Phones"
 msgstr "Telefone"
@@ -807,7 +803,7 @@ msgid "Do you want to delete contact '%s'?"
 msgstr "Wollen Sie den Kontakt '%s' löschen?"
 
 #: src/contacts.c:1061 src/journal.c:473 src/journal.c:531 src/journal.c:972
-#: src/roger-debug.c:143 src/preferences/preferences.c:159
+#: src/preferences/preferences.c:159
 msgid "Cancel"
 msgstr "A_bbrechen"
 
@@ -840,7 +836,7 @@ msgstr "Willst Du den ausgewählten Eintrag wirklich löschen?"
 msgid "Export journal"
 msgstr "Journal exportieren"
 
-#: src/journal.c:972 src/roger-debug.c:143 src/preferences/preferences.c:163
+#: src/journal.c:972 src/preferences/preferences.c:163
 msgid "Save"
 msgstr "Speichern"
 
@@ -1143,6 +1139,9 @@ msgstr "VCard"
 #: plugins/vcard/vcard.desktop.in:5
 msgid "VCard address book support"
 msgstr "VCard Adressbuch-Support"
+
+#~ msgid "_Debug Window"
+#~ msgstr "_Debug-Fenster"
 
 #~ msgid "Search"
 #~ msgstr "Suche"

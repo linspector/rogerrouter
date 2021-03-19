@@ -15,7 +15,6 @@
 *.gmo
 stamp-it
 stamp-h1
-POTFILES
 roger/roger_gresource.*
 *.rc
 *.pc

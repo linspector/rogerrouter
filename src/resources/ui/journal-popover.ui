@@ -289,20 +289,6 @@
             <property name="position">2</property>
           </packing>
         </child>
-        <child>
-          <object class="GtkModelButton">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="action-name">app.debug</property>
-            <property name="text" translatable="yes">_Debug Window</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
       </object>
       <packing>
         <property name="submenu">functions</property>
