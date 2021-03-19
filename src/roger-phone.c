@@ -22,8 +22,8 @@
 #include "roger-phone.h"
 
 #include "contacts.h"
-#include "journal.h"
 #include "roger-contactsearch.h"
+#include "roger-journal.h"
 #include "roger-shell.h"
 
 #include <ctype.h>

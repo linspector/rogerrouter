@@ -22,10 +22,10 @@
 #include "roger-shell.h"
 
 #include "contacts.h"
-#include "journal.h"
 #include "preferences.h"
 #include "roger-assistant.h"
 #include "roger-fax.h"
+#include "roger-journal.h"
 #include "roger-phone.h"
 #include "roger-settings.h"
 

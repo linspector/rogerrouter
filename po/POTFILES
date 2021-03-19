@@ -15,10 +15,10 @@ src/resources/authenticate.glade
 src/resources/contacts.glade
 
 src/contacts.c
-src/journal.c
 src/roger-assistant.c
 src/roger-contactsearch.c
 src/roger-fax.c
+src/roger-journal.c
 src/roger-phone.c
 src/roger-print.c
 src/roger-shell.c

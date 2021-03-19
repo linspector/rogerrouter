@@ -19,7 +19,7 @@
 
 #include "config.h"
 
-#include "journal.h"
+#include "roger-journal.h"
 
 #include "contacts.h"
 #include "roger-phone.h"

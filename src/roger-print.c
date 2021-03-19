@@ -21,7 +21,7 @@
 
 #include "roger-print.h"
 
-#include "journal.h"
+#include "roger-journal.h"
 
 #include <cairo-pdf.h>
 #include <glib/gi18n.h>

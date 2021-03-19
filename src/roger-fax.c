@@ -22,8 +22,8 @@
 #include "roger-fax.h"
 
 #include "contacts.h"
-#include "journal.h"
 #include "roger-contactsearch.h"
+#include "roger-journal.h"
 #include "roger-print.h"
 
 #include <ctype.h>

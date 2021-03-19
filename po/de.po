@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roger 1.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-19 21:08+0100\n"
+"POT-Creation-Date: 2021-03-19 22:07+0100\n"
 "PO-Revision-Date: 2016-09-17 21:39+0200\n"
 "Last-Translator: Jan-Michael Brummer <jan.brummer@tabos.org>\n"
 "Language-Team: Deutsch <>\n"
@@ -315,7 +315,7 @@ msgstr "Typ"
 msgid "Reset to defaults"
 msgstr "Auf Vorgaben zurücksetzen"
 
-#: src/resources/ui/journal.ui:74 src/journal.c:880
+#: src/resources/ui/journal.ui:74 src/roger-journal.c:880
 msgid "Copy number"
 msgstr "Nummer kopieren"
 
@@ -323,7 +323,7 @@ msgstr "Nummer kopieren"
 msgid "Call number"
 msgstr "Nummer wählen"
 
-#: src/resources/ui/journal.ui:113 src/journal.c:889
+#: src/resources/ui/journal.ui:113 src/roger-journal.c:889
 msgid "Add contact"
 msgstr "Kontakt hinzufügen"
 
@@ -802,48 +802,14 @@ msgstr "Neuer Kontakt"
 msgid "Do you want to delete contact '%s'?"
 msgstr "Wollen Sie den Kontakt '%s' löschen?"
 
-#: src/contacts.c:1061 src/journal.c:473 src/journal.c:531 src/journal.c:972
-#: src/preferences/preferences.c:159
+#: src/contacts.c:1061 src/roger-journal.c:473 src/roger-journal.c:531
+#: src/roger-journal.c:972 src/preferences/preferences.c:160
 msgid "Cancel"
 msgstr "A_bbrechen"
 
-#: src/contacts.c:1064 src/journal.c:474 src/journal.c:532
+#: src/contacts.c:1064 src/roger-journal.c:474 src/roger-journal.c:532
 msgid "Delete"
 msgstr "Löschen"
-
-#: src/journal.c:231 src/roger-contactsearch.c:66
-msgid "Unknown"
-msgstr "Unbekannt"
-
-#: src/journal.c:284
-msgid "<No profile>"
-msgstr "<Kein Profil>"
-
-#: src/journal.c:285
-#, c-format
-msgid "%d calls, %d:%2.2dh"
-msgstr "%d Anrufe, %d:%2.2dh"
-
-#: src/journal.c:471
-msgid "Do you want to delete the router journal?"
-msgstr "Willst Du das Journal auf dem Router wirklich löschen?"
-
-#: src/journal.c:529
-msgid "Do you really want to delete the selected entry?"
-msgstr "Willst Du den ausgewählten Eintrag wirklich löschen?"
-
-#: src/journal.c:972
-msgid "Export journal"
-msgstr "Journal exportieren"
-
-#: src/journal.c:972 src/preferences/preferences.c:163
-msgid "Save"
-msgstr "Speichern"
-
-#: src/journal.c:1275
-#, fuzzy
-msgid "Restore default"
-msgstr "Auf Vorgaben zurücksetzen"
 
 #: src/roger-assistant.c:128
 msgid "on"
@@ -889,6 +855,10 @@ msgstr "Fax Zuhause"
 msgid "Fax Work"
 msgstr "Fax Arbeit"
 
+#: src/roger-contactsearch.c:66 src/roger-journal.c:231
+msgid "Unknown"
+msgstr "Unbekannt"
+
 #: src/roger-fax.c:83
 #, c-format
 msgid "Transferred %d of %d"
@@ -905,6 +875,36 @@ msgstr "Faxübertragung fehlgeschlagen"
 #: src/roger-fax.c:100
 msgid "Connecting…"
 msgstr "Verbinden…"
+
+#: src/roger-journal.c:284
+msgid "<No profile>"
+msgstr "<Kein Profil>"
+
+#: src/roger-journal.c:285
+#, c-format
+msgid "%d calls, %d:%2.2dh"
+msgstr "%d Anrufe, %d:%2.2dh"
+
+#: src/roger-journal.c:471
+msgid "Do you want to delete the router journal?"
+msgstr "Willst Du das Journal auf dem Router wirklich löschen?"
+
+#: src/roger-journal.c:529
+msgid "Do you really want to delete the selected entry?"
+msgstr "Willst Du den ausgewählten Eintrag wirklich löschen?"
+
+#: src/roger-journal.c:972
+msgid "Export journal"
+msgstr "Journal exportieren"
+
+#: src/roger-journal.c:972 src/preferences/preferences.c:164
+msgid "Save"
+msgstr "Speichern"
+
+#: src/roger-journal.c:1275
+#, fuzzy
+msgid "Restore default"
+msgstr "Auf Vorgaben zurücksetzen"
 
 #: src/roger-phone.c:136
 msgid "Cannot close window, a call is in progress"
@@ -971,12 +971,12 @@ msgstr "Sendername:"
 msgid "Sender number:"
 msgstr "Sendernummer:"
 
-#: src/roger-shell.c:110
+#: src/roger-shell.c:109
 #, c-format
 msgid "A username and password are being requested by the site %s"
 msgstr "Ein Benutzername sowie Passwort werden von der Seite %s benötigt"
 
-#: src/roger-shell.c:221
+#: src/roger-shell.c:220
 msgid ""
 "FRITZ!Box Journal, Soft/phone, and Fax\n"
 "Dedicated to my father"
@@ -984,19 +984,19 @@ msgstr ""
 "FRITZ!Box Journal, Soft/phone und Fax\n"
 "Gewidmet meinem Vater"
 
-#: src/roger-shell.c:228
+#: src/roger-shell.c:227
 msgid "Website"
 msgstr ""
 
-#: src/preferences/preferences.c:156
+#: src/preferences/preferences.c:157
 msgid "Edit filter"
 msgstr "Filter bearbeiten"
 
-#: src/preferences/preferences.c:173
+#: src/preferences/preferences.c:174
 msgid "Name:"
 msgstr "Name:"
 
-#: src/preferences/preferences.c:288
+#: src/preferences/preferences.c:290
 msgid "Add filter"
 msgstr "Filter hinzufügen"
 
