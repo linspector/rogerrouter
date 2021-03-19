@@ -55,7 +55,7 @@ gtk3_dep = dependency('gtk+-3.0', version : '>=3.22.0')
 libgs_dep = cc.find_library('gs')
 libhandy_dep = dependency('libhandy-1', version: '>= 1.1.90')
 libm_dep = cc.find_library('m', required: true)
-librm_dep = dependency('librm', version : '>=2.1.4')
+librm_dep = dependency('librm', version : '>=2.1.4', fallback : ['librm', 'rm_dep'])
 libsoup_dep = dependency('libsoup-2.4')
 libtiff_dep = dependency('libtiff-4')
 

@@ -1,0 +1,4 @@
+[wrap-git]
+url = https://gitlab.com/tabos/libcapi.git
+revision = head
+
