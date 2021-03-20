@@ -362,11 +362,12 @@ journal_reverse_lookup_async (GCancellable        *cancellable,
 }
 
 static gboolean
-journal_reverse_lookup_finished (GAsyncResult  *result,
+journal_reverse_lookup_finished (GObject       *source,
+                                 GAsyncResult  *result,
                                  GError       **error)
 {
-  g_return_val_if_fail (g_task_is_valid (result, lookup_journal_thread_cb), -1);
-  g_return_val_if_fail (error == NULL || *error == NULL, -1);
+  g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+  g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
   return g_task_propagate_boolean (G_TASK (result), error);
 }
@@ -377,7 +378,7 @@ journal_reverse_lookup_cb (GObject      *source_object,
                            gpointer      user_data)
 {
   g_autoptr (GError) error = NULL;
-  gboolean lookup_found = journal_reverse_lookup_finished (res, &error);
+  gboolean lookup_found = journal_reverse_lookup_finished (source_object, res, &error);
   RogerJournal *self = ROGER_JOURNAL (user_data);
   GtkTreeIter iter;
   gboolean valid;
@@ -433,7 +434,12 @@ roger_journal_loaded_cb (GObject      *source_object,
   }
 
   journal_redraw (self);
-  journal_reverse_lookup_async (self->cancellable, journal_reverse_lookup_cb, self);
+  if (self->list) {
+    journal_reverse_lookup_async (self->cancellable, journal_reverse_lookup_cb, self);
+  } else {
+    gtk_spinner_stop (GTK_SPINNER (self->spinner));
+    gtk_widget_hide (self->spinner);
+  }
 }
 
 void

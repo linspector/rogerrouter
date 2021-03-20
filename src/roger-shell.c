@@ -410,7 +410,6 @@ rm_object_profile_changed_cb (RmObject *object)
   RogerShell *self = roger_shell_get_default ();
 
   roger_journal_reload (ROGER_JOURNAL (roger_shell_get_journal (self)));
-  journal_update_content (ROGER_JOURNAL (roger_shell_get_journal (self)));
 }
 
 static void
@@ -508,12 +507,6 @@ roger_shell_activate (GApplication *application)
   g_signal_connect_object (self->rm, "message", G_CALLBACK (rm_object_message_cb), self, 0);
   g_signal_connect_object (self->rm, "profile-changed", G_CALLBACK (rm_object_profile_changed_cb), self, 0);
   g_signal_connect_object (self->rm, "fax-process", G_CALLBACK (rm_object_fax_process_cb), self, 0);
-
-  if (debug_enabled || g_settings_get_boolean (ROGER_SETTINGS_MAIN, "debug")) {
-    GActionMap *action_map = G_ACTION_MAP (self);
-    GAction *action = g_action_map_lookup_action (action_map, "debug");
-    g_action_activate (action, NULL);
-  }
 
   self->journal = roger_journal_new ();
 
@@ -688,7 +681,6 @@ option_version_cb (const char  *option_name,
 const GOptionEntry option_entries[] = {
   { "background", 'b', 0, G_OPTION_ARG_NONE, &start_in_background, "Start in background", NULL },
   { "call", 'c', 0, G_OPTION_ARG_STRING, &call_number, "Call a number", NULL },
-  { "debug", 'd', 0, G_OPTION_ARG_NONE, &debug_enabled, "Start in debug mode", NULL },
   { "profile", 'p', 0, G_OPTION_ARG_STRING, &startup_profile, "Start in custom profile", NULL },
   { "version", 'v', G_OPTION_FLAG_NO_ARG | G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_CALLBACK, option_version_cb, NULL, NULL },
   { NULL }
