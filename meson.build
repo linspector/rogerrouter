@@ -1,5 +1,5 @@
 project('roger', 'c',
-  version: '2.2.1',
+  version: '2.3.90',
   license : 'GPL2',
   meson_version: '>= 0.53.0',
   default_options: ['c_std=gnu11',
