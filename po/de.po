@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roger 1.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-19 22:07+0100\n"
+"POT-Creation-Date: 2021-03-21 14:57+0100\n"
 "PO-Revision-Date: 2016-09-17 21:39+0200\n"
 "Last-Translator: Jan-Michael Brummer <jan.brummer@tabos.org>\n"
 "Language-Team: Deutsch <>\n"
@@ -138,7 +138,6 @@ msgid "Enter router login (webpage / FTP) credentials."
 msgstr "Route Anmeldedaten (Webseite / FTP) eingeben."
 
 #: src/resources/ui/assistant.ui:406 src/resources/ui/preferences.ui:45
-#: plugins/google/google.c:910
 msgid "User"
 msgstr "Benutzer"
 
@@ -147,7 +146,7 @@ msgid "Optional"
 msgstr "Optional"
 
 #: src/resources/ui/assistant.ui:435 src/resources/ui/preferences.ui:63
-#: src/resources/authenticate.glade:115 plugins/google/google.c:918
+#: src/resources/authenticate.glade:115
 msgid "Password"
 msgstr "Passwort"
 
@@ -171,7 +170,7 @@ msgstr "Bitte Warten"
 msgid "Setup Roger Router"
 msgstr "Roger Router Einrichten"
 
-#: src/resources/ui/assistant.ui:598 src/resources/ui/journal.ui:343
+#: src/resources/ui/assistant.ui:598 src/resources/ui/journal.ui:344
 msgid "loading"
 msgstr "loading"
 
@@ -306,7 +305,7 @@ msgstr "An"
 msgid " "
 msgstr ""
 
-#: src/resources/ui/journal.ui:19 src/resources/ui/journal.ui:369
+#: src/resources/ui/journal.ui:19 src/resources/ui/journal.ui:370
 #: src/roger-print.c:282
 msgid "Type"
 msgstr "Typ"
@@ -315,7 +314,7 @@ msgstr "Typ"
 msgid "Reset to defaults"
 msgstr "Auf Vorgaben zurücksetzen"
 
-#: src/resources/ui/journal.ui:74 src/roger-journal.c:880
+#: src/resources/ui/journal.ui:74 src/roger-journal.c:886
 msgid "Copy number"
 msgstr "Nummer kopieren"
 
@@ -323,7 +322,7 @@ msgstr "Nummer kopieren"
 msgid "Call number"
 msgstr "Nummer wählen"
 
-#: src/resources/ui/journal.ui:113 src/roger-journal.c:889
+#: src/resources/ui/journal.ui:113 src/roger-journal.c:895
 msgid "Add contact"
 msgstr "Kontakt hinzufügen"
 
@@ -339,69 +338,69 @@ msgstr ""
 msgid "Search Journal"
 msgstr "Journal durchsuchen"
 
-#: src/resources/ui/journal.ui:329
+#: src/resources/ui/journal.ui:330
 #, fuzzy
 msgid "Loading…"
 msgstr "loading"
 
-#: src/resources/ui/journal.ui:383 src/roger-print.c:286
+#: src/resources/ui/journal.ui:384 src/roger-print.c:286
 msgid "Date/Time"
 msgstr "Datum/Zeit"
 
-#: src/resources/ui/journal.ui:397 src/contacts.c:680 src/roger-print.c:290
+#: src/resources/ui/journal.ui:398 src/contacts.c:682 src/roger-print.c:290
 msgid "Name"
 msgstr "Name"
 
-#: src/resources/ui/journal.ui:411
+#: src/resources/ui/journal.ui:412
 msgid "Company"
 msgstr "Firma"
 
-#: src/resources/ui/journal.ui:425 src/resources/ui/preferences.ui:218
-#: src/resources/ui/preferences.ui:239 src/contacts.c:714 src/roger-print.c:294
+#: src/resources/ui/journal.ui:426 src/resources/ui/preferences.ui:218
+#: src/resources/ui/preferences.ui:239 src/contacts.c:716 src/roger-print.c:294
 msgid "Number"
 msgstr "Nummer"
 
-#: src/resources/ui/journal.ui:439 src/contacts.c:756
+#: src/resources/ui/journal.ui:440 src/contacts.c:758
 msgid "City"
 msgstr "Stadt"
 
-#: src/resources/ui/journal.ui:453
+#: src/resources/ui/journal.ui:454
 msgid "Extension"
 msgstr "Nebenstelle"
 
-#: src/resources/ui/journal.ui:467
+#: src/resources/ui/journal.ui:468
 msgid "Line"
 msgstr "Leitung"
 
-#: src/resources/ui/journal.ui:481 src/roger-print.c:306
+#: src/resources/ui/journal.ui:482 src/roger-print.c:306
 msgid "Duration"
 msgstr "Dauer"
 
-#: src/resources/ui/journal.ui:496
+#: src/resources/ui/journal.ui:497
 msgid "Call"
 msgstr "Anruf"
 
-#: src/resources/ui/journal.ui:505
+#: src/resources/ui/journal.ui:506
 msgid "treeview"
 msgstr "treeview"
 
-#: src/resources/ui/journal.ui:539
+#: src/resources/ui/journal.ui:542
 msgid "Welcome to Roger Router"
 msgstr "Willkommen zu Roger Router"
 
-#: src/resources/ui/journal.ui:558
+#: src/resources/ui/journal.ui:561
 msgid "Create a connection to the router using the Assistant."
 msgstr "Erstelle eine Verbindung zum Router mittels des Assistenten."
 
-#: src/resources/ui/journal.ui:570
+#: src/resources/ui/journal.ui:573
 msgid "Start Assistant"
 msgstr "Starte Assistenten"
 
-#: src/resources/ui/journal.ui:591
+#: src/resources/ui/journal.ui:596
 msgid "welcome"
 msgstr "Willkommen"
 
-#: src/resources/ui/journal.ui:617
+#: src/resources/ui/journal.ui:622
 msgid "mobile"
 msgstr "mobil"
 
@@ -706,7 +705,7 @@ msgstr "<b>Einen Kontakt auswählen</b>"
 msgid "Open image"
 msgstr "Bild öffnen"
 
-#: src/contacts.c:532 plugins/google/google.c:94
+#: src/contacts.c:532
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
@@ -718,96 +717,96 @@ msgstr "_Öffnen"
 msgid "_No image"
 msgstr "_Kein Bild"
 
-#: src/contacts.c:702 src/contacts.c:740 src/roger-contactsearch.c:45
+#: src/contacts.c:704 src/contacts.c:742 src/roger-contactsearch.c:45
 msgid "Home"
 msgstr "Zuhause"
 
-#: src/contacts.c:703 src/contacts.c:741 src/roger-contactsearch.c:48
+#: src/contacts.c:705 src/contacts.c:743 src/roger-contactsearch.c:48
 msgid "Work"
 msgstr "Arbeit"
 
-#: src/contacts.c:704 src/roger-contactsearch.c:51
+#: src/contacts.c:706 src/roger-contactsearch.c:51
 msgid "Mobile"
 msgstr "Mobil"
 
-#: src/contacts.c:705 src/contacts.c:784
+#: src/contacts.c:707 src/contacts.c:786
 msgid "Home Fax"
 msgstr "Zuhause Fax"
 
-#: src/contacts.c:706 src/contacts.c:785
+#: src/contacts.c:708 src/contacts.c:787
 msgid "Work Fax"
 msgstr "Arbeit Fax"
 
-#: src/contacts.c:707 src/contacts.c:786
+#: src/contacts.c:709 src/contacts.c:788
 msgid "Pager"
 msgstr "Pager"
 
-#: src/contacts.c:720
+#: src/contacts.c:722
 msgid "Remove number"
 msgstr "Nummer entfernen"
 
-#: src/contacts.c:747
+#: src/contacts.c:749
 msgid "Remove address"
 msgstr "Adresse entfernen"
 
-#: src/contacts.c:754
+#: src/contacts.c:756
 msgid "Street"
 msgstr "Straße"
 
-#: src/contacts.c:755
+#: src/contacts.c:757
 msgid "ZIP"
 msgstr "PLZ"
 
-#: src/contacts.c:781
+#: src/contacts.c:783
 msgid "Home phone"
 msgstr "Telefon Zuhause"
 
-#: src/contacts.c:782
+#: src/contacts.c:784
 msgid "Work phone"
 msgstr "Telefon Arbeit"
 
-#: src/contacts.c:783
+#: src/contacts.c:785
 msgid "Mobile phone"
 msgstr "Mobiltelefon"
 
-#: src/contacts.c:787
+#: src/contacts.c:789
 msgid "Home address"
 msgstr "Adresse Zuhause"
 
-#: src/contacts.c:788
+#: src/contacts.c:790
 msgid "Work address"
 msgstr "Adresse Arbeit"
 
-#: src/contacts.c:793
+#: src/contacts.c:795
 msgid "Add detail"
 msgstr "Detail hinzufügen"
 
-#: src/contacts.c:851
+#: src/contacts.c:853
 msgid ""
 "Note: Depending on the address book plugin not all information might be saved"
 msgstr ""
 "Hinweis: Je nach Adressbuch-Plugin können nicht alle Informationen "
 "gespeichert werden"
 
-#: src/contacts.c:853
+#: src/contacts.c:855
 msgid "Do not show again"
 msgstr "Nicht noch einmal anzeigen"
 
-#: src/contacts.c:1010
+#: src/contacts.c:1012
 msgid "New contact"
 msgstr "Neuer Kontakt"
 
-#: src/contacts.c:1058
+#: src/contacts.c:1060
 #, c-format
 msgid "Do you want to delete contact '%s'?"
 msgstr "Wollen Sie den Kontakt '%s' löschen?"
 
-#: src/contacts.c:1061 src/roger-journal.c:473 src/roger-journal.c:531
-#: src/roger-journal.c:972 src/preferences/preferences.c:160
+#: src/contacts.c:1063 src/roger-journal.c:479 src/roger-journal.c:537
+#: src/roger-journal.c:978 src/preferences/preferences.c:160
 msgid "Cancel"
 msgstr "A_bbrechen"
 
-#: src/contacts.c:1064 src/roger-journal.c:474 src/roger-journal.c:532
+#: src/contacts.c:1066 src/roger-journal.c:480 src/roger-journal.c:538
 msgid "Delete"
 msgstr "Löschen"
 
@@ -885,23 +884,23 @@ msgstr "<Kein Profil>"
 msgid "%d calls, %d:%2.2dh"
 msgstr "%d Anrufe, %d:%2.2dh"
 
-#: src/roger-journal.c:471
+#: src/roger-journal.c:477
 msgid "Do you want to delete the router journal?"
 msgstr "Willst Du das Journal auf dem Router wirklich löschen?"
 
-#: src/roger-journal.c:529
+#: src/roger-journal.c:535
 msgid "Do you really want to delete the selected entry?"
 msgstr "Willst Du den ausgewählten Eintrag wirklich löschen?"
 
-#: src/roger-journal.c:972
+#: src/roger-journal.c:978
 msgid "Export journal"
 msgstr "Journal exportieren"
 
-#: src/roger-journal.c:972 src/preferences/preferences.c:164
+#: src/roger-journal.c:978 src/preferences/preferences.c:164
 msgid "Save"
 msgstr "Speichern"
 
-#: src/roger-journal.c:1275
+#: src/roger-journal.c:1281
 #, fuzzy
 msgid "Restore default"
 msgstr "Auf Vorgaben zurücksetzen"
@@ -1052,63 +1051,11 @@ msgstr "Evolution"
 msgid "Evolution address book support"
 msgstr "Evolution Adressbuch-Support"
 
-#: plugins/google/google.c:87
-msgid "Google plugin: Authorization required"
-msgstr "Google Plugin: Autorisierung benötigt"
-
-#: plugins/google/google.c:89
-msgid ""
-"You need to authorize Roger Router to access your Google contact list.\n"
-"\n"
-"Visit Google's authorization page by pressing the button below. After you "
-"confirmed the authorization, you will get an authorization code. Enter that "
-"code in the field below to grant Roger Router access to your Google contact "
-"list."
-msgstr ""
-"Du musst Roger Router den Zugriff auf Deine Google Kontakte erlauben.\n"
-"\n"
-"Besuche die Google Autorisierungsseite in dem du den unteren Knopf drückst. "
-"Nachdem du den Zugriff bestätigst hast, bekommst du einen "
-"Autorisierungscode. Diesen gibst du im unteren Feld ein und erlaubst so "
-"Roger Router den Zugriff auf Deine Google Kontakte."
-
-#: plugins/google/google.c:95
-msgid "_OK"
-msgstr "_OK"
-
-#: plugins/google/google.c:105
-msgid "Step 1:"
-msgstr "Schritt 1:"
-
-#: plugins/google/google.c:111
-msgid "Click here to open the Google authorization page in a browser"
-msgstr "Hier klicken um die Google Autorisierungsseite im Browser zu öffnen"
-
-#: plugins/google/google.c:115
-msgid "Step 2:"
-msgstr "Schritt 2:"
-
-#: plugins/google/google.c:121
-msgid "Enter code:"
-msgstr "Code eingeben:"
-
-#: plugins/google/google.c:224
-msgid "Authorization refresh error"
-msgstr "Fehler bei der Autorisierungserneuerung"
-
-#: plugins/google/google.desktop.in:4
-msgid "Google"
-msgstr "Google"
-
-#: plugins/google/google.desktop.in:5
-msgid "Google address book support"
-msgstr "Google Adressbuch-Support"
-
-#: plugins/thunderbird/thunderbird.c:1152
+#: plugins/thunderbird/thunderbird.c:1162
 msgid "Thunderbird file"
 msgstr "Thunderbird-Datei"
 
-#: plugins/thunderbird/thunderbird.c:1154
+#: plugins/thunderbird/thunderbird.c:1164
 msgid "Select Thunderbird Addressbook"
 msgstr "Thunderbird Adressbuch auswählen"
 
@@ -1120,15 +1067,15 @@ msgstr "Thunderbird"
 msgid "Thunderbird address book support"
 msgstr "Thunderbird Adressbuch-Support"
 
-#: plugins/vcard/vcard.c:1271
+#: plugins/vcard/vcard.c:1261
 msgid "Select vcard file"
 msgstr "VCard-Datei auswählen"
 
-#: plugins/vcard/vcard.c:1311
+#: plugins/vcard/vcard.c:1301
 msgid "VCard file"
 msgstr "VCard-Datei"
 
-#: plugins/vcard/vcard.c:1315
+#: plugins/vcard/vcard.c:1305
 msgid "Select VCard"
 msgstr "VCard auswählen"
 
@@ -1139,6 +1086,48 @@ msgstr "VCard"
 #: plugins/vcard/vcard.desktop.in:5
 msgid "VCard address book support"
 msgstr "VCard Adressbuch-Support"
+
+#~ msgid "Google plugin: Authorization required"
+#~ msgstr "Google Plugin: Autorisierung benötigt"
+
+#~ msgid ""
+#~ "You need to authorize Roger Router to access your Google contact list.\n"
+#~ "\n"
+#~ "Visit Google's authorization page by pressing the button below. After you "
+#~ "confirmed the authorization, you will get an authorization code. Enter "
+#~ "that code in the field below to grant Roger Router access to your Google "
+#~ "contact list."
+#~ msgstr ""
+#~ "Du musst Roger Router den Zugriff auf Deine Google Kontakte erlauben.\n"
+#~ "\n"
+#~ "Besuche die Google Autorisierungsseite in dem du den unteren Knopf "
+#~ "drückst. Nachdem du den Zugriff bestätigst hast, bekommst du einen "
+#~ "Autorisierungscode. Diesen gibst du im unteren Feld ein und erlaubst so "
+#~ "Roger Router den Zugriff auf Deine Google Kontakte."
+
+#~ msgid "_OK"
+#~ msgstr "_OK"
+
+#~ msgid "Step 1:"
+#~ msgstr "Schritt 1:"
+
+#~ msgid "Click here to open the Google authorization page in a browser"
+#~ msgstr "Hier klicken um die Google Autorisierungsseite im Browser zu öffnen"
+
+#~ msgid "Step 2:"
+#~ msgstr "Schritt 2:"
+
+#~ msgid "Enter code:"
+#~ msgstr "Code eingeben:"
+
+#~ msgid "Authorization refresh error"
+#~ msgstr "Fehler bei der Autorisierungserneuerung"
+
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "Google address book support"
+#~ msgstr "Google Adressbuch-Support"
 
 #~ msgid "_Debug Window"
 #~ msgstr "_Debug-Fenster"

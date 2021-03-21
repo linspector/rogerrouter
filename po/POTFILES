@@ -31,9 +31,6 @@ src/preferences/preferences-telephony.c
 plugins/evolution/evolution.c
 plugins/evolution/roger-plugins-evolution.metainfo.xml.in
 plugins/evolution/evolution.desktop.in
-plugins/google/google.c
-plugins/google/roger-plugins-google.metainfo.xml.in
-plugins/google/google.desktop.in
 plugins/thunderbird/thunderbird.c
 plugins/thunderbird/roger-plugins-thunderbird.metainfo.xml.in
 plugins/thunderbird/thunderbird.desktop.in

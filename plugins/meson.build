@@ -9,7 +9,6 @@ plugin_deps = [
 plugin_includes = include_directories('.', '..')
 
 subdir('evolution')
-subdir('google')
 subdir('keychain')
 subdir('osxab')
 subdir('thunderbird')
