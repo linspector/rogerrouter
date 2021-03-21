@@ -3,11 +3,11 @@ windows = import('windows')
 # Setup nsis installation file
 cdata = configuration_data()
 cdata.set('PACKAGE_NAME', 'Roger Router')
-cdata.set('PACKAGE_VERSION', '@0@'.format(app_version))
+cdata.set('PACKAGE_VERSION', '@0@'.format(meson.project_version()))
 cdata.set('PACKAGE_BUGREPORT', '"https://www.tabos.org/forum"')
-cdata.set('ROGER_VERSION_MAJOR', app_version_major)
-cdata.set('ROGER_VERSION_MINOR', app_version_minor)
-cdata.set('ROGER_VERSION_MICRO', app_version_micro)
+cdata.set('ROGER_VERSION_MAJOR', '2')
+cdata.set('ROGER_VERSION_MINOR', '3')
+cdata.set('ROGER_VERSION_MICRO', '90')
 
 configure_file(input : 'roger.nsi.in',
   output : 'roger.nsi',
