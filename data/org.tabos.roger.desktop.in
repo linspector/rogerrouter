@@ -11,3 +11,5 @@ Categories=Network;Telephony;
 Keywords=fritz;box;fritzbox;router;manager;fax;softphone;
 MimeType=x-scheme-handler/tel;
 X-GNOME-UsesNotifications=true
+X-Purism-FormFactor=Workstation;Mobile;
+
