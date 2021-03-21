@@ -1065,11 +1065,19 @@ RmAddressBook thunderbird_book = {
   thunderbird_set_sub_book
 };
 
+static void
+thunderbird_settings_init (void)
+{
+  if (thunderbird_settings)
+    return;
+
+  thunderbird_settings = rm_settings_new ("org.tabos.roger.plugins.thunderbird");
+}
+
 gboolean
 thunderbird_plugin_init (RmPlugin *plugin)
 {
-  thunderbird_settings = rm_settings_new ("org.tabos.roger.plugins.thunderbird");
-
+  thunderbird_settings_init ();
   table = g_hash_table_new (g_str_hash, g_str_equal);
 
   thunderbird_read_book ();
@@ -1147,6 +1155,8 @@ thunderbird_plugin_configure (RmPlugin *plugin)
   GtkWidget *row;
   GtkFileFilter *filter;
   const char *book;
+
+  thunderbird_settings_init ();
 
   row = hdy_action_row_new ();
   hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), _("Thunderbird file"));
