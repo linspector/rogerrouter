@@ -17,19 +17,19 @@ pacman --noconfirm -S --needed \
 	mingw-w64-$MSYS2_ARCH-speex \
 	mingw-w64-$MSYS2_ARCH-spandsp \
 	mingw-w64-$MSYS2_ARCH-libsndfile \
-	mingw-w64-$MSYS2_ARCH-gobject-introspection \
-	mingw-w64-$MSYS2_ARCH-dlfcn
-	
+	mingw-w64-$MSYS2_ARCH-dlfcn \
+	mingw-w64-$MSYS2_ARCH-gst-plugins-base 
+
 git clone https://gitlab.gnome.org/GNOME/gssdp.git
 cd gssdp
-meson _build -Dvapi=false
+meson _build -Dvapi=false -Dintrospection=false
 ninja -C _build
 ninja -C _build install
 cd ..
 
 git clone https://gitlab.gnome.org/GNOME/gupnp.git
 cd gupnp
-meson _build -Dvapi=false
+meson _build -Dvapi=false -Dintrospection=false
 ninja -C _build
 ninja -C _build install
 cd ..
