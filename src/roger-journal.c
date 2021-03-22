@@ -40,6 +40,11 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifdef G_OS_WIN32
+#include <windows.h>
+#include <shellapi.h>
+#endif
+
 struct _RogerJournal {
   HdyWindow parent_instance;
 
@@ -447,8 +452,10 @@ roger_journal_reload (RogerJournal *self)
 {
   RmProfile *profile = rm_profile_get_active ();
 
-  if (!profile)
+  if (!profile) {
+    journal_update_content (self);
     return;
+  }
 
   gtk_spinner_start (GTK_SPINNER (self->spinner));
   gtk_widget_show (self->spinner);
@@ -712,17 +719,25 @@ on_view_row_activated (GtkTreeView       *view,
 
         rm_file_save (path, data, len);
 
+#ifdef WIN32
+        ShellExecute(0, "open", uri, 0, 0, SW_SHOW);
+#else
         if (!gtk_show_uri_on_window (GTK_WINDOW (self), uri, GDK_CURRENT_TIME, &error))
           g_debug ("%s(): Could not open uri '%s': %s", __FUNCTION__, uri, error->message);
+#endif
       }
       break;
     }
     case RM_CALL_ENTRY_TYPE_RECORD: {
       char *tmp = call->priv;
 
+#ifdef WIN32
+        ShellExecute(0, "open", tmp, 0, 0, SW_SHOW);
+#else
       if (!gtk_show_uri_on_window (GTK_WINDOW (self), tmp, GDK_CURRENT_TIME, &error))
         g_debug ("%s(): Could not open uri '%s': %s", __FUNCTION__, tmp, error->message);
       break;
+#endif
     }
     case RM_CALL_ENTRY_TYPE_VOICE:
       rm_router_load_voice_mail_async (rm_profile_get_active (), call->priv, NULL, roger_journal_voice_loaded_cb, self);
