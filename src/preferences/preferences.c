@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2021 Jan-Michael Brummer
+ * Copyright (c) 2012-2022 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -28,7 +28,7 @@
 #include <gtk/gtk.h>
 #include <rm/rm.h>
 
-G_DEFINE_TYPE (RogerPreferencesWindow, roger_preferences_window, HDY_TYPE_PREFERENCES_WINDOW)
+G_DEFINE_TYPE (RogerPreferencesWindow, roger_preferences_window, ADW_TYPE_PREFERENCES_WINDOW)
 
 typedef struct {
   RogerPreferencesWindow *window;
@@ -67,7 +67,7 @@ roger_notification_incoming_get_mapping (GValue   *value,
   gboolean active;
 
   numbers = g_variant_get_strv (variant, NULL);
-  active = rm_strv_contains ((const char * const *)numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
+  active = rm_strv_contains ((const char * const *)numbers, adw_preferences_row_get_title (ADW_PREFERENCES_ROW (helper->row)));
   g_value_set_boolean (value, active);
 
   return TRUE;
@@ -86,9 +86,9 @@ roger_notification_incoming_set_mapping (const GValue       *value,
   active = g_value_get_boolean (value);
 
   if (active)
-    numbers = rm_strv_add (numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
+    numbers = rm_strv_add (numbers, adw_preferences_row_get_title (ADW_PREFERENCES_ROW (helper->row)));
   else
-    numbers = rm_strv_remove (numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
+    numbers = rm_strv_remove (numbers, adw_preferences_row_get_title (ADW_PREFERENCES_ROW (helper->row)));
 
   return g_variant_new_strv ((const char * const *)numbers, -1);
 }
@@ -103,7 +103,7 @@ roger_notification_outgoing_get_mapping (GValue   *value,
   gboolean active;
 
   numbers = g_variant_get_strv (variant, NULL);
-  active = rm_strv_contains ((const char * const *)numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
+  active = rm_strv_contains ((const char * const *)numbers, adw_preferences_row_get_title (ADW_PREFERENCES_ROW (helper->row)));
   g_value_set_boolean (value, active);
 
   return TRUE;
@@ -122,9 +122,9 @@ roger_notification_outgoing_set_mapping (const GValue       *value,
   active = g_value_get_boolean (value);
 
   if (active)
-    numbers = rm_strv_add (numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
+    numbers = rm_strv_add (numbers, adw_preferences_row_get_title (ADW_PREFERENCES_ROW (helper->row)));
   else
-    numbers = rm_strv_remove (numbers, hdy_preferences_row_get_title (HDY_PREFERENCES_ROW (helper->row)));
+    numbers = rm_strv_remove (numbers, adw_preferences_row_get_title (ADW_PREFERENCES_ROW (helper->row)));
 
   return g_variant_new_strv ((const char * const *)numbers, -1);
 }
@@ -230,12 +230,12 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
     GtkWidget *toggle;
     RogerNotificationHelper *helper;
 
-    row = GTK_WIDGET (hdy_action_row_new ());
-    hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), numbers[idx]);
+    row = GTK_WIDGET (adw_action_row_new ());
+    adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), numbers[idx]);
 
     toggle = gtk_switch_new ();
     gtk_widget_set_valign (toggle, GTK_ALIGN_CENTER);
-    gtk_container_add (GTK_CONTAINER (row), toggle);
+    adw_action_row_add_suffix (ADW_ACTION_ROW (row), toggle);
     helper = notification_helper_new (self, row, toggle);
     g_settings_bind_with_mapping (self->profile->settings,
                                   "notification-incoming-numbers",
@@ -245,16 +245,16 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
                                   roger_notification_incoming_get_mapping,
                                   roger_notification_incoming_set_mapping,
                                   helper,
-                                  (GDestroyNotify) notification_helper_free);
+                                  (GDestroyNotify)notification_helper_free);
 
-    gtk_container_add (GTK_CONTAINER (self->notification_incoming), row);
+    adw_preferences_group_add (ADW_PREFERENCES_GROUP (self->notification_incoming), row);
 
-    row = GTK_WIDGET (hdy_action_row_new ());
-    hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), numbers[idx]);
+    row = GTK_WIDGET (adw_action_row_new ());
+    adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), numbers[idx]);
 
     toggle = gtk_switch_new ();
     gtk_widget_set_valign (toggle, GTK_ALIGN_CENTER);
-    gtk_container_add (GTK_CONTAINER (row), toggle);
+    adw_action_row_add_suffix (ADW_ACTION_ROW (row), toggle);
     helper = notification_helper_new (self, row, toggle);
     g_settings_bind_with_mapping (self->profile->settings,
                                   "notification-outgoing-numbers",
@@ -264,12 +264,11 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
                                   roger_notification_outgoing_get_mapping,
                                   roger_notification_outgoing_set_mapping,
                                   helper,
-                                  (GDestroyNotify) notification_helper_free);
+                                  (GDestroyNotify)notification_helper_free);
 
-    gtk_container_add (GTK_CONTAINER (self->notification_outgoing), row);
+    adw_preferences_group_add (ADW_PREFERENCES_GROUP (self->notification_outgoing), row);
   }
 
-  gtk_widget_set_no_show_all (self->filter, TRUE);
   gtk_widget_set_visible (self->filter, FALSE);
 
   /* Filter */
@@ -277,21 +276,31 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
     GtkWidget *edit;
     RmFilter *filter = list->data;
 
-    row = GTK_WIDGET (hdy_action_row_new ());
-    hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), filter->name);
+    row = GTK_WIDGET (adw_action_row_new ());
+    adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), filter->name);
 
-    edit = gtk_button_new_from_icon_name ("document-edit-symbolic", GTK_ICON_SIZE_BUTTON);
+    edit = gtk_button_new_from_icon_name ("document-edit-symbolic");
     g_object_set_data (G_OBJECT (edit), "filter", filter);
     g_signal_connect (edit, "clicked", G_CALLBACK (roger_preferences_edit_filter), self);
     gtk_widget_set_valign (edit, GTK_ALIGN_CENTER);
-    gtk_container_add (GTK_CONTAINER (row), edit);
+    adw_action_row_add_suffix (ADW_ACTION_ROW (row), edit);
 
-    gtk_container_add (GTK_CONTAINER (self->filter), row);
+    adw_preferences_group_add (ADW_PREFERENCES_GROUP (self->filter), row);
   }
 
-  row = GTK_WIDGET (hdy_action_row_new ());
-  hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), _("Add filter"));
-  gtk_container_add (GTK_CONTAINER (self->filter), row);
+  row = GTK_WIDGET (adw_action_row_new ());
+  adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), _("Add filter"));
+  adw_preferences_group_add (ADW_PREFERENCES_GROUP (self->filter), row);
+}
+
+static void
+on_login_password_changed (GtkEditable *editable,
+                           gpointer     user_data)
+{
+  /* RogerPreferencesWindow *self = ROGER_PREFERENCES_WINDOW (user_data); */
+  /* const char *text = gtk_editable_get_text (GTK_EDITABLE (editable)); */
+
+  /*rm_router_set_login_password (self->profile, text); */
 }
 
 static void
@@ -311,7 +320,8 @@ roger_preferences_window_constructed (GObject *object)
   /* Router */
   g_settings_bind (self->profile->settings, "host", self->host, "text", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (self->profile->settings, "login-user", self->login_user, "text", G_SETTINGS_BIND_DEFAULT);
-  gtk_entry_set_text (GTK_ENTRY (self->login_password), rm_router_get_login_password (self->profile));
+  gtk_editable_set_text (GTK_EDITABLE (self->login_password), rm_router_get_login_password (self->profile));
+  g_signal_connect (self->login_password, "changed", G_CALLBACK (on_login_password_changed), self);
 
   /* Codes */
   g_settings_bind (self->profile->settings, "external-access-code", self->external_code, "text", G_SETTINGS_BIND_DEFAULT);
@@ -325,6 +335,7 @@ roger_preferences_window_constructed (GObject *object)
 
   /* Journal */
   roger_preferences_setup_journal (self);
+  gtk_widget_set_visible (self->filter, FALSE);
 
   /* Audio */
   roger_preferences_setup_audio (self);

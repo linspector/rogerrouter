@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2021 Jan-Michael Brummer
+ * Copyright (c) 2012-2022 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -21,10 +21,11 @@
 
 #include "roger-phone.h"
 
-#include "contacts.h"
+#include "contrib/suggestion-entry.h"
 #include "roger-contactsearch.h"
 #include "roger-journal.h"
 #include "roger-shell.h"
+
 
 #include <ctype.h>
 #include <string.h>
@@ -33,7 +34,7 @@
 #include <rm/rm.h>
 
 struct _RogerPhone {
-  HdyWindow parent_instance;
+  AdwWindow parent_instance;
 
   GtkWidget *grid;
   GtkWidget *header_bar;
@@ -44,14 +45,14 @@ struct _RogerPhone {
   GtkWidget *clear_button;
   GtkWidget *dial_button;
   GtkWidget *menu_button;
-  GtkWidget *phone_box;
+  GtkWidget *window_title;
 
   gint status_timer_id;
 
   RmConnection *connection;
 } PhoneState;
 
-G_DEFINE_TYPE (RogerPhone, roger_phone, HDY_TYPE_WINDOW)
+G_DEFINE_TYPE (RogerPhone, roger_phone, ADW_TYPE_WINDOW)
 
 static gboolean
 roger_phone_status_timer_cb (gpointer user_data)
@@ -60,7 +61,7 @@ roger_phone_status_timer_cb (gpointer user_data)
   g_autofree char *duration = NULL;
 
   duration = rm_connection_get_duration_time (self->connection);
-  hdy_header_bar_set_subtitle (HDY_HEADER_BAR (self->header_bar), duration);
+  adw_window_title_set_subtitle (ADW_WINDOW_TITLE (self->window_title), duration);
 
   return G_SOURCE_CONTINUE;
 }
@@ -69,18 +70,15 @@ static void
 roger_phone_update_buttons (RogerPhone *self)
 {
   gboolean control_buttons = FALSE;
-  GtkWidget *image;
 
   if (self->connection) {
-    image = gtk_image_new_from_icon_name ("call-stop-symbolic", GTK_ICON_SIZE_BUTTON);
-    gtk_button_set_image (GTK_BUTTON (self->dial_button), image);
-    gtk_style_context_remove_class (gtk_widget_get_style_context (self->dial_button), GTK_STYLE_CLASS_SUGGESTED_ACTION);
-    gtk_style_context_add_class (gtk_widget_get_style_context (self->dial_button), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION);
+    gtk_button_set_icon_name (GTK_BUTTON (self->dial_button), "call-stop-symbolic");
+    gtk_style_context_remove_class (gtk_widget_get_style_context (self->dial_button), "suggested-action");
+    gtk_style_context_add_class (gtk_widget_get_style_context (self->dial_button), "destructive-action");
   } else {
-    image = gtk_image_new_from_icon_name ("call-start-symbolic", GTK_ICON_SIZE_BUTTON);
-    gtk_button_set_image (GTK_BUTTON (self->dial_button), image);
-    gtk_style_context_remove_class (gtk_widget_get_style_context (self->dial_button), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION);
-    gtk_style_context_add_class (gtk_widget_get_style_context (self->dial_button), GTK_STYLE_CLASS_SUGGESTED_ACTION);
+    gtk_button_set_icon_name (GTK_BUTTON (self->dial_button), "call-start-symbolic");
+    gtk_style_context_remove_class (gtk_widget_get_style_context (self->dial_button), "destructive-action");
+    gtk_style_context_add_class (gtk_widget_get_style_context (self->dial_button), "suggested-action");
   }
 
   if (self->connection && self->connection->type & RM_CONNECTION_TYPE_SOFTPHONE)
@@ -134,8 +132,10 @@ roger_phone_active_call_dialog (RogerPhone *self)
                                    GTK_MESSAGE_INFO,
                                    GTK_BUTTONS_CLOSE,
                                    _("Cannot close window, a call is in progress"));
-  gtk_dialog_run (GTK_DIALOG (dialog));
-  gtk_widget_destroy (dialog);
+
+  g_signal_connect (dialog, "response",
+                    G_CALLBACK (gtk_window_destroy),
+                    NULL);
 }
 
 static void
@@ -152,7 +152,7 @@ roger_phone_dial_button_clicked_cb (GtkWidget *button,
     return;
   }
 
-  number = gtk_entry_get_text (GTK_ENTRY (self->search_entry));
+  number = gtk_editable_get_text (GTK_EDITABLE (self->search_entry));
   if (RM_EMPTY_STRING (number)) {
     return;
   }
@@ -171,24 +171,36 @@ roger_phone_dial_button_clicked_cb (GtkWidget *button,
 static void
 roger_phone_create_menu (RogerPhone *self)
 {
-  RmPhone *active = rm_profile_get_phone (rm_profile_get_active ());
+  RmProfile *profile = rm_profile_get_active ();
+  RmPhone *active = rm_profile_get_phone (profile);
+  GMenu *menu;
+  GMenu *phone_section;
+  GMenu *misc_section;
 
+  phone_section = g_menu_new ();
   for (const GList *list = rm_phone_get_plugins (); list && list->data; list = list->next) {
     RmPhone *phone = list->data;
-    GtkWidget *item;
+    GMenuItem *item;
 
-    item = gtk_model_button_new ();
-    gtk_widget_set_hexpand (item, TRUE);
-    gtk_button_set_label (GTK_BUTTON (item), rm_phone_get_name (phone));
-    gtk_actionable_set_action_name (GTK_ACTIONABLE (item), "phone.set-phone");
-    gtk_actionable_set_action_target (GTK_ACTIONABLE (item), "s", rm_phone_get_name (phone));
-    g_object_set (G_OBJECT (item), "xalign", 0.0f, NULL);
-    gtk_widget_show (item);
-    gtk_box_pack_start (GTK_BOX (self->phone_box), item, FALSE, FALSE, 0);
-
-    if (g_strcmp0 (rm_phone_get_name (phone), rm_phone_get_name (active)) == 0)
-      g_object_set (item, "active", TRUE, NULL);
+    item = g_menu_item_new (rm_phone_get_name (phone), "phone.set-phone");
+    g_menu_item_set_action_and_target (item, "phone.set-phone", "s", rm_phone_get_name (phone));
+    g_menu_append_item (phone_section, item);
   }
+
+  gtk_widget_activate_action_variant (GTK_WIDGET (self), "phone.set-phone", g_variant_new_string (rm_phone_get_name (active)));
+
+  menu = g_menu_new ();
+  g_menu_append_item (menu, g_menu_item_new_section (_("Phones"), G_MENU_MODEL (phone_section)));
+
+  misc_section = g_menu_new ();
+  g_menu_append (misc_section, _("Suppress number"), "phone.set-suppression");
+  g_menu_append_item (menu, g_menu_item_new_section (_("Optional"), G_MENU_MODEL (misc_section)));
+  g_print ("Suppression: %d\n", rm_router_get_suppress_state (profile));
+
+  if (rm_router_get_suppress_state (profile))
+    gtk_widget_activate_action_variant (GTK_WIDGET (self), "phone.set-suppression", NULL);
+
+  gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (self->menu_button), G_MENU_MODEL (menu));
 }
 
 static void
@@ -204,10 +216,10 @@ roger_phone_dtmf_button_clicked_cb (GtkWidget *widget,
   if (self->connection) {
     rm_phone_dtmf (phone, self->connection, num);
   } else {
-    const char *text = gtk_entry_get_text (GTK_ENTRY (self->search_entry));
+    const char *text = gtk_editable_get_text (GTK_EDITABLE (self->search_entry));
     g_autofree char *tmp = g_strdup_printf ("%s%c", text, num);
 
-    gtk_entry_set_text (GTK_ENTRY (self->search_entry), tmp);
+    gtk_editable_set_text (GTK_EDITABLE (self->search_entry), tmp);
   }
 }
 
@@ -249,20 +261,19 @@ roger_phone_clear_button_clicked_cb (GtkWidget *widget,
                                      gpointer   user_data)
 {
   RogerPhone *self = ROGER_PHONE (user_data);
-  const char *text = gtk_entry_get_text (GTK_ENTRY (self->search_entry));
+  const char *text = gtk_editable_get_text (GTK_EDITABLE (self->search_entry));
 
   if (!RM_EMPTY_STRING (text)) {
     g_autofree char *new = g_strdup (text);
 
     new[strlen (text) - 1] = '\0';
-    gtk_entry_set_text (GTK_ENTRY (self->search_entry), new);
+    gtk_editable_set_text (GTK_EDITABLE (self->search_entry), new);
   }
 }
 
 static gboolean
-roger_phone_delete_event_cb (GtkWidget *window,
-                             GdkEvent  *event,
-                             gpointer   user_data)
+roger_phone_close_request_cb (GtkWidget *window,
+                              gpointer   user_data)
 {
   RogerPhone *self = ROGER_PHONE (window);
 
@@ -302,8 +313,7 @@ roger_phone_class_init (RogerPhoneClass *klass)
   gtk_widget_class_bind_template_child (widget_class, RogerPhone, clear_button);
   gtk_widget_class_bind_template_child (widget_class, RogerPhone, menu_button);
   gtk_widget_class_bind_template_child (widget_class, RogerPhone, header_bar);
-  gtk_widget_class_bind_template_child (widget_class, RogerPhone, phone_box);
-  gtk_widget_class_bind_template_child (widget_class, RogerPhone, search_entry);
+  gtk_widget_class_bind_template_child (widget_class, RogerPhone, window_title);
 
   gtk_widget_class_bind_template_callback (widget_class, roger_phone_dtmf_button_clicked_cb);
   gtk_widget_class_bind_template_callback (widget_class, roger_phone_dial_button_clicked_cb);
@@ -311,7 +321,7 @@ roger_phone_class_init (RogerPhoneClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, roger_phone_hold_button_clicked_cb);
   gtk_widget_class_bind_template_callback (widget_class, roger_phone_mute_button_clicked_cb);
   gtk_widget_class_bind_template_callback (widget_class, roger_phone_clear_button_clicked_cb);
-  gtk_widget_class_bind_template_callback (widget_class, roger_phone_delete_event_cb);
+  gtk_widget_class_bind_template_callback (widget_class, roger_phone_close_request_cb);
 }
 
 static void
@@ -324,7 +334,7 @@ roger_phone_change_state (GSimpleAction *action,
   RogerPhone *self = ROGER_PHONE (user_data);
 
   rm_profile_set_phone (rm_profile_get_active (), phone);
-  hdy_header_bar_set_title (HDY_HEADER_BAR (self->header_bar), name);
+  adw_window_title_set_title (ADW_WINDOW_TITLE (self->window_title), name);
 
   g_simple_action_set_state (action, value);
 }
@@ -334,7 +344,13 @@ roger_phone_set_suppression (GSimpleAction *action,
                              GVariant      *value,
                              gpointer       user_data)
 {
+  /* RmProfile *profile = rm_profile_get_active (); */
+  gboolean state = g_variant_get_boolean (value);
+
+  g_print ("%s: %d\n", __FUNCTION__, state);
   g_simple_action_set_state (action, value);
+
+  /*rm_router_set_suppress_state (profile, state); */
 }
 
 static const GActionEntry phone_actions [] = {
@@ -360,11 +376,16 @@ roger_phone_init (RogerPhone *self)
                                   "phone",
                                   G_ACTION_GROUP (simple_action_group));
 
-  contact_search_completion_add (self->search_entry);
+  self->search_entry = suggestion_entry_new ();
+  gtk_widget_set_valign (self->search_entry, GTK_ALIGN_CENTER);
+  gtk_grid_attach (GTK_GRID (self->grid), self->search_entry, 0, 0, 3, 1);
+
+  roger_contact_search_completion_add (self->search_entry);
+
   roger_phone_create_menu (self);
 
-  hdy_header_bar_set_title (HDY_HEADER_BAR (self->header_bar), phone ? rm_phone_get_name (phone) : _("Phone"));
-  hdy_header_bar_set_subtitle (HDY_HEADER_BAR (self->header_bar), "");
+  adw_window_title_set_title (ADW_WINDOW_TITLE (self->window_title), phone ? rm_phone_get_name (phone) : _("Phone"));
+  adw_window_title_set_subtitle (ADW_WINDOW_TITLE (self->window_title), "");
 
   g_signal_connect_object (rm_object, "connection-changed", G_CALLBACK (roger_phone_connection_changed_cb), self, 0);
 
@@ -383,7 +404,7 @@ void
 roger_phone_set_dial_number (RogerPhone *self,
                              const char *number)
 {
-  gtk_entry_set_text (GTK_ENTRY (self->search_entry), number);
+  gtk_editable_set_text (GTK_EDITABLE (self->search_entry), number);
 }
 
 void

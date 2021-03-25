@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <handy.h>
+#include <adwaita.h>
 #include <rm/rm.h>
 
 G_BEGIN_DECLS
@@ -39,7 +39,7 @@ enum {
 
 #define ROGER_TYPE_JOURNAL (roger_journal_get_type ())
 
-G_DECLARE_FINAL_TYPE (RogerJournal, roger_journal, ROGER, JOURNAL, HdyWindow)
+G_DECLARE_FINAL_TYPE (RogerJournal, roger_journal, ROGER, JOURNAL, AdwWindow)
 
 GtkWidget *roger_journal_new (void);
 

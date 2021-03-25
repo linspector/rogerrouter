@@ -21,7 +21,6 @@
 
 #include "roger-journal.h"
 
-#include "contacts.h"
 #include "roger-phone.h"
 #include "roger-print.h"
 #include "roger-settings.h"
@@ -35,7 +34,7 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include <handy.h>
+#include <adwaita.h>
 #include <rm/rm.h>
 #include <string.h>
 #include <stdlib.h>
@@ -46,7 +45,7 @@
 #endif
 
 struct _RogerJournal {
-  HdyWindow parent_instance;
+  AdwWindow parent_instance;
 
   GtkWidget *header_bars_stack;
   GtkWidget *headerbar;
@@ -62,6 +61,8 @@ struct _RogerJournal {
   GList *list;
   GtkWidget *search_bar;
   GtkWidget *search_entry;
+  GtkWidget *window_title;
+  GtkGesture *event_controller;
 
   GtkWidget *col0;
   GtkWidget *col1;
@@ -82,7 +83,7 @@ struct _RogerJournal {
   guint update_id;
 };
 
-G_DEFINE_TYPE (RogerJournal, roger_journal, HDY_TYPE_WINDOW)
+G_DEFINE_TYPE (RogerJournal, roger_journal, ADW_TYPE_WINDOW)
 
 static GdkPixbuf *icon_call_in = NULL;
 static GdkPixbuf *icon_call_missed = NULL;
@@ -95,20 +96,22 @@ static GdkPixbuf *icon_blocked = NULL;
 
 static GSettings *journal_window_state = NULL;
 
+#if 0
 static void
 clear_listbox (GtkWidget *widget,
                gpointer   data)
 {
-  gtk_widget_destroy (widget);
+  g_object_unref (widget);
 }
+#endif
 
 void
 journal_clear (RogerJournal *journal)
 {
-  if (journal->mobile)
-    gtk_container_foreach (GTK_CONTAINER (journal->journal_listbox), clear_listbox, NULL);
-  else
-    gtk_list_store_clear (journal->list_store);
+  /*if (journal->mobile) */
+  /*gtk_container_foreach (GTK_CONTAINER (journal->journal_listbox), clear_listbox, NULL); */
+  /*else */
+  gtk_list_store_clear (journal->list_store);
 }
 
 static void
@@ -221,7 +224,11 @@ journal_redraw (RogerJournal *self)
       GtkWidget *phone;
       g_autofree char *tmp = NULL;
 
-      gtk_container_set_border_width (GTK_CONTAINER (grid), 6);
+      /*gtk_container_set_border_width (GTK_CONTAINER (grid), 6); */
+      gtk_widget_set_margin_start (row, 6);
+      gtk_widget_set_margin_end (row, 6);
+      gtk_widget_set_margin_top (row, 6);
+      gtk_widget_set_margin_bottom (row, 6);
 
       icon = gtk_image_new_from_pixbuf (roger_journal_get_call_icon (call->type));
       gtk_grid_attach (GTK_GRID (grid), icon, 0, 0, 1, 2);
@@ -234,7 +241,7 @@ journal_redraw (RogerJournal *self)
         name = gtk_label_new (_("Unknown"));
         gtk_widget_set_sensitive (name, FALSE);
       }
-      gtk_label_set_line_wrap (GTK_LABEL (name), TRUE);
+      /*gtk_label_set_line_wrap (GTK_LABEL (name), TRUE); */
       gtk_widget_set_hexpand (name, TRUE);
       gtk_label_set_ellipsize (GTK_LABEL (name), PANGO_ELLIPSIZE_END);
       PangoAttrList *attrlist = pango_attr_list_new ();
@@ -247,7 +254,7 @@ journal_redraw (RogerJournal *self)
       gtk_grid_attach (GTK_GRID (grid), name, 1, 0, 2, 1);
 
       phone = gtk_label_new (call->remote->number);
-      gtk_label_set_line_wrap (GTK_LABEL (phone), TRUE);
+      /*gtk_label_set_line_wrap (GTK_LABEL (phone), TRUE); */
       gtk_widget_set_sensitive (phone, FALSE);
       gtk_label_set_xalign (GTK_LABEL (phone), 0.0f);
       gtk_grid_attach (GTK_GRID (grid), phone, 1, 1, 1, 1);
@@ -255,7 +262,7 @@ journal_redraw (RogerJournal *self)
 
       tmp = g_strdup (call->date_time);
       date = gtk_label_new (tmp);
-      gtk_label_set_line_wrap (GTK_LABEL (date), TRUE);
+      /*gtk_label_set_line_wrap (GTK_LABEL (date), TRUE); */
       gtk_label_set_xalign (GTK_LABEL (date), 1.0f);
       gtk_widget_set_sensitive (date, FALSE);
       gtk_grid_attach (GTK_GRID (grid), date, 2, 1, 1, 1);
@@ -264,10 +271,10 @@ journal_redraw (RogerJournal *self)
        *  gtk_label_set_xalign (GTK_LABEL(duration), 1.0f);
        *  gtk_grid_attach (GTK_GRID (grid), duration, 2, 0, 1, 3);*/
 
-      gtk_widget_show_all (grid);
+      gtk_widget_show (grid);
 
-      gtk_container_add (GTK_CONTAINER (row), grid);
-      gtk_widget_show_all (row);
+      gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (row), grid);
+      gtk_widget_show (row);
       gtk_list_box_insert (GTK_LIST_BOX (self->journal_listbox), row, -1);
     }
     if (call->duration && strchr (call->duration, 's') != NULL) {
@@ -284,9 +291,9 @@ journal_redraw (RogerJournal *self)
 
   profile = rm_profile_get_active ();
 
-  hdy_header_bar_set_title (HDY_HEADER_BAR (self->headerbar), profile ? profile->name : _("<No profile>"));
+  adw_window_title_set_title (ADW_WINDOW_TITLE (self->window_title), profile ? profile->name : _("<No profile>"));
   g_autofree char *markup = g_strdup_printf (_("%d calls, %d:%2.2dh"), count, duration / 60, duration % 60);
-  hdy_header_bar_set_subtitle (HDY_HEADER_BAR (self->headerbar), markup);
+  adw_window_title_set_subtitle (ADW_WINDOW_TITLE (self->window_title), markup);
 
   g_free (text);
 }
@@ -485,8 +492,9 @@ clear_journal (RogerJournal *self)
   gtk_dialog_add_button (GTK_DIALOG (dialog), _("Cancel"), GTK_RESPONSE_CANCEL);
   gtk_dialog_add_button (GTK_DIALOG (dialog), _("Delete"), GTK_RESPONSE_OK);
   delete = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-  gtk_style_context_add_class (gtk_widget_get_style_context (delete), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION);
+  gtk_style_context_add_class (gtk_widget_get_style_context (delete), "destructive-action");
 
+#if 0
   gint result = gtk_dialog_run (GTK_DIALOG (dialog));
   gtk_widget_destroy (dialog);
 
@@ -494,6 +502,7 @@ clear_journal (RogerJournal *self)
     return;
 
   rm_router_clear_journal (rm_profile_get_active ());
+#endif
 }
 
 void
@@ -545,24 +554,24 @@ journal_button_delete_clicked_cb (GtkWidget *button,
   gtk_dialog_add_button (GTK_DIALOG (dialog), _("Cancel"), GTK_RESPONSE_CANCEL);
   gtk_dialog_add_button (GTK_DIALOG (dialog), _("Delete"), GTK_RESPONSE_OK);
   delete = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-  gtk_style_context_add_class (gtk_widget_get_style_context (delete), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION);
+  gtk_style_context_add_class (gtk_widget_get_style_context (delete), "destructive-action");
 
-  gint result = gtk_dialog_run (GTK_DIALOG (dialog));
-  gtk_widget_destroy (dialog);
+  /* gint result = gtk_dialog_run (GTK_DIALOG (dialog)); */
+  /* gtk_widget_destroy (dialog); */
 
-  if (result != GTK_RESPONSE_OK) {
-    return;
-  }
+  /* if (result != GTK_RESPONSE_OK) { */
+  /*   return; */
+  /* } */
 
-  GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->view));
+  /* GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->view)); */
 
-  gtk_tree_selection_selected_foreach (selection, delete_foreach, NULL);
+  /* gtk_tree_selection_selected_foreach (selection, delete_foreach, NULL); */
 }
 
 void
 journal_add_contact (RmCallEntry *call)
 {
-  app_contacts (call->remote);
+  /* app_contacts (call->remote); */
 }
 
 void
@@ -596,7 +605,10 @@ on_search_entry_changed (GtkEditable *entry,
 {
   RogerJournal *self = ROGER_JOURNAL (user_data);
   RmProfile *profile = rm_profile_get_active ();
-  const char *text = gtk_entry_get_text (GTK_ENTRY (entry));
+  const char *text = gtk_editable_get_text (GTK_EDITABLE (entry));
+
+  if (!profile)
+    return;
 
   if (self->search_filter != NULL) {
     rm_filter_remove (profile, self->search_filter);
@@ -629,7 +641,7 @@ journal_filter_box_changed (GtkComboBox *box,
   self->filter = NULL;
   journal_clear (self);
 
-  if (text == NULL || profile == NULL) {
+  if (!text || !profile) {
     return;
   }
 
@@ -694,7 +706,7 @@ on_view_row_activated (GtkTreeView       *view,
   RogerJournal *self = ROGER_JOURNAL (user_data);
   GtkTreeModel *model = gtk_tree_view_get_model (view);
   RmCallEntry *call;
-  GError *error = NULL;
+  /* GError *error = NULL; */
   GtkTreeIter iter;
 
   if (!gtk_tree_model_get_iter (model, &iter, path))
@@ -706,8 +718,7 @@ on_view_row_activated (GtkTreeView       *view,
     case RM_CALL_ENTRY_TYPE_FAX_REPORT: {
       g_autofree char *uri = g_strdup_printf ("file:///%s", call->priv);
 
-      if (!gtk_show_uri_on_window (GTK_WINDOW (self), uri, GDK_CURRENT_TIME, &error))
-        g_debug ("%s(): Could not open uri '%s': %s", __FUNCTION__, uri, error->message);
+      gtk_show_uri (GTK_WINDOW (self), uri, GDK_CURRENT_TIME);
       break;
     }
     case RM_CALL_ENTRY_TYPE_FAX: {
@@ -723,10 +734,9 @@ on_view_row_activated (GtkTreeView       *view,
         rm_file_save (path, data, len);
 
 #ifdef WIN32
-        ShellExecute(0, "open", uri, 0, 0, SW_SHOW);
+        ShellExecute (0, "open", uri, 0, 0, SW_SHOW);
 #else
-        if (!gtk_show_uri_on_window (GTK_WINDOW (self), uri, GDK_CURRENT_TIME, &error))
-          g_debug ("%s(): Could not open uri '%s': %s", __FUNCTION__, uri, error->message);
+        gtk_show_uri (GTK_WINDOW (self), uri, GDK_CURRENT_TIME);
 #endif
       }
       break;
@@ -735,12 +745,11 @@ on_view_row_activated (GtkTreeView       *view,
       char *tmp = call->priv;
 
 #ifdef WIN32
-        ShellExecute(0, "open", tmp, 0, 0, SW_SHOW);
+      ShellExecute (0, "open", tmp, 0, 0, SW_SHOW);
 #else
-      if (!gtk_show_uri_on_window (GTK_WINDOW (self), tmp, GDK_CURRENT_TIME, &error))
-        g_debug ("%s(): Could not open uri '%s': %s", __FUNCTION__, tmp, error->message);
-      break;
+      gtk_show_uri (GTK_WINDOW (self), tmp, GDK_CURRENT_TIME);
 #endif
+      break;
     }
     case RM_CALL_ENTRY_TYPE_VOICE:
       rm_router_load_voice_mail_async (rm_profile_get_active (), call->priv, NULL, roger_journal_voice_loaded_cb, self);
@@ -751,16 +760,15 @@ on_view_row_activated (GtkTreeView       *view,
       roger_phone_set_dial_number (ROGER_PHONE (phone), call->remote->number);
 
       gtk_window_set_transient_for (GTK_WINDOW (phone), GTK_WINDOW (self));
-      gtk_widget_show_all (phone);
+      gtk_widget_show (phone);
       break;
     }
   }
 }
 
 static gboolean
-on_delete_event (GtkWidget *widget,
-                 GdkEvent  *event,
-                 gpointer   user_data)
+on_close_request (GtkWidget *widget,
+                  gpointer   user_data)
 {
   if (g_settings_get_boolean (ROGER_SETTINGS_MAIN, ROGER_PREFS_RUN_IN_BACKGROUND)) {
     gtk_widget_hide (widget);
@@ -819,6 +827,7 @@ name_column_cell_data_func (GtkTreeViewColumn *column,
   }
 }
 
+#if 0
 static gboolean
 journal_column_header_button_pressed_cb (GtkTreeViewColumn *column,
                                          GdkEventButton    *event,
@@ -833,12 +842,16 @@ journal_column_header_button_pressed_cb (GtkTreeViewColumn *column,
 
   return FALSE;
 }
+#endif
 
 void
 journal_popup_copy_number (GtkWidget   *widget,
                            RmCallEntry *call)
 {
-  gtk_clipboard_set_text (gtk_clipboard_get (GDK_NONE), call->remote->number, -1);
+  GdkClipboard *clipboard = gtk_widget_get_clipboard (widget);
+
+  gdk_clipboard_set_text (clipboard, call->remote->number);
+  gtk_popover_popdown (GTK_POPOVER (gtk_widget_get_ancestor (widget, GTK_TYPE_POPOVER)));
 }
 
 void
@@ -846,6 +859,7 @@ journal_popup_add_contact (GtkWidget   *widget,
                            RmCallEntry *call)
 {
   journal_add_contact (call);
+  gtk_popover_popdown (GTK_POPOVER (gtk_widget_get_ancestor (widget, GTK_TYPE_POPOVER)));
 }
 
 void
@@ -855,78 +869,62 @@ journal_popup_delete_entry (GtkWidget   *widget,
   /*journal_button_delete_clicked_cb(NULL, journal_view); */
 }
 
+static
 void
-journal_popup_menu (GtkWidget      *treeview,
-                    GdkEventButton *event,
-                    gpointer        user_data)
+on_view_button_press_event (GtkGestureClick *gesture,
+                            int              n_press,
+                            double           x,
+                            double           y,
+                            gpointer         user_data)
 {
-  GtkWidget *menu, *menuitem;
-  GtkTreeSelection *selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
+  GtkWidget *treeview = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
+  GtkTreeSelection *selection;
   GtkTreeModel *model;
-  GList *list;
+  GtkWidget *menu;
+  GtkWidget *item;
+  GtkWidget *box;
   GtkTreeIter iter;
+  GtkTreePath *path;
+  GList *list;
   RmCallEntry *call = NULL;
 
-  if (gtk_tree_selection_count_selected_rows (selection) != 1) {
+  g_print ("%s: ENTER\n", __FUNCTION__);
+  if (gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture)) != GDK_BUTTON_SECONDARY)
     return;
+
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
+
+  if (gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (treeview), x, y, &path, NULL, NULL, NULL)) {
+    gtk_tree_selection_unselect_all (selection);
+    gtk_tree_selection_select_path (selection, path);
+    gtk_tree_path_free (path);
   }
+
   list = gtk_tree_selection_get_selected_rows (selection, &model);
   gtk_tree_model_get_iter (model, &iter, (GtkTreePath *)list->data);
   gtk_tree_model_get (model, &iter, JOURNAL_COL_CALL_PTR, &call, -1);
 
-  menu = gtk_menu_new ();
+  menu = gtk_popover_new ();
+  gtk_widget_set_parent (menu, treeview);
+  gtk_popover_set_has_arrow (GTK_POPOVER (menu), TRUE);
+  gtk_popover_set_pointing_to (GTK_POPOVER (menu), &(GdkRectangle) { x, y, 1, 1});
+  box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+  gtk_popover_set_child (GTK_POPOVER (menu), box);
 
-  /* Copy phone number */
-  menuitem = gtk_menu_item_new_with_label (_("Copy number"));
-  g_signal_connect (menuitem, "activate", (GCallback)journal_popup_copy_number, call);
-  gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+  item = gtk_button_new_with_label (_("Copy number"));
+  g_signal_connect (item, "clicked", G_CALLBACK (journal_popup_copy_number), call);
+  gtk_button_set_has_frame (GTK_BUTTON (item), FALSE);
+  gtk_box_append (GTK_BOX (box), item);
 
-  /* Separator */
-  menuitem = gtk_separator_menu_item_new ();
-  gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+  item = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
+  gtk_box_append (GTK_BOX (box), item);
 
-  /* Add contact */
-  menuitem = gtk_menu_item_new_with_label (_("Add contact"));
-  g_signal_connect (menuitem, "activate", (GCallback)journal_popup_add_contact, call);
-  gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+  item = gtk_button_new_with_label (_("Add contact"));
+  g_signal_connect (item, "clicked", G_CALLBACK (journal_popup_add_contact), call);
+  gtk_button_set_has_frame (GTK_BUTTON (item), FALSE);
+  gtk_box_append (GTK_BOX (box), item);
 
-  /* Separator */
-  /* menuitem = gtk_separator_menu_item_new (); */
-  /* gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem); */
-
-  /* Delete entry */
-  /* menuitem = gtk_menu_item_new_with_label (_("Delete entry")); */
-  /* g_signal_connect (menuitem, "activate", (GCallback)journal_popup_delete_entry, call); */
-  /* gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem); */
-
-  gtk_widget_show_all (menu);
-
-  gtk_menu_popup_at_pointer (GTK_MENU (menu), (GdkEvent *)event);
-}
-
-gboolean
-on_view_button_press_event (GtkWidget      *treeview,
-                            GdkEventButton *event,
-                            gpointer        user_data)
-{
-  if (event->type == GDK_BUTTON_PRESS && event->button == GDK_BUTTON_SECONDARY) {
-    GtkTreeSelection *selection;
-    GtkTreePath *path;
-
-    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
-
-    if (gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (treeview), (gint)event->x, (gint)event->y, &path, NULL, NULL, NULL)) {
-      gtk_tree_selection_unselect_all (selection);
-      gtk_tree_selection_select_path (selection, path);
-      gtk_tree_path_free (path);
-    }
-
-    journal_popup_menu (treeview, event, user_data);
-
-    return TRUE;
-  }
-
-  return FALSE;
+  gtk_popover_popup (GTK_POPOVER (menu));
 }
 
 static void
@@ -960,25 +958,35 @@ window_cmd_clear (GSimpleAction *action,
 }
 
 static void
+window_cmd_export_response (GtkNativeDialog *dialog,
+                            int              response_id,
+                            gpointer         user_data)
+{
+  RogerJournal *self = ROGER_JOURNAL (user_data);
+
+  if (response_id == GTK_RESPONSE_ACCEPT) {
+    g_autoptr (GFile) file = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (dialog));
+
+    g_print ("%s: %s\n", __FUNCTION__, g_file_get_path (file));
+    rm_journal_save_as (self->list, g_file_get_path (file));
+  }
+
+  g_object_unref (dialog);
+}
+
+static void
 window_cmd_export (GSimpleAction *action,
                    GVariant      *parameter,
                    gpointer       user_data)
 {
   RogerJournal *self = ROGER_JOURNAL (user_data);
-  g_autoptr (GtkFileChooserNative) native = NULL;
-  GtkFileChooser *chooser;
-  gint res;
+  GtkFileChooserNative *native = NULL;
 
-  native = gtk_file_chooser_native_new (_("Export journal"), GTK_WINDOW (self), GTK_FILE_CHOOSER_ACTION_SAVE, _("Save"), _("Cancel"));
-  chooser = GTK_FILE_CHOOSER (native);
-  gtk_file_chooser_set_current_name (chooser, "journal.csv");
+  native = gtk_file_chooser_native_new (_("Export journal"), GTK_WINDOW (self), GTK_FILE_CHOOSER_ACTION_SAVE, NULL, NULL);
+  gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (native), "journal.csv");
 
-  res = gtk_native_dialog_run (GTK_NATIVE_DIALOG (native));
-  if (res == GTK_RESPONSE_ACCEPT) {
-    g_autofree char *file = gtk_file_chooser_get_filename (chooser);
-
-    rm_journal_save_as (self->list, file);
-  }
+  g_signal_connect (native, "response", G_CALLBACK (window_cmd_export_response), self);
+  gtk_native_dialog_show (GTK_NATIVE_DIALOG (native));
 }
 
 static void
@@ -997,6 +1005,7 @@ journal_set_visible (RogerJournal *self,
   gtk_widget_set_visible (GTK_WIDGET (self), state);
 }
 
+#if 0
 void
 journal_column_restore_default (GtkMenuItem *item,
                                 gpointer     user_data)
@@ -1020,20 +1029,7 @@ journal_column_restore_default (GtkMenuItem *item,
     gtk_tree_view_column_set_fixed_width (column, -1);
   }
 }
-
-static gboolean
-on_key_press_event (GtkWidget *widget,
-                    GdkEvent  *event,
-                    gpointer   user_data)
-{
-  RogerJournal *self = ROGER_JOURNAL (widget);
-
-  if (g_strcmp0 (gtk_stack_get_visible_child_name (GTK_STACK (self->header_bars_stack)), "empty") == 0) {
-    return GDK_EVENT_PROPAGATE;
-  }
-
-  return hdy_search_bar_handle_event (HDY_SEARCH_BAR (self->search_bar), event);
-}
+#endif
 
 static const GActionEntry window_entries [] = {
   { "refresh", window_cmd_refresh },
@@ -1085,15 +1081,17 @@ roger_journal_dispose (GObject *self)
   RogerJournal *journal = ROGER_JOURNAL (self);
   gboolean is_maximized;
 
-  if (gtk_widget_get_window (GTK_WIDGET (journal))) {
+  g_print ("%s: ENTER\n", __FUNCTION__);
+  if (gtk_widget_get_realized (GTK_WIDGET (journal))) {
     GVariant *initial_size;
     int width;
     int height;
 
-    gtk_window_get_size (GTK_WINDOW (journal), &width, &height);
+    gtk_window_get_default_size (GTK_WINDOW (journal), &width, &height);
 
+    g_print ("%s: %dx%d\n", __FUNCTION__, width, height);
     initial_size = g_variant_new_parsed ("(%i, %i)", width, height);
-    is_maximized = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (journal))) & GDK_WINDOW_STATE_MAXIMIZED;
+    is_maximized = gtk_window_is_maximized (GTK_WINDOW (journal));
 
     if (!is_maximized)
       g_settings_set_value (journal_window_state, "initial-size", initial_size);
@@ -1113,23 +1111,22 @@ roger_journal_dispose (GObject *self)
 }
 
 static void
-roger_journal_size_allocate (GtkWidget     *self,
-                             GtkAllocation *allocation)
+roger_journal_size_allocate (GtkWidget *self,
+                             int        width,
+                             int        height,
+                             int        baseline)
 {
   RogerJournal *journal = ROGER_JOURNAL (self);
-  GtkAllocation alloc;
   gboolean mobile;
 
-  GTK_WIDGET_CLASS (roger_journal_parent_class)->size_allocate (self, allocation);
+  GTK_WIDGET_CLASS (roger_journal_parent_class)->size_allocate (self, width, height, baseline);
 
-  gtk_widget_get_allocated_size (self, &alloc, NULL);
-  mobile = alloc.width < 500;
+  mobile = width < 500;
 
   if (!journal->active) {
     journal->mobile = mobile;
     return;
   }
-
 
   if (journal->mobile != mobile) {
     journal_clear (journal);
@@ -1144,14 +1141,14 @@ roger_journal_listbox_row_activated_cb (GtkListBox    *box,
                                         GtkListBoxRow *row,
                                         gpointer       user_data)
 {
-  RogerJournal *self = ROGER_JOURNAL (user_data);
-  GtkWidget *phone = roger_phone_new ();
-  char *number = g_object_get_data (G_OBJECT (row), "number");
+  /* RogerJournal *self = ROGER_JOURNAL (user_data); */
+  /* GtkWidget *phone = roger_phone_new (); */
+  /* char *number = g_object_get_data (G_OBJECT (row), "number"); */
 
-  roger_phone_set_dial_number (ROGER_PHONE (phone), number);
+  /* roger_phone_set_dial_number (ROGER_PHONE (phone), number); */
 
-  gtk_window_set_transient_for (GTK_WINDOW (phone), GTK_WINDOW (self));
-  gtk_widget_show_all (phone);
+  /* gtk_window_set_transient_for (GTK_WINDOW (phone), GTK_WINDOW (self)); */
+  /* gtk_widget_show (phone); */
 }
 
 static void
@@ -1189,17 +1186,18 @@ roger_journal_class_init (RogerJournalClass *klass)
   gtk_widget_class_bind_template_child (widget_class, RogerJournal, col8);
   gtk_widget_class_bind_template_child (widget_class, RogerJournal, col2_renderer);
   gtk_widget_class_bind_template_child (widget_class, RogerJournal, content_stack);
+  gtk_widget_class_bind_template_child (widget_class, RogerJournal, window_title);
 
-  gtk_widget_class_bind_template_callback (widget_class, on_key_press_event);
   gtk_widget_class_bind_template_callback (widget_class, on_search_entry_changed);
-  gtk_widget_class_bind_template_callback (widget_class, on_delete_event);
+  gtk_widget_class_bind_template_callback (widget_class, on_close_request);
   gtk_widget_class_bind_template_callback (widget_class, on_view_row_activated);
-  gtk_widget_class_bind_template_callback (widget_class, on_view_button_press_event);
+  /*gtk_widget_class_bind_template_callback (widget_class, on_view_button_press_event); */
   gtk_widget_class_bind_template_callback (widget_class, journal_filter_box_changed);
-  gtk_widget_class_bind_template_callback (widget_class, journal_column_header_button_pressed_cb);
+  /*gtk_widget_class_bind_template_callback (widget_class, journal_column_header_button_pressed_cb); */
   gtk_widget_class_bind_template_callback (widget_class, roger_journal_listbox_row_activated_cb);
 }
 
+#if 0
 static void
 add_col_to_header_menu (GtkWidget *menu,
                         GtkWidget *col)
@@ -1208,21 +1206,22 @@ add_col_to_header_menu (GtkWidget *menu,
   GtkWidget *column_item;
 
   button = gtk_tree_view_column_get_button (GTK_TREE_VIEW_COLUMN (col));
-  g_signal_connect(button, "button-press-event", G_CALLBACK(journal_column_header_button_pressed_cb), menu);
+  g_signal_connect (button, "button-press-event", G_CALLBACK (journal_column_header_button_pressed_cb), menu);
 
-  column_item = gtk_check_menu_item_new_with_label(gtk_tree_view_column_get_title (GTK_TREE_VIEW_COLUMN (col)));
-	//gtk_widget_set_sensitive(column_item, FALSE);
-	g_object_bind_property(col, "visible", column_item, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
-	gtk_menu_shell_append(GTK_MENU_SHELL(menu), column_item);
+  /*column_item = gtk_check_menu_item_new_with_label(gtk_tree_view_column_get_title (GTK_TREE_VIEW_COLUMN (col))); */
+  /*gtk_widget_set_sensitive(column_item, FALSE); */
+  /*g_object_bind_property(col, "visible", column_item, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE); */
+  /*gtk_menu_shell_append(GTK_MENU_SHELL(menu), column_item); */
 }
+#endif
 
 static void
 roger_journal_init (RogerJournal *self)
 {
   GtkTreeSortable *sortable;
   GSimpleActionGroup *simple_action_group;
-  GtkWidget *header_menu = gtk_menu_new();
-  GtkWidget *column_item;
+  /*GtkWidget *header_menu = gtk_menu_new(); */
+  /*GtkWidget *column_item; */
 
   journal_window_state = g_settings_new ("org.tabos.roger.window-state");
 
@@ -1242,36 +1241,33 @@ roger_journal_init (RogerJournal *self)
   init_call_icons ();
   self->list = NULL;
 
-  g_type_ensure (G_TYPE_THEMED_ICON);
-  GtkBuilder *builder = gtk_builder_new_from_resource ("/org/tabos/roger/ui/journal-popover.ui");
-  GtkWidget *journal_popover = GTK_WIDGET (gtk_builder_get_object (builder, "RogerJournalPopover"));
-  gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->menu_button), journal_popover);
-  g_object_unref (builder);
-
-  hdy_search_bar_connect_entry (HDY_SEARCH_BAR (self->search_bar), GTK_ENTRY (self->search_entry));
+  gtk_search_bar_connect_entry (GTK_SEARCH_BAR (self->search_bar), GTK_EDITABLE (self->search_entry));
   gtk_list_box_set_header_func (GTK_LIST_BOX (self->journal_listbox), box_header_func, NULL, NULL);
 
   journal_update_filter_box (self);
+
+  /*gtk_widget_hide_on_delete (GTK_WIDGET (self)); */
+  gtk_search_bar_set_key_capture_widget (GTK_SEARCH_BAR (self->search_bar), GTK_WIDGET (self));
 
   journal_filter_box_changed (GTK_COMBO_BOX (self->filter_combobox), self);
 
   sortable = GTK_TREE_SORTABLE (self->list_store);
 
-  add_col_to_header_menu (header_menu, self->col0);
-  add_col_to_header_menu (header_menu, self->col1);
-  add_col_to_header_menu (header_menu, self->col2);
-  add_col_to_header_menu (header_menu, self->col3);
-  add_col_to_header_menu (header_menu, self->col4);
-  add_col_to_header_menu (header_menu, self->col5);
-  add_col_to_header_menu (header_menu, self->col6);
-  add_col_to_header_menu (header_menu, self->col7);
-  add_col_to_header_menu (header_menu, self->col8);
+  /*add_col_to_header_menu (header_menu, self->col0); */
+  /*add_col_to_header_menu (header_menu, self->col1); */
+  /*add_col_to_header_menu (header_menu, self->col2); */
+  /*add_col_to_header_menu (header_menu, self->col3); */
+  /*add_col_to_header_menu (header_menu, self->col4); */
+  /*add_col_to_header_menu (header_menu, self->col5); */
+  /*add_col_to_header_menu (header_menu, self->col6); */
+  /*add_col_to_header_menu (header_menu, self->col7); */
+  /*add_col_to_header_menu (header_menu, self->col8); */
 
-	column_item = gtk_menu_item_new_with_label(_("Restore default"));
-	g_signal_connect(G_OBJECT(column_item), "activate", G_CALLBACK(journal_column_restore_default), self);
-	gtk_menu_shell_append(GTK_MENU_SHELL(header_menu), column_item);
+  /*column_item = gtk_menu_item_new_with_label(_("Restore default")); */
+  /*g_signal_connect(G_OBJECT(column_item), "activate", G_CALLBACK(journal_column_restore_default), self); */
+  /*gtk_menu_shell_append(GTK_MENU_SHELL(header_menu), column_item); */
 
-  gtk_widget_show_all(header_menu);
+  /*gtk_widget_show(header_menu); */
 
   g_settings_bind (ROGER_SETTINGS_MAIN, "col-0-width", self->col0, "fixed-width", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (ROGER_SETTINGS_MAIN, "col-0-visible", self->col0, "visible", G_SETTINGS_BIND_DEFAULT);
@@ -1306,6 +1302,11 @@ roger_journal_init (RogerJournal *self)
 
   g_signal_connect_object (rm_object, "connection-changed", G_CALLBACK (on_connection_changed), self, 0);
   g_signal_connect_object (rm_object, "contacts-changed", G_CALLBACK (on_contacts_changed), self, 0);
+
+  self->event_controller = gtk_gesture_click_new ();
+  gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->event_controller), 0);
+  g_signal_connect (self->event_controller, "pressed", G_CALLBACK (on_view_button_press_event), self);
+  gtk_widget_add_controller (self->view, GTK_EVENT_CONTROLLER (self->event_controller));
 }
 
 GtkWidget *

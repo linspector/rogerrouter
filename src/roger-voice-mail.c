@@ -27,7 +27,7 @@
 #include <rm/rm.h>
 
 struct _RogerVoiceMail {
-  HdyWindow parent_instance;
+  AdwWindow parent_instance;
 
   GtkWidget *play_button;
   GtkWidget *scale;
@@ -39,7 +39,7 @@ struct _RogerVoiceMail {
   gboolean playing;
 };
 
-G_DEFINE_TYPE (RogerVoiceMail, roger_voice_mail, HDY_TYPE_WINDOW)
+G_DEFINE_TYPE (RogerVoiceMail, roger_voice_mail, ADW_TYPE_WINDOW)
 
 static gboolean
 vox_update_ui (gpointer user_data)
@@ -56,24 +56,22 @@ vox_update_ui (gpointer user_data)
 
     self->fraction = fraction;
 
-    g_signal_handler_block (G_OBJECT (self->scale), self->update_id);
     gtk_range_set_value (GTK_RANGE (self->scale), (float)self->fraction / (float)100);
-    g_signal_handler_unblock (G_OBJECT (self->scale), self->update_id);
     tmp = g_strdup_printf ("%2.2d:%2.2d:%2.2d", (gint)seconds / 3600, (gint)seconds / 60, (gint)seconds % 60);
     gtk_label_set_text (GTK_LABEL (self->time_label), tmp);
 
     if (self->fraction == 100) {
-      GtkWidget *media_image = gtk_image_new_from_icon_name ("media-playback-start-symbolic", GTK_ICON_SIZE_BUTTON);
-
-      gtk_button_set_image (GTK_BUTTON (self->play_button), media_image);
+      gtk_button_set_icon_name (GTK_BUTTON (self->play_button), "media-playback-start-symbolic");
       gtk_widget_set_sensitive (self->scale, FALSE);
       self->playing = FALSE;
 
-      g_clear_handle_id (&self->update_id, g_source_remove);
+      self->update_id = 0;
+
+      return G_SOURCE_REMOVE;
     }
   }
 
-  return TRUE;
+  return G_SOURCE_CONTINUE;
 }
 
 static void
@@ -88,8 +86,7 @@ roger_voice_mail_start_playback (RogerVoiceMail *self)
   self->playing = TRUE;
 
   /* Change button image */
-  GtkWidget *media_image = gtk_image_new_from_icon_name ("media-playback-pause-symbolic", GTK_ICON_SIZE_BUTTON);
-  gtk_button_set_image (GTK_BUTTON (self->play_button), media_image);
+  gtk_button_set_icon_name (GTK_BUTTON (self->play_button), "media-playback-pause-symbolic");
   gtk_widget_set_sensitive (self->scale, TRUE);
 
   /* Timer which will update the ui every 250ms */
@@ -103,17 +100,13 @@ roger_voice_mail_play_button_clicked (GtkWidget *button,
   RogerVoiceMail *self = ROGER_VOICE_MAIL (user_data);
 
   if (self->fraction != 100) {
-    GtkWidget *media_image;
-
     rm_vox_set_pause (self->vox_data, self->playing);
     self->playing = !self->playing;
 
     if (self->playing)
-      media_image = gtk_image_new_from_icon_name ("media-playback-pause-symbolic", GTK_ICON_SIZE_BUTTON);
+      gtk_button_set_icon_name (GTK_BUTTON (self->play_button), "media-playback-pause-symbolic");
     else
-      media_image = gtk_image_new_from_icon_name ("media-playback-start-symbolic", GTK_ICON_SIZE_BUTTON);
-
-    gtk_button_set_image (GTK_BUTTON (self->play_button), media_image);
+      gtk_button_set_icon_name (GTK_BUTTON (self->play_button), "media-playback-start-symbolic");
   } else {
     roger_voice_mail_start_playback (self);
   }

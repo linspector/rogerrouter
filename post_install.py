@@ -12,7 +12,10 @@ if 'DESTDIR' not in os.environ:
     icon_cache_dir = os.path.join(datadir, 'icons', 'hicolor')
     if not os.path.exists(icon_cache_dir):
         os.makedirs(icon_cache_dir)
-    subprocess.call(['gtk-update-icon-cache', '-qtf', icon_cache_dir])
+    try:
+        subprocess.call(['gtk-update-icon-cache', '-qtf', icon_cache_dir])
+    except:
+        subprocess.call(['gtk-update-icon-cache-3.0.exe', '-qtf', icon_cache_dir])
 
     print('Updating desktop database...')
     desktop_database_dir = os.path.join(datadir, 'applications')

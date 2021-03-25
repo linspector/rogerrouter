@@ -2,7 +2,7 @@
 
 set -e
 
-TAG="registry.gitlab.com/tabos/rogerrouter/linux:v3"
+TAG="registry.gitlab.com/tabos/rogerrouter/linux:v5"
 
 cd "$(dirname "$0")"
 docker build --tag "${TAG}" --file "Dockerfile.linux" .

@@ -1,6 +1,6 @@
 /*
  * Roger Router
- * Copyright (c) 2012-2021 Jan-Michael Brummer
+ * Copyright (c) 2012-2022 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -19,12 +19,11 @@
 
 #include "roger-contactsearch.h"
 
-#include "contacts.h"
-#include "gd-two-lines-renderer.h"
+#include "suggestion-entry.h"
 
 #include <ctype.h>
 #include <glib/gi18n.h>
-#include <handy.h>
+#include <adwaita.h>
 #include <rm/rm.h>
 
 #define ROW_PADDING_VERT        4
@@ -70,49 +69,175 @@ phone_number_type_to_string (RmPhoneNumber *number)
   return tmp;
 }
 
-static gboolean
-contact_search_completion_match_func (GtkEntryCompletion *completion,
-                                      const char         *key,
-                                      GtkTreeIter        *iter,
-                                      gpointer            user_data)
+static void
+contact_search_completion_match_func (MatchObject *object,
+                                      const char  *search,
+                                      gpointer     user_data)
 {
-  GtkTreeModel *model;
-  g_autofree char *item = NULL;
+  char *tmp1, *tmp2, *tmp3, *tmp4;
 
-  model = gtk_entry_completion_get_model (completion);
-  gtk_tree_model_get (model, iter, 1, &item, -1);
+  tmp1 = g_utf8_normalize (match_object_get_string (object), -1, G_NORMALIZE_ALL);
+  tmp2 = g_utf8_casefold (tmp1, -1);
 
-  if (item && rm_strcasestr (item, key))
-    return TRUE;
+  tmp3 = g_utf8_normalize (search, -1, G_NORMALIZE_ALL);
+  tmp4 = g_utf8_casefold (tmp3, -1);
 
-  return FALSE;
+  if (g_str_has_prefix (tmp2, tmp4))
+    match_object_set_match (object, 0, g_utf8_strlen (search, -1), 1);
+  else
+    match_object_set_match (object, 0, 0, 0);
+
+  g_free (tmp1);
+  g_free (tmp2);
+  g_free (tmp3);
+  g_free (tmp4);
 }
 
-static gboolean
-contact_search_completion_match_selected_cb (GtkEntryCompletion *completion,
-                                             GtkTreeModel       *model,
-                                             GtkTreeIter        *iter,
-                                             gpointer            user_data)
+/* static gboolean */
+/* contact_search_completion_match_selected_cb (GtkEntryCompletion *completion, */
+/*                                              GtkTreeModel       *model, */
+/*                                              GtkTreeIter        *iter, */
+/*                                              gpointer            user_data) */
+/* { */
+/*   RmPhoneNumber *item; */
+
+/*   gtk_tree_model_get (model, iter, 3, &item, -1); */
+
+/*   gtk_editable_set_text (GTK_EDITABLE (gtk_entry_completion_get_entry (completion)), item->number); */
+
+/*   return TRUE; */
+/* } */
+
+#define STRING_TYPE_HOLDER (string_holder_get_type ())
+G_DECLARE_FINAL_TYPE (StringHolder, string_holder, STRING, HOLDER, GObject)
+
+struct _StringHolder {
+  GObject parent_instance;
+  char *name;
+  char *number;
+  char *number_str;
+  GdkPixbuf *icon;
+};
+
+G_DEFINE_TYPE (StringHolder, string_holder, G_TYPE_OBJECT);
+
+static void
+string_holder_init (StringHolder *holder)
 {
-  RmPhoneNumber *item;
+}
 
-  gtk_tree_model_get (model, iter, 3, &item, -1);
+static void
+string_holder_finalize (GObject *object)
+{
+  StringHolder *holder = STRING_HOLDER (object);
 
-  gtk_entry_set_text (GTK_ENTRY (gtk_entry_completion_get_entry (completion)), item->number);
+  g_free (holder->name);
+  g_free (holder->number);
+  g_free (holder->number_str);
+  g_clear_object (&holder->icon);
 
-  return TRUE;
+  G_OBJECT_CLASS (string_holder_parent_class)->finalize (object);
+}
+
+static void
+string_holder_class_init (StringHolderClass *class)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS (class);
+
+  object_class->finalize = string_holder_finalize;
+}
+
+static StringHolder *
+string_holder_new (const char *name,
+                   GdkPixbuf  *icon,
+                   const char *number,
+                   const char *number_str)
+{
+  StringHolder *holder = g_object_new (STRING_TYPE_HOLDER, NULL);
+  holder->name = g_strdup (name);
+  holder->icon = icon ? g_object_ref (icon) : NULL;
+  holder->number = g_strdup (number);
+  holder->number_str = g_strdup (number_str);
+  return holder;
+}
+
+static void
+strings_setup_item_full (GtkSignalListItemFactory *factory,
+                         GtkListItem              *item)
+{
+  GtkWidget *box, *box2, *image, *name, *number;
+
+  image = gtk_image_new ();
+  gtk_image_set_icon_size (GTK_IMAGE (image), GTK_ICON_SIZE_LARGE);
+  name = gtk_label_new ("");
+  gtk_label_set_xalign (GTK_LABEL (name), 0.0);
+  number = gtk_label_new ("");
+  gtk_label_set_xalign (GTK_LABEL (number), 0.0);
+  gtk_widget_add_css_class (number, "dim-label");
+
+  box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10);
+  box2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 2);
+
+  gtk_box_append (GTK_BOX (box), image);
+  gtk_box_append (GTK_BOX (box), box2);
+  gtk_box_append (GTK_BOX (box2), name);
+  gtk_box_append (GTK_BOX (box2), number);
+
+  g_object_set_data (G_OBJECT (item), "name", name);
+  g_object_set_data (G_OBJECT (item), "image", image);
+  g_object_set_data (G_OBJECT (item), "number", number);
+
+  gtk_list_item_set_child (item, box);
+}
+
+static void
+strings_bind_item (GtkSignalListItemFactory *factory,
+                   GtkListItem              *item,
+                   gpointer                  data)
+{
+  GtkWidget *image, *name, *number;
+  StringHolder *holder;
+  MatchObject *match;
+
+  match = MATCH_OBJECT (gtk_list_item_get_item (item));
+  holder = STRING_HOLDER (match_object_get_item (match));
+
+  name = g_object_get_data (G_OBJECT (item), "name");
+  image = g_object_get_data (G_OBJECT (item), "image");
+  number = g_object_get_data (G_OBJECT (item), "number");
+
+  gtk_label_set_label (GTK_LABEL (name), holder->name);
+  if (image) {
+    if (holder->icon)
+      gtk_image_set_from_pixbuf (GTK_IMAGE (image), holder->icon);
+    else {
+      gtk_image_set_from_icon_name (GTK_IMAGE (image), "avatar-default-symbolic");
+    }
+  }
+  if (number) {
+    gtk_label_set_label (GTK_LABEL (number), holder->number_str);
+  }
+}
+
+static char *
+get_name (gpointer item)
+{
+  StringHolder *holder = STRING_HOLDER (item);
+
+  return g_strdup (holder->name);
 }
 
 void
-contact_search_completion_add (GtkWidget *entry)
+roger_contact_search_completion_add (GtkWidget *entry)
 {
-  GtkListStore *store;
-  GList *list;
+  GtkListItemFactory *factory;
+  GListStore *store;
+  StringHolder *holder;
+  GtkExpression *expression;
+  GdkPixbuf *pixbuf;
+  /* GtkWidget *avatar = gtk_image_new_from_icon_name ("avatar-default-symbolic"); */
   RmAddressBook *book;
-  GtkCellRenderer *cell;
-  GtkEntryCompletion *completion;
-
-  store = gtk_list_store_new (4, GDK_TYPE_PIXBUF, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER);
+  GList *list;
 
   book = rm_profile_get_addressbook (rm_profile_get_active ());
   if (!book) {
@@ -124,50 +249,45 @@ contact_search_completion_add (GtkWidget *entry)
 
   list = rm_addressbook_get_contacts (book);
 
+  expression = gtk_cclosure_expression_new (G_TYPE_STRING, NULL,
+                                            0, NULL,
+                                            (GCallback)get_name,
+                                            NULL, NULL);
+  suggestion_entry_set_expression (SUGGESTION_ENTRY (entry), expression);
+
+  store = g_list_store_new (STRING_TYPE_HOLDER);
+
   while (list && list->data) {
     RmContact *contact = list->data;
-    GtkTreeIter iter;
+    GList *numbers;
 
-    if (contact) {
-      GdkPixbuf *pixbuf;
-      GList *numbers;
+    if (contact->image) {
+      pixbuf = rm_image_scale (contact->image, 32);
+    } else {
+      /*GtkWidget *avatar = adw_avatar_new (32, contact->name, TRUE); */
+      /*pixbuf = adw_avatar_draw_to_pixbuf (ADW_AVATAR (avatar), 32, 1); */
+      pixbuf = NULL;
+    }
 
-      if (contact->image) {
-        pixbuf = rm_image_scale (contact->image, 32);
-      } else {
-        GtkWidget *avatar = hdy_avatar_new (32, contact->name, TRUE);
-        pixbuf = hdy_avatar_draw_to_pixbuf (HDY_AVATAR (avatar), 32, 1);
-      }
+    for (numbers = contact->numbers; numbers != NULL; numbers = numbers->next) {
+      RmPhoneNumber *phone_number = numbers->data;
+      char *num_str = g_strdup_printf ("%s: %s", phone_number_type_to_string (phone_number), phone_number->number);
 
-      for (numbers = contact->numbers; numbers != NULL; numbers = numbers->next) {
-        RmPhoneNumber *phone_number = numbers->data;
-        char *num_str = g_strdup_printf ("%s: %s", phone_number_type_to_string (phone_number), phone_number->number);
-
-        gtk_list_store_insert_with_values (store, &iter, -1, 0, pixbuf, 1, contact->name, 2, num_str, 3, phone_number, -1);
-      }
+      holder = string_holder_new (contact->name, pixbuf, phone_number->number, num_str);
+      g_list_store_append (store, holder);
+      g_object_unref (holder);
     }
 
     list = list->next;
   }
 
-  completion = gtk_entry_completion_new ();
-  gtk_entry_completion_set_model (GTK_ENTRY_COMPLETION (completion), GTK_TREE_MODEL (store));
-  g_signal_connect (completion, "match-selected", G_CALLBACK (contact_search_completion_match_selected_cb), NULL);
+  suggestion_entry_set_model (SUGGESTION_ENTRY (entry), G_LIST_MODEL (store));
+  g_object_unref (store);
 
-  cell = gtk_cell_renderer_pixbuf_new ();
-  gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (completion), cell, FALSE);
-  gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (completion), cell, "pixbuf", 0, NULL);
-
-  gtk_cell_renderer_set_padding (cell, ICON_PADDING_LEFT, ROW_PADDING_VERT);
-  gtk_cell_renderer_set_fixed_size (cell, (ICON_PADDING_LEFT + ICON_CONTENT_WIDTH + ICON_PADDING_RIGHT), ICON_CONTENT_HEIGHT);
-  gtk_cell_renderer_set_alignment (cell, 0.0, 0.5);
-
-  cell = gd_two_lines_renderer_new ();
-  g_object_set (cell, "ellipsize", PANGO_ELLIPSIZE_END, "text-lines", 2, NULL);
-  gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (completion), cell, TRUE);
-  gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (completion), cell, "text", 1);
-  gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (completion), cell, "line-two", 2);
-  gtk_entry_completion_set_match_func (GTK_ENTRY_COMPLETION (completion), contact_search_completion_match_func, NULL, NULL);
-
-  gtk_entry_set_completion (GTK_ENTRY (entry), completion);
+  factory = gtk_signal_list_item_factory_new ();
+  g_signal_connect (factory, "setup", G_CALLBACK (strings_setup_item_full), NULL);
+  g_signal_connect (factory, "bind", G_CALLBACK (strings_bind_item), NULL);
+  suggestion_entry_set_factory (SUGGESTION_ENTRY (entry), factory);
+  suggestion_entry_set_use_filter (SUGGESTION_ENTRY (entry), TRUE);
+  suggestion_entry_set_match_func (SUGGESTION_ENTRY (entry), contact_search_completion_match_func, NULL, NULL);
 }

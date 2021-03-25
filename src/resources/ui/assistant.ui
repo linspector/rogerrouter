@@ -1,697 +1,208 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 
-
-Roger Router - All-in-one-solution for FRITZ!Box
-Copyright (C) Jan-Michael Brummer
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-Author: Jan-Michael Brummer
-
--->
 <interface>
-  <requires lib="gtk+" version="3.22"/>
-  <requires lib="libhandy" version="0.0"/>
-  <template class="RogerAssistant" parent="HdyWindow">
-    <property name="can-focus">False</property>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="adwaita" version="1.0"/>
+  <template class="RogerAssistant" parent="AdwWindow">
+    <property name="default-width">640</property>
+    <property name="default-height">550</property>
     <child>
       <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="HdyHeaderBar" id="header_bar">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="title" translatable="yes">Assistant</property>
+          <object class="AdwHeaderBar" id="header_bar">
+            <property name="show-end-title-buttons">False</property>
+            <child type="title">
+              <object class="AdwWindowTitle" id="window_title">
+                <property name="title" translatable="yes">Assistant</property>
+              </object>
+            </child>
             <child>
               <object class="GtkButton" id="back_button">
                 <property name="label" translatable="yes">Quit</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <signal name="clicked" handler="roger_assistant_back_button_clicked" object="RogerAssistant" swapped="no"/>
               </object>
             </child>
-            <child>
+            <child type="end">
               <object class="GtkButton" id="next_button">
                 <property name="label" translatable="yes">Next</property>
-                <property name="visible">True</property>
                 <property name="sensitive">False</property>
-                <property name="can-focus">True</property>
-                <property name="can-default">True</property>
-                <property name="has-default">True</property>
                 <property name="receives-default">True</property>
                 <signal name="clicked" handler="roger_assistant_next_button_clicked" object="RogerAssistant" swapped="no"/>
                 <style>
                   <class name="suggested-action"/>
                 </style>
               </object>
-              <packing>
-                <property name="pack-type">end</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkStack" id="stack">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="margin-left">18</property>
-            <property name="margin-right">18</property>
-            <property name="margin-start">18</property>
-            <property name="margin-end">18</property>
-            <property name="margin-top">54</property>
-            <property name="margin-bottom">18</property>
             <property name="transition-type">slide-left-right</property>
             <child>
-              <object class="GtkBox" id="box2">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="no-show-all">True</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkImage" id="image2">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="pixel-size">96</property>
-                    <property name="icon-name">avatar-default-symbolic</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label3">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-top">20</property>
-                    <property name="label" translatable="yes">Create Profile</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                      <attribute name="scale" value="2"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label4">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-top">6</property>
-                    <property name="label" translatable="yes">A profile is linked to the router and helps to identify it, e.g. home</property>
-                    <property name="justify">center</property>
-                    <property name="wrap">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="box3">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="margin-top">24</property>
-                    <property name="spacing">12</property>
-                    <child>
-                      <object class="GtkLabel" id="label5">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Profile Name</property>
-                        <property name="justify">right</property>
-                        <style>
-                          <class name="dim-label"/>
-                        </style>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkEntry" id="profile_name_entry">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="activates-default">True</property>
-                        <signal name="changed" handler="roger_assistant_profile_entry_changed" object="RogerAssistant" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
+              <object class="GtkStackPage">
                 <property name="name">profile</property>
-                <property name="title" translatable="yes">Create profile</property>
-              </packing>
+                <property name="child">
+                  <object class="AdwStatusPage">
+                    <property name="icon-name">avatar-default-symbolic</property>
+                    <property name="title">Create Profile</property>
+                    <property name="description">A profile is linked to the router and helps to identify it, e.g. home</property>
+                    <child>
+                      <object class="AdwClamp">
+                        <property name="hexpand">1</property>
+                        <child>
+                          <object class="GtkEntry" id="profile_name_entry">
+                            <property name="activates-default">True</property>
+                            <signal name="changed" handler="roger_assistant_profile_entry_changed" object="RogerAssistant" swapped="no"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=5 -->
-              <object class="GtkGrid" id="grid2">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="no-show-all">True</property>
-                <property name="halign">center</property>
-                <property name="row-spacing">6</property>
-                <property name="column-spacing">12</property>
-                <child>
-                  <object class="GtkImage" id="image3">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="pixel-size">96</property>
-                    <property name="icon-name">goa-panel-symbolic</property>
-                    <property name="icon_size">6</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                    <property name="width">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label6">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-top">20</property>
-                    <property name="label" translatable="yes">Select Router</property>
-                    <property name="wrap">True</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                      <attribute name="scale" value="2"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                    <property name="width">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label7">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-top">6</property>
-                    <property name="label" translatable="yes">Select auto discovered router below or switch to manual mode and enter it's ip address.</property>
-                    <property name="justify">center</property>
-                    <property name="wrap">True</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">2</property>
-                    <property name="width">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkStack" id="router_stack">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="vexpand">True</property>
+              <object class="GtkStackPage">
+                <property name="name">router</property>
+                <property name="child">
+                  <object class="AdwStatusPage">
+                    <property name="icon-name">org.tabos.roger-symbolic</property>
+                    <property name="title">Select Router</property>
+                    <property name="description">Select auto discovered router below.</property>
                     <child>
-                      <object class="GtkScrolledWindow" id="scrolled_window">
-                        <property name="height-request">50</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="shadow-type">in</property>
+                      <object class="AdwClamp" id="clamp2">
+                        <property name="hexpand">True</property>
                         <child>
-                          <object class="GtkViewport" id="viewport">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
+                          <object class="GtkScrolledWindow" id="frame">
+                            <property name="has-frame">True</property>
                             <child>
-                              <object class="GtkListBox" id="router_listbox">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <signal name="row-selected" handler="roger_assistant_router_listbox_row_selected" object="RogerAssistant" swapped="no"/>
+                              <object class="GtkListView" id="router_listview">
+                               <property name="single-click-activate">True</property>
+                                <signal name="activate" handler="roger_assistant_router_listview_activate" object="RogerAssistant" swapped="no"/>
                               </object>
                             </child>
                           </object>
                         </child>
                       </object>
-                      <packing>
-                        <property name="name">automatic</property>
-                        <property name="title" translatable="yes">Automatic</property>
-                      </packing>
                     </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage">
+                <property name="name">password</property>
+                <property name="child">
+                  <object class="AdwStatusPage">
+                    <property name="icon-name">dialog-password-symbolic</property>
+                    <property name="title">Router Password</property>
+                    <property name="description">Enter router login credentials.</property>
                     <child>
-                      <object class="GtkBox" id="box4">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="valign">start</property>
-                        <property name="spacing">12</property>
+                      <object class="AdwClamp" id="clamp">
+                        <property name="hexpand">True</property>
                         <child>
-                          <object class="GtkLabel" id="label8">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="margin-top">12</property>
-                            <property name="label" translatable="yes">IP address</property>
-                            <property name="justify">right</property>
-                            <style>
-                              <class name="dim-label"/>
-                            </style>
+                          <object class="GtkGrid" id="grid">
+                            <property name="row-spacing">6</property>
+                            <property name="column-spacing">12</property>
+                            <child>
+                              <object class="GtkLabel" id="label11">
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">User</property>
+                                <property name="justify">right</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                </style>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="user_entry">
+                                <property name="hexpand">True</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">0</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="label12">
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">Password</property>
+                                <property name="justify">right</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                </style>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">1</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkPasswordEntry" id="password_entry">
+                                <property name="hexpand">True</property>
+                                <property name="show-peek-icon">True</property>
+                                <property name="activates-default">True</property>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">1</property>
+                                </layout>
+                              </object>
+                            </child>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkEntry" id="router_entry">
-                            <property name="visible">True</property>
-                            <property name="can-focus">True</property>
-                            <property name="valign">center</property>
-                            <property name="margin-top">12</property>
-                            <signal name="changed" handler="roger_assistant_router_entry_changed" object="RogerAssistant" swapped="no"/>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                       </object>
-                      <packing>
-                        <property name="name">manual</property>
-                        <property name="title" translatable="yes">Manual</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">4</property>
-                    <property name="width">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkStackSwitcher" id="stackswitcher1">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="margin-top">24</property>
-                    <property name="stack">router_stack</property>
-                    <signal name="button-release-event" handler="roger_assistant_router_stack_switcher_button_release_event" object="RogerAssistant" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">3</property>
-                    <property name="width">3</property>
-                  </packing>
-                </child>
+                </property>
               </object>
-              <packing>
-                <property name="name">router</property>
-                <property name="title" translatable="yes">Select router</property>
-                <property name="position">1</property>
-              </packing>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=7 -->
-              <object class="GtkGrid" id="grid3">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="no-show-all">True</property>
-                <property name="halign">center</property>
-                <property name="row-spacing">6</property>
-                <property name="column-spacing">12</property>
-                <child>
-                  <object class="GtkImage" id="image4">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="pixel-size">96</property>
-                    <property name="icon-name">dialog-password-symbolic</property>
-                    <property name="icon_size">6</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                    <property name="width">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label9">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-top">20</property>
-                    <property name="label" translatable="yes">Router Password</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                      <attribute name="scale" value="2"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                    <property name="width">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label10">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-top">6</property>
-                    <property name="label" translatable="yes">Enter router login (webpage / FTP) credentials.</property>
-                    <property name="justify">center</property>
-                    <property name="wrap">True</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">2</property>
-                    <property name="width">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label11">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="halign">end</property>
-                    <property name="margin-top">24</property>
-                    <property name="label" translatable="yes">User</property>
-                    <property name="justify">right</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="user_entry">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="margin-top">24</property>
-                    <property name="hexpand">True</property>
-                    <property name="placeholder-text" translatable="yes">Optional</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label12">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="halign">end</property>
-                    <property name="label" translatable="yes">Password</property>
-                    <property name="justify">right</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="password_entry">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="visibility">False</property>
-                    <property name="activates-default">True</property>
-                    <property name="input-purpose">password</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="ftp_user_label">
-                    <property name="can-focus">False</property>
-                    <property name="no-show-all">True</property>
-                    <property name="halign">end</property>
-                    <property name="label" translatable="yes">FTP User</property>
-                    <property name="justify">right</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">5</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="ftp_password_label">
-                    <property name="can-focus">False</property>
-                    <property name="no-show-all">True</property>
-                    <property name="halign">end</property>
-                    <property name="label" translatable="yes">FTP Password</property>
-                    <property name="justify">right</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">6</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="ftp_password_entry">
-                    <property name="can-focus">True</property>
-                    <property name="no-show-all">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="visibility">False</property>
-                    <property name="activates-default">True</property>
-                    <property name="input-purpose">password</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">6</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="ftp_user_entry">
-                    <property name="can-focus">True</property>
-                    <property name="no-show-all">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="activates-default">True</property>
-                    <property name="input-purpose">password</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">5</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="name">password</property>
-                <property name="title" translatable="yes">Router password</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="box1">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="no-show-all">True</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkSpinner">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="active">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-top">20</property>
-                    <property name="label" translatable="yes">Please Wait</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                      <attribute name="scale" value="2"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="loading_label">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Setup Roger Router</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
+              <object class="GtkStackPage">
                 <property name="name">loading</property>
-                <property name="title" translatable="yes">loading</property>
-                <property name="position">3</property>
-              </packing>
+                <property name="child">
+                  <object class="AdwStatusPage" id="loading_page">
+                    <property name="icon-name">content-loading-symbolic</property>
+                    <property name="title">Please Wait</property>
+                    <property name="description">Setup Roger Router</property>
+                  </object>
+                </property>
+              </object>
             </child>
             <child>
-              <object class="GtkBox" id="box5">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="no-show-all">True</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkImage" id="image6">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="pixel-size">96</property>
-                    <property name="icon-name">emblem-ok-symbolic</property>
-                    <property name="icon_size">6</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label17">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-top">20</property>
-                    <property name="label" translatable="yes">Finish!</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                      <attribute name="scale" value="2"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label18">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-top">6</property>
-                    <property name="label" translatable="yes">Thanks for using Roger Router and please consider a donation.</property>
-                    <property name="justify">center</property>
-                    <property name="wrap">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="start_button">
-                    <property name="label" translatable="yes">Start using Roger Router</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="halign">center</property>
-                    <property name="margin-top">26</property>
-                    <signal name="clicked" handler="gtk_widget_destroy" object="RogerAssistant" swapped="yes"/>
-                    <style>
-                      <class name="suggested-action"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
+              <object class="GtkStackPage">
                 <property name="name">finish</property>
-                <property name="title" translatable="yes">finish</property>
-                <property name="position">4</property>
-              </packing>
+                <property name="child">
+                  <object class="AdwStatusPage">
+                    <property name="icon-name">emblem-ok-symbolic</property>
+                    <property name="title">Finish!</property>
+                    <property name="description">Thanks for using Roger Router and please consider a donation.</property>
+                    <child>
+                      <object class="AdwClamp">
+                        <property name="hexpand">1</property>
+                        <child>
+                          <object class="GtkButton" id="start_button">
+                            <property name="label" translatable="yes">Start using Roger Router</property>
+                            <property name="halign">center</property>
+                            <signal name="clicked" handler="gtk_window_destroy" object="RogerAssistant" swapped="no"/>
+                            <style>
+                              <class name="suggested-action"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
     </child>
   </template>
-  <object class="GtkSizeGroup">
-    <widgets>
-      <widget name="label4"/>
-      <widget name="box3"/>
-    </widgets>
-  </object>
 </interface>

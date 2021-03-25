@@ -20,7 +20,7 @@
 #pragma once
 
 #include <gtk/gtk.h>
-#include <handy.h>
+#include <adwaita.h>
 #include <rm/rm.h>
 
 G_BEGIN_DECLS
@@ -34,7 +34,7 @@ typedef enum {
 
 
 struct _RogerPreferencesWindow {
-  HdyPreferencesWindow parent_instance;
+  AdwPreferencesWindow parent_instance;
 
   RmProfile *profile;
 
@@ -79,7 +79,7 @@ struct _RogerPreferencesWindow {
 
 #define ROGER_TYPE_PREFERENCES_WINDOW (roger_preferences_window_get_type ())
 
-G_DECLARE_FINAL_TYPE (RogerPreferencesWindow, roger_preferences_window, ROGER, PREFERENCES_WINDOW, HdyPreferencesWindow)
+G_DECLARE_FINAL_TYPE (RogerPreferencesWindow, roger_preferences_window, ROGER, PREFERENCES_WINDOW, AdwPreferencesWindow)
 
 RogerPreferencesWindow *roger_preferences_window_new (void);
 

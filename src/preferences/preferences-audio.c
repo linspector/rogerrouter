@@ -47,7 +47,7 @@ roger_audio_device_get_mapping (GValue   *value,
 {
   GSList *list;
   gint type = GPOINTER_TO_INT (user_data);
-  gint idx = 0;
+  guint idx = 0;
 
   for (list = get_audio_devices (); list; list = list->next) {
     RmAudioDevice *device = list->data;
@@ -56,7 +56,7 @@ roger_audio_device_get_mapping (GValue   *value,
       continue;
 
     if (g_strcmp0 (device->name, g_variant_get_string (variant, NULL)) == 0) {
-      g_value_set_int (value, idx);
+      g_value_set_uint (value, idx);
 
       return TRUE;
     }
@@ -74,9 +74,9 @@ roger_audio_device_set_mapping (const GValue       *value,
 {
   GSList *list;
   gint type = GPOINTER_TO_INT (user_data);
-  gint idx;
+  guint idx;
 
-  idx = g_value_get_int (value);
+  idx = g_value_get_uint (value);
 
   for (list = get_audio_devices (); list; list = list->next) {
     RmAudioDevice *device = list->data;
@@ -97,71 +97,60 @@ void
 roger_preferences_setup_audio (RogerPreferencesWindow *self)
 {
   GSList *list;
-  GListStore *microphone_list;
-  GListStore *speaker_list;
-  GListStore *ringer_list;
+  GtkStringList *microphone_list;
+  GtkStringList *speaker_list;
+  GtkStringList *ringer_list;
 
   g_settings_bind (self->profile->settings, "notification-play-ringtone", self->ringtone, "active", G_SETTINGS_BIND_DEFAULT);
 
-  microphone_list = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
-  speaker_list = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
-  ringer_list = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
+  microphone_list = gtk_string_list_new (NULL);
+  speaker_list = gtk_string_list_new (NULL);
+  ringer_list = gtk_string_list_new (NULL);
 
-  for (list = get_audio_devices (); list; list = list->next) {
+  for (list = get_audio_devices (); list && list->data; list = list->next) {
     RmAudioDevice *device = list->data;
-    HdyValueObject *obj;
-
-    obj = hdy_value_object_new_string (device->name);
 
     if (device->type == RM_AUDIO_INPUT) {
-      g_list_store_append (microphone_list, obj);
+      gtk_string_list_append (microphone_list, device->name);
     } else if (device->type == RM_AUDIO_OUTPUT) {
-      g_list_store_append (speaker_list, obj);
-      g_list_store_append (ringer_list, obj);
+      gtk_string_list_append (speaker_list, device->name);
+      gtk_string_list_append (ringer_list, device->name);
     }
-
-    g_clear_object (&obj);
   }
 
-  hdy_combo_row_bind_name_model (HDY_COMBO_ROW (self->microphone),
-                                 G_LIST_MODEL (microphone_list),
-                                 (HdyComboRowGetNameFunc)hdy_value_object_dup_string,
-                                 NULL,
-                                 NULL);
+  adw_combo_row_set_model (ADW_COMBO_ROW (self->microphone),
+                           G_LIST_MODEL (microphone_list));
+
   g_settings_bind_with_mapping (self->profile->settings,
                                 "audio-input",
                                 self->microphone,
-                                "selected-index",
+                                "selected",
                                 G_SETTINGS_BIND_DEFAULT,
                                 roger_audio_device_get_mapping,
                                 roger_audio_device_set_mapping,
                                 GINT_TO_POINTER (RM_AUDIO_INPUT),
                                 NULL);
 
-  hdy_combo_row_bind_name_model (HDY_COMBO_ROW (self->speaker),
-                                 G_LIST_MODEL (speaker_list),
-                                 (HdyComboRowGetNameFunc)hdy_value_object_dup_string,
-                                 NULL,
-                                 NULL);
+  adw_combo_row_set_model (ADW_COMBO_ROW (self->speaker),
+                           G_LIST_MODEL (speaker_list));
+
   g_settings_bind_with_mapping (self->profile->settings,
                                 "audio-output",
                                 self->speaker,
-                                "selected-index",
+                                "selected",
                                 G_SETTINGS_BIND_DEFAULT,
                                 roger_audio_device_get_mapping,
                                 roger_audio_device_set_mapping,
                                 GINT_TO_POINTER (RM_AUDIO_OUTPUT),
                                 NULL);
 
-  hdy_combo_row_bind_name_model (HDY_COMBO_ROW (self->ringer),
-                                 G_LIST_MODEL (ringer_list),
-                                 (HdyComboRowGetNameFunc)hdy_value_object_dup_string,
-                                 NULL,
-                                 NULL);
+  adw_combo_row_set_model (ADW_COMBO_ROW (self->ringer),
+                           G_LIST_MODEL (ringer_list));
+
   g_settings_bind_with_mapping (self->profile->settings,
                                 "audio-output-ringtone",
                                 self->ringer,
-                                "selected-index",
+                                "selected",
                                 G_SETTINGS_BIND_DEFAULT,
                                 roger_audio_device_get_mapping,
                                 roger_audio_device_set_mapping,

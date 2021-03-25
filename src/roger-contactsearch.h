@@ -28,4 +28,6 @@ void contact_search_completion_add (GtkWidget *entry);
 
 char *phone_number_type_to_string (RmPhoneNumber *number);
 
+void roger_contact_search_completion_add (GtkWidget *entry);
+
 G_END_DECLS

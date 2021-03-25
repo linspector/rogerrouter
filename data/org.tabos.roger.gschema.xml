@@ -1,16 +1,5 @@
 <schemalist>
-	<enum id='org.tabos.roger.journal.icon-type'>
-		<value nick="monochrome" value='0' />
-		<value nick="color" value='1' />
-	</enum>
-
 	<schema id="org.tabos.roger" path="/org/tabos/roger/">
-		<key name="debug" type="b">
-			<default>false</default>
-			<summary>Whether the application should print debug output</summary>
-			<description>Whether the application should print debug output to terminal</description>
-		</key>
-
 		<key name="col-0-width" type="i">
 			<default>-1</default>
 		</key>
@@ -67,17 +56,7 @@
 			<default>true</default>
 		</key>
 
-		<key name="contacts-hide-warning" type="b">
-			<default>false</default>
-			<summary>Show warning when saving a contact</summary>
-		</key>
-
-		<key name="icon-type" enum='org.tabos.roger.journal.icon-type'>
-			<default>"color"</default>
-			<summary>Type of icons shown in journal window</summary>
-			<description>Type of icons shown in journal window.</description>
-		</key>
-		<key type="b" name="run-in-background">
+	  <key type="b" name="run-in-background">
 			<default>false</default>
 			<summary>Run in background</summary>
 			<description>If enabled, application continues running in the background after closing the window.</description>
@@ -101,5 +80,4 @@
 			<description>Whether the journal window should be fullscreen by default.</description>
 		</key>
 	</schema>
-
 </schemalist>

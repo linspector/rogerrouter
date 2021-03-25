@@ -1,35 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
     <property name="icon_name">document-edit-symbolic</property>
   </object>
-  <template class="RogerPreferencesWindow" parent="HdyPreferencesWindow">
+  <template class="RogerPreferencesWindow" parent="AdwPreferencesWindow">
     <property name="default_height">700</property>
     <property name="default_width">640</property>
     <property name="width_request">300</property>
     <property name="modal">True</property>
     <child>
-      <object class="HdyPreferencesPage">
+      <object class="AdwPreferencesPage">
         <property name="icon_name">preferences-system-network-symbolic</property>
         <property name="title" translatable="yes">Connections</property>
-        <property name="visible">True</property>
         <child>
-          <object class="HdyPreferencesGroup">
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Router</property>
-            <property name="visible">True</property>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">Host</property>
                 <property name="activatable">False</property>
                 <child>
                   <object class="GtkEntry" id="host">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                     <property name="text"></property>
                     <property name="xalign">1.0</property>
@@ -39,15 +31,11 @@
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">User</property>
                 <property name="activatable">False</property>
                 <child>
                   <object class="GtkEntry" id="login_user">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                     <property name="text"></property>
                     <property name="xalign">1.0</property>
@@ -57,15 +45,11 @@
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">Password</property>
                 <property name="activatable">False</property>
                 <child>
                   <object class="GtkEntry" id="login_password">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                     <property name="text"></property>
                     <property name="visibility">False</property>
@@ -78,19 +62,14 @@
           </object>
         </child>
         <child>
-          <object class="HdyPreferencesGroup">
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Codes</property>
-            <property name="visible">True</property>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">External</property>
                 <property name="activatable">False</property>
                 <child>
                   <object class="GtkEntry" id="external_code">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                     <property name="text"></property>
                     <property name="xalign">1.0</property>
@@ -100,15 +79,11 @@
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">International</property>
                 <property name="activatable">False</property>
                 <child>
                   <object class="GtkEntry" id="international_code">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                     <property name="text"></property>
                     <property name="xalign">1.0</property>
@@ -118,15 +93,11 @@
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">Country</property>
                 <property name="activatable">False</property>
                 <child>
                   <object class="GtkEntry" id="country_code">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                     <property name="text"></property>
                     <property name="xalign">1.0</property>
@@ -136,15 +107,11 @@
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">National</property>
                 <property name="activatable">False</property>
                 <child>
                   <object class="GtkEntry" id="national_code">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                     <property name="text"></property>
                     <property name="xalign">1.0</property>
@@ -154,15 +121,11 @@
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">Area</property>
                 <property name="activatable">False</property>
                 <child>
                   <object class="GtkEntry" id="area_code">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                     <property name="text"></property>
                     <property name="xalign">1.0</property>
@@ -174,32 +137,25 @@
           </object>
         </child>
         <child>
-          <object class="HdyPreferencesGroup">
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Devices</property>
-            <property name="visible">True</property>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">Softphone</property>
                 <property name="subtitle" translatable="yes">Enable softphone support</property>
                 <child>
                   <object class="GtkSwitch" id="softphone">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                   </object>
                 </child>
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">Softfax</property>
                 <property name="subtitle" translatable="yes">Enable softfax support</property>
                 <child>
                   <object class="GtkSwitch" id="softfax">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                   </object>
                 </child>
@@ -208,20 +164,16 @@
           </object>
         </child>
         <child>
-          <object class="HdyPreferencesGroup" id="softphone_group">
+          <object class="AdwPreferencesGroup" id="softphone_group">
             <property name="title" translatable="yes">Softphone</property>
-            <property name="visible">False</property>
-            <property name="no-show-all">True</property>
             <child>
-              <object class="HdyComboRow" id="softphone_number">
-                <property name="visible">True</property>
+              <object class="AdwComboRow" id="softphone_number">
                 <property name="title" translatable="yes">Number</property>
                 <property name="subtitle" translatable="yes">Phone number which will be used by softphone</property>
               </object>
             </child>
             <child>
-              <object class="HdyComboRow" id="softphone_controller">
-                <property name="visible">True</property>
+              <object class="AdwComboRow" id="softphone_controller">
                 <property name="title" translatable="yes">Controller</property>
                 <property name="subtitle" translatable="yes">Router controller to take of router connections</property>
               </object>
@@ -229,32 +181,24 @@
           </object>
         </child>
         <child>
-          <object class="HdyPreferencesGroup" id="softfax_group">
+          <object class="AdwPreferencesGroup" id="softfax_group">
             <property name="title" translatable="yes">Softfax</property>
-            <property name="visible">False</property>
-            <property name="no-show-all">True</property>
             <child>
-              <object class="HdyComboRow" id="softfax_number">
-                <property name="visible">True</property>
+              <object class="AdwComboRow" id="softfax_number">
                 <property name="title" translatable="yes">Number</property>
               </object>
             </child>
             <child>
-              <object class="HdyComboRow" id="softfax_controller">
-                <property name="visible">True</property>
+              <object class="AdwComboRow" id="softfax_controller">
                 <property name="title" translatable="yes">Controller</property>
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">Header</property>
                 <property name="activatable">False</property>
                 <child>
                   <object class="GtkEntry" id="softfax_header">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                     <property name="text"></property>
                     <property name="xalign">1.0</property>
@@ -264,15 +208,11 @@
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">Ident</property>
                 <property name="activatable">False</property>
                 <child>
                   <object class="GtkEntry" id="softfax_ident">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                     <property name="text"></property>
                     <property name="xalign">1.0</property>
@@ -282,31 +222,24 @@
               </object>
             </child>
             <child>
-              <object class="HdyComboRow" id="softfax_resolution">
-                <property name="visible">True</property>
+              <object class="AdwComboRow" id="softfax_resolution">
                 <property name="title" translatable="yes">Resolution</property>
               </object>
             </child>
             <child>
-              <object class="HdyComboRow" id="softfax_service">
-                <property name="visible">True</property>
+              <object class="AdwComboRow" id="softfax_service">
                 <property name="title" translatable="yes">Service</property>
               </object>
             </child>
             <child>
-              <object class="HdyExpanderRow" id="softfax_report">
-                <property name="visible">True</property>
+              <object class="AdwExpanderRow" id="softfax_report">
                 <property name="title" translatable="yes">Fax reports</property>
                 <property name="show_enable_switch">True</property>
                 <child>
-                  <object class="HdyActionRow">
-                    <property name="visible">True</property>
+                  <object class="AdwActionRow">
                     <property name="title" translatable="yes">Directory</property>
                     <child>
-                      <object class="GtkFileChooserButton" id="softfax_directory">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="action">select-folder</property>
+                      <object class="GtkButton" id="softfax_directory">
                         <property name="valign">center</property>
                       </object>
                     </child>
@@ -315,13 +248,10 @@
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">Error correction</property>
                 <child>
                   <object class="GtkSwitch" id="softfax_ecm">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                   </object>
                 </child>
@@ -332,47 +262,38 @@
       </object>
     </child>
     <child>
-      <object class="HdyPreferencesPage">
+      <object class="AdwPreferencesPage">
         <property name="icon_name">view-list-symbolic</property>
         <property name="title" translatable="yes">Journal</property>
-        <property name="visible">True</property>
         <child>
-          <object class="HdyPreferencesGroup" id="notification_incoming">
+          <object class="AdwPreferencesGroup" id="notification_incoming">
             <property name="title" translatable="yes">Incoming Notifications</property>
-            <property name="visible">True</property>
           </object>
         </child>
         <child>
-          <object class="HdyPreferencesGroup" id="notification_outgoing">
+          <object class="AdwPreferencesGroup" id="notification_outgoing">
             <property name="title" translatable="yes">Outgoing Notifications</property>
-            <property name="visible">True</property>
           </object>
         </child>
         <child>
-          <object class="HdyPreferencesGroup" id="filter">
+          <object class="AdwPreferencesGroup" id="filter">
             <property name="title" translatable="yes">Filter</property>
-            <property name="visible">True</property>
           </object>
         </child>
       </object>
     </child>
     <child>
-      <object class="HdyPreferencesPage">
+      <object class="AdwPreferencesPage">
         <property name="icon_name">audio-headset-symbolic</property>
         <property name="title" translatable="yes">Audio</property>
-        <property name="visible">True</property>
         <child>
-          <object class="HdyPreferencesGroup">
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Configuration</property>
-            <property name="visible">True</property>
             <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
+              <object class="AdwActionRow">
                 <property name="title" translatable="yes">Ringtone</property>
                 <child>
                   <object class="GtkSwitch" id="ringtone">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
                     <property name="valign">center</property>
                   </object>
                 </child>
@@ -381,24 +302,20 @@
           </object>
         </child>
         <child>
-          <object class="HdyPreferencesGroup">
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Devices</property>
-            <property name="visible">True</property>
             <child>
-              <object class="HdyComboRow" id="microphone">
-                <property name="visible">True</property>
+              <object class="AdwComboRow" id="microphone">
                 <property name="title" translatable="yes">Microphone</property>
               </object>
             </child>
             <child>
-              <object class="HdyComboRow" id="speaker">
-                <property name="visible">True</property>
+              <object class="AdwComboRow" id="speaker">
                 <property name="title" translatable="yes">Speaker</property>
               </object>
             </child>
             <child>
-              <object class="HdyComboRow" id="ringer">
-                <property name="visible">True</property>
+              <object class="AdwComboRow" id="ringer">
                 <property name="title" translatable="yes">Ringer</property>
               </object>
             </child>
@@ -407,17 +324,14 @@
       </object>
     </child>
     <child>
-      <object class="HdyPreferencesPage">
+      <object class="AdwPreferencesPage">
         <property name="icon_name">application-x-addon-symbolic</property>
         <property name="title" translatable="yes">Plugins</property>
-        <property name="visible">True</property>
         <child>
-          <object class="HdyPreferencesGroup">
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Configuration</property>
-            <property name="visible">True</property>
             <child>
               <object class="GtkListBox" id="plugins_listbox">
-                <property name="visible">True</property>
                 <property name="selection-mode">none</property>
                 <style>
                   <class name="content"/>

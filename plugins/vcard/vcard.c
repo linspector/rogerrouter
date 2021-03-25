@@ -1,6 +1,6 @@
 /**
  * Roger Router
- * Copyright (c) 2012-2014 Jan-Michael Brummer
+ * Copyright (c) 2012-2022 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -26,7 +26,7 @@
 #include <glib/gi18n.h>
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <handy.h>
+#include <adwaita.h>
 #include <rm/rm.h>
 #include <stdio.h>
 #include <string.h>
@@ -832,7 +832,7 @@ vcard_print (GString *data,
   va_list args;
   int len;
   int size = 100;
-  g_autofree char *ptr = NULL;
+  char *ptr = NULL;
 
   while (1) {
     va_start (args, format);
@@ -858,6 +858,8 @@ vcard_print (GString *data,
       size *= 2;
     }
   }
+
+  g_clear_pointer (&ptr, g_free);
 }
 
 /**
@@ -1266,26 +1268,26 @@ filename_button_clicked_cb (GtkButton *button,
   gtk_file_filter_add_mime_type (filter, "text/vcard");
   gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (dialog), filter);
 
-  if (gtk_native_dialog_run (GTK_NATIVE_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
-    char *folder = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+  /* if (gtk_native_dialog_run (GTK_NATIVE_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) { */
+  /*   char *folder = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog)); */
 
-    gtk_entry_set_text (GTK_ENTRY (user_data), folder);
-    contacts = NULL;
-    vcard_load_file (folder);
+  /*   gtk_entry_set_text (GTK_ENTRY (user_data), folder); */
+  /*   contacts = NULL; */
+  /*   vcard_load_file (folder); */
 
-    g_free (folder);
-  }
+  /*   g_free (folder); */
+  /* } */
 
-  g_object_unref (dialog);
+  /* g_object_unref (dialog); */
 }
 
 void
 vcard_file_chooser_button_file_set_cb (GtkWidget *button,
                                        gpointer   user_data)
 {
-  char *file = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (button));
+  GFile *file = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (button));
 
-  g_settings_set_string (vcard_settings, "filename", file);
+  g_settings_set_string (vcard_settings, "filename", g_file_get_path (file));
 }
 
 gpointer
@@ -1297,18 +1299,19 @@ vcard_plugin_configure (RmPlugin *plugin)
   if (!vcard_settings)
     vcard_settings = rm_settings_new ("org.tabos.roger.plugins.vcard");
 
-  row = hdy_action_row_new ();
-  hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), _("VCard file"));
+  row = adw_action_row_new ();
+  adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), _("VCard file"));
 
   GtkFileFilter *filter = gtk_file_filter_new ();
   gtk_file_filter_add_pattern (filter, "*.vcf");
-  GtkWidget *vcard_button = gtk_file_chooser_button_new (_("Select VCard"), GTK_FILE_CHOOSER_ACTION_OPEN);
-  gtk_widget_set_valign (vcard_button, GTK_ALIGN_CENTER);
-  gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (vcard_button), filter);
-  gtk_file_chooser_set_uri (GTK_FILE_CHOOSER (vcard_button), g_settings_get_string (vcard_settings, "filename"));
-  g_signal_connect (vcard_button, "file-set", G_CALLBACK (vcard_file_chooser_button_file_set_cb), NULL);
+  GtkWidget *vcard_button = gtk_button_new_with_label (_("Select VCard"));
+  /* GtkWidget *vcard_button = gtk_file_chooser_button_new (_("Select VCard"), GTK_FILE_CHOOSER_ACTION_OPEN); */
+  /* gtk_widget_set_valign (vcard_button, GTK_ALIGN_CENTER); */
+  /* gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (vcard_button), filter); */
+  /* gtk_file_chooser_set_uri (GTK_FILE_CHOOSER (vcard_button), g_settings_get_string (vcard_settings, "filename")); */
+  /* g_signal_connect (vcard_button, "file-set", G_CALLBACK (vcard_file_chooser_button_file_set_cb), NULL); */
 
-  gtk_container_add (GTK_CONTAINER (row), vcard_button);
+  adw_action_row_add_suffix (ADW_ACTION_ROW (row), vcard_button);
   list = g_list_append (list, row);
 
   return list;

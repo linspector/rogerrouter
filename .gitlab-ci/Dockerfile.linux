@@ -1,4 +1,4 @@
-FROM fedora:rawhide
+FROM fedora:36
 LABEL maintainer="Jan-Michael Brummer <jan.brummer@tabos.org>"
 
 RUN dnf update --nogpgcheck -y \
@@ -16,15 +16,14 @@ RUN dnf update --nogpgcheck -y \
                       libsndfile-devel \
                       gupnp-devel \
                       gtk3-devel \
-                      poppler-glib-devel \
+                      gtk4-devel \
                       git \
                       clang-analyzer \
-                      libgdata-devel \
                       evolution-devel \
-                      libappindicator-gtk3-devel \
                       libsecret-devel \
                       gstreamer1-plugins-base-devel \
                       libhandy1-devel \
+                      libadwaita-devel \
     && dnf clean all
 
 RUN groupadd repro -g 1000

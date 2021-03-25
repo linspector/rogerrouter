@@ -1,751 +1,578 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.38.2 -->
 <interface>
-  <requires lib="gtk+" version="3.24"/>
-  <requires lib="libhandy" version="1.0"/>
-  <object class="GtkImage" id="dial_icon">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">call-start-symbolic</property>
-  </object>
-  <object class="GtkImage" id="dial_icon1">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
-    <property name="icon-name">call-start-symbolic</property>
-  </object>
-  <object class="GtkPopoverMenu" id="fax_menu">
-    <property name="can-focus">False</property>
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="border-width">6</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkModelButton">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <property name="action-name">fax.set-suppression</property>
-            <property name="text" translatable="yes">Suppress number</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="submenu">main</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-  </object>
-  <template class="RogerFax" parent="HdyWindow">
-    <property name="can-focus">False</property>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="libadwaita" version="1.0"/>
+  <template class="RogerFax" parent="AdwWindow">
     <property name="modal">True</property>
-    <property name="window-position">center-on-parent</property>
     <property name="default-width">360</property>
-    <signal name="delete-event" handler="roger_fax_delete_event_cb" swapped="no"/>
+    <signal name="close-request" handler="on_roger_fax_close_request" swapped="no"/>
     <child>
       <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="HdyHeaderBar" id="header_bar">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="title" translatable="yes">Fax</property>
-            <property name="subtitle" translatable="yes">00:00:00</property>
-            <property name="show-close-button">True</property>
-            <child>
+          <object class="AdwHeaderBar" id="header_bar">
+            <child type="end">
               <object class="GtkMenuButton" id="menu_button">
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
                 <property name="direction">none</property>
-                <property name="popover">fax_menu</property>
-                <child>
-                  <placeholder/>
-                </child>
               </object>
-              <packing>
-                <property name="pack-type">end</property>
-              </packing>
             </child>
+            <child type="title">
+              <object class="AdwWindowTitle" id="window_title">
+              </object>
+            </child>>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
-          <object class="HdyDeck" id="deck">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
+          <object class="AdwLeaflet" id="leaflet">
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
+            <property name="can-unfold">False</property>
             <child>
               <!-- n-columns=3 n-rows=6 -->
-              <object class="GtkGrid">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="vexpand">True</property>
-                <property name="border-width">12</property>
+              <object class="GtkGrid" id="grid">
+                <property name="hexpand">1</property>
+                <property name="vexpand">1</property>
                 <property name="row-spacing">6</property>
                 <property name="column-spacing">6</property>
-                <property name="row-homogeneous">True</property>
-                <property name="column-homogeneous">True</property>
+                <property name="row-homogeneous">1</property>
+                <property name="column-homogeneous">1</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
+                <property name="margin-top">12</property>
+                <property name="margin-bottom">12</property>
                 <child>
                   <object class="GtkButton" id="button_1">
                     <property name="name">button_1</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">1</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
-                              <attribute name="scale" value="1"/>
+                              <attribute name="weight" value="semibold"></attribute>
+                              <attribute name="scale" value="1"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can-focus">False</property>
+                            <property name="sensitive">0</property>
                             <property name="label" translatable="yes">&lt;small&gt; &lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">1</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_2">
                     <property name="name">button_2</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">2</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
+                              <attribute name="weight" value="semibold"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">&lt;small&gt;ABC&lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">1</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_3">
                     <property name="name">button_3</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">3</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
+                              <attribute name="weight" value="semibold"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can-focus">False</property>
+                            <property name="sensitive">0</property>
                             <property name="label" translatable="yes">&lt;small&gt;DEF&lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">1</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_4">
                     <property name="name">button_4</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">4</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
+                              <attribute name="weight" value="semibold"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can-focus">False</property>
+                            <property name="sensitive">0</property>
                             <property name="label" translatable="yes">&lt;small&gt;GHI&lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">2</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_5">
                     <property name="name">button_5</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">5</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
+                              <attribute name="weight" value="semibold"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can-focus">False</property>
+                            <property name="sensitive">0</property>
                             <property name="label" translatable="yes">&lt;small&gt;JKL&lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">2</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_6">
                     <property name="name">button_6</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">6</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
+                              <attribute name="weight" value="semibold"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can-focus">False</property>
+                            <property name="sensitive">0</property>
                             <property name="label" translatable="yes">&lt;small&gt;MNO&lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">2</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_7">
                     <property name="name">button_7</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">7</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
+                              <attribute name="weight" value="semibold"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can-focus">False</property>
+                            <property name="sensitive">0</property>
                             <property name="label" translatable="yes">&lt;small&gt;PQRS&lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">3</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">3</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_8">
                     <property name="name">button_8</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can-focus">False</property>
+                            <property name="sensitive">0</property>
                             <property name="label" translatable="yes">&lt;small&gt;TUV&lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">8</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
+                              <attribute name="weight" value="semibold"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">3</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">3</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_9">
                     <property name="name">button_9</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">9</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
+                              <attribute name="weight" value="semibold"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can-focus">False</property>
+                            <property name="sensitive">0</property>
                             <property name="label" translatable="yes">&lt;small&gt;WXYZ&lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">3</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">3</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_*">
                     <property name="name">button_*</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">&lt;small&gt; &lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">*</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
+                              <attribute name="weight" value="semibold"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">4</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">4</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_0">
                     <property name="name">button_0</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can-focus">False</property>
+                            <property name="sensitive">0</property>
                             <property name="label" translatable="yes">&lt;small&gt;+&lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">0</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
+                              <attribute name="weight" value="semibold"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">4</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">4</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_#">
                     <property name="name">button_#</property>
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <signal name="clicked" handler="roger_fax_number_button_clicked_cb" object="RogerFax" swapped="no"/>
+                    <property name="receives-default">1</property>
+                    <signal name="clicked" handler="roger_fax_dtmf_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
-                      <!-- n-columns=1 n-rows=2 -->
                       <object class="GtkGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">#</property>
                             <attributes>
-                              <attribute name="weight" value="semibold"/>
+                              <attribute name="weight" value="semibold"></attribute>
                             </attributes>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">0</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
                         </child>
                         <child>
                           <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
                             <property name="label" translatable="yes">&lt;small&gt; &lt;/small&gt;</property>
-                            <property name="use-markup">True</property>
+                            <property name="use-markup">1</property>
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                            </layout>
                           </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">1</property>
-                          </packing>
                         </child>
                       </object>
                     </child>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">4</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">4</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="dial_button">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="can-default">True</property>
-                    <property name="has-default">True</property>
                     <property name="receives-default">True</property>
                     <property name="valign">center</property>
-                    <property name="hexpand">False</property>
-                    <property name="image">dial_icon</property>
+                    <property name="hexpand">0</property>
+                    <property name="icon-name">call-start-symbolic</property>
                     <signal name="clicked" handler="roger_fax_dial_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <style>
                       <class name="suggested-action"/>
                     </style>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">6</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">5</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="clear_button">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="halign">start</property>
                     <property name="valign">center</property>
@@ -753,181 +580,127 @@
                     <signal name="clicked" handler="roger_fax_clear_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <child>
                       <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="xpad">5</property>
-                        <property name="ypad">5</property>
                         <property name="icon-name">edit-clear-symbolic</property>
                       </object>
                     </child>
                     <style>
                       <class name="circular"/>
                     </style>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">6</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">5</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">5</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSearchEntry" id="search_entry">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="has-focus">True</property>
-                    <property name="is-focus">True</property>
-                    <property name="valign">center</property>
-                    <property name="activates-default">True</property>
-                    <property name="primary-icon-name">edit-find-symbolic</property>
-                    <property name="primary-icon-activatable">False</property>
-                    <property name="primary-icon-sensitive">False</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                    <property name="width">3</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="name">dial</property>
-              </packing>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=5 -->
-              <object class="GtkGrid">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
-                <property name="border-width">12</property>
+              <object class="GtkGrid" id="transfer_grid">
+                <property name="hexpand">1</property>
+                <property name="vexpand">1</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
+                <property name="margin-top">12</property>
+                <property name="margin-bottom">12</property>
                 <property name="row-spacing">6</property>
                 <property name="column-spacing">12</property>
                 <property name="column-homogeneous">True</property>
+                <property name="name">transfer</property>
                 <child>
                   <object class="GtkButton" id="hangup_button">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="can-default">True</property>
-                    <property name="has-default">True</property>
                     <property name="receives-default">True</property>
                     <property name="valign">center</property>
                     <property name="margin-top">36</property>
-                    <property name="image">dial_icon1</property>
+                    <property name="icon-name">call-stop-symbolic</property>
                     <signal name="clicked" handler="roger_fax_hangup_button_clicked_cb" object="RogerFax" swapped="no"/>
                     <style>
                       <class name="destructive-action"/>
                     </style>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">4</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">4</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
                     <property name="halign">end</property>
                     <property name="label" translatable="yes">From</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">3</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">3</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="sender_label">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
                     <property name="halign">start</property>
                     <property name="hexpand">True</property>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">3</property>
+                      <property name="column-span">2</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">3</property>
-                    <property name="width">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="receiver_label">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
                     <property name="halign">start</property>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">2</property>
+                      <property name="column-span">2</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">2</property>
-                    <property name="width">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
                     <property name="halign">end</property>
                     <property name="label" translatable="yes">To</property>
                     <style>
                       <class name="dim-label"/>
                     </style>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">2</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">2</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">4</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">4</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">4</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">4</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
                     <property name="valign">end</property>
                     <property name="vexpand">True</property>
                     <property name="pixel-size">128</property>
                     <property name="icon-name">document-send-symbolic</property>
-                    <property name="icon_size">6</property>
+                    <property name="icon_size">GTK_ICON_SIZE_LARGE</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">0</property>
+                      <property name="column-span">3</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                    <property name="width">3</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkProgressBar" id="progress_bar">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
                     <property name="valign">start</property>
                     <property name="margin-start">18</property>
                     <property name="margin-end">18</property>
@@ -935,44 +708,32 @@
                     <property name="vexpand">True</property>
                     <property name="text" translatable="yes"> </property>
                     <property name="show-text">True</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">1</property>
+                      <property name="column-span">3</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                    <property name="width">3</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="row">1</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="row">1</property>
+                    </layout>
                   </object>
-                  <packing>
-                    <property name="left-attach">2</property>
-                    <property name="top-attach">1</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="name">transfer</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
     </child>

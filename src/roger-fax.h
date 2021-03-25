@@ -19,13 +19,13 @@
 
 #pragma once
 
-#include <handy.h>
+#include <adwaita.h>
 
 G_BEGIN_DECLS
 
 #define ROGER_TYPE_FAX (roger_fax_get_type ())
 
-G_DECLARE_FINAL_TYPE (RogerFax, roger_fax, ROGER, FAX, HdyWindow)
+G_DECLARE_FINAL_TYPE (RogerFax, roger_fax, ROGER, FAX, AdwWindow)
 
 GtkWidget *roger_fax_new (void);
 
