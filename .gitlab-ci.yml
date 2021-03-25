@@ -6,9 +6,14 @@ default:
 
 variables:
   GIT_SUBMODULE_STRATEGY: normal
+  BUNDLE: "roger-dev.flatpak"
+
+stages:
+  - check
+  - build
 
 check-code-style:
-  stage: test
+  stage: check
   image: alpine:latest
   before_script:
     - apk update && apk add uncrustify bash python3
@@ -16,8 +21,8 @@ check-code-style:
     - bash data/check-code-style
 
 scan-build:
-  image: registry.gitlab.com/tabos/rogerrouter/linux:v3
-  stage: test
+  image: registry.gitlab.com/tabos/rogerrouter/linux:v5
+  stage: check
   script:
     - meson _build
     - ninja -C _build scan-build
@@ -29,7 +34,7 @@ scan-build:
       - _build/meson-logs/scanbuild
 
 fedora-x86_64:
-  image: registry.gitlab.com/tabos/rogerrouter/linux:v3
+  image: registry.gitlab.com/tabos/rogerrouter/linux:v5
   stage: build
   script:
     - CC=clang meson _build
@@ -65,3 +70,4 @@ windows:
     paths:
       - "C:/GitLab-Runner/builds/tabos/rogerrouter/rogerrouter/_build/meson-logs"
       - "C:/GitLab-Runner/builds/tabos/rogerrouter/rogerrouter/_build/build-aux/windows/*.exe"
+

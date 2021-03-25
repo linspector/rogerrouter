@@ -1,5 +1,5 @@
 project('roger', 'c',
-  version: '2.4.2',
+  version: '3.0.0-alpha',
   license : 'GPL2',
   meson_version: '>= 0.53.0',
   default_options: ['c_std=gnu11',
@@ -16,7 +16,7 @@ datadir = join_paths(prefix, get_option('datadir'))
 
 conf = configuration_data()
 conf.set_quoted('PACKAGE_NAME', 'Roger Router')
-conf.set_quoted('PACKAGE_VERSION', '@VCS_TAG@')
+conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 
 host_system = host_machine.system()
@@ -51,9 +51,9 @@ config_h = declare_dependency(
   )
 )
 
-gtk3_dep = dependency('gtk+-3.0', version : '>=3.22.0')
+gtk_dep = dependency('gtk4', version : '>=4.0.0')
+libadwaita_dep = dependency('libadwaita-1')
 libgs_dep = cc.find_library('gs')
-libhandy_dep = dependency('libhandy-1', version: '>= 1.1.90')
 libm_dep = cc.find_library('m', required: true)
 librm_dep = dependency('librm', version : '>=2.2.3', fallback : ['librm', 'rm_dep'])
 libsoup_dep = dependency('libsoup-2.4')

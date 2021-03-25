@@ -1,5 +1,5 @@
 /*
- * Roger Router Copyright (c) 2012-2021 Jan-Michael Brummer
+ * Roger Router Copyright (c) 2012-2022 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -14,14 +14,15 @@
 
 #include "roger-shell.h"
 
-#include "contacts.h"
 #include "preferences.h"
 #include "roger-assistant.h"
 #include "roger-fax.h"
-#include "roger-journal.h"
 #include "roger-phone.h"
 #include "roger-settings.h"
 
+#include "roger-journal.h"
+
+#include <adwaita.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <rm/rm.h>
@@ -66,13 +67,13 @@ auth_response_callback (GtkDialog *dialog,
     GtkWidget *user_entry = g_object_get_data (G_OBJECT (dialog), "user");
     GtkWidget *password_entry = g_object_get_data (G_OBJECT (dialog), "password");
 
-    auth_data->username = g_strdup (gtk_entry_get_text (GTK_ENTRY (user_entry)));
-    auth_data->password = g_strdup (gtk_entry_get_text (GTK_ENTRY (password_entry)));
+    auth_data->username = g_strdup (gtk_editable_get_text (GTK_EDITABLE (user_entry)));
+    auth_data->password = g_strdup (gtk_editable_get_text (GTK_EDITABLE (password_entry)));
   }
 
   rm_network_authenticate (response_id == 1, auth_data);
 
-  gtk_widget_destroy (GTK_WIDGET (dialog));
+  gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 void
@@ -85,7 +86,7 @@ app_authenticate_cb (RmObject   *app,
   GtkWidget *realm_label;
   GtkWidget *tmp;
   g_autofree char *description = NULL;
-  SoupURI *uri;
+  g_autoptr (SoupURI) uri = NULL;
 
   builder = gtk_builder_new_from_resource ("/org/tabos/roger/authenticate.glade");
   if (!builder) {
@@ -105,24 +106,14 @@ app_authenticate_cb (RmObject   *app,
   gtk_label_set_text (GTK_LABEL (realm_label), soup_auth_get_realm (auth_data->auth));
 
   tmp = GTK_WIDGET (gtk_builder_get_object (builder, "username_entry"));
-  gtk_entry_set_text (GTK_ENTRY (tmp), auth_data->username);
+  gtk_editable_set_text (GTK_EDITABLE (tmp), auth_data->username);
   g_object_set_data (G_OBJECT (dialog), "user", tmp);
   tmp = GTK_WIDGET (gtk_builder_get_object (builder, "password_entry"));
-  gtk_entry_set_text (GTK_ENTRY (tmp), auth_data->password);
+  gtk_editable_set_text (GTK_EDITABLE (tmp), auth_data->password);
   g_object_set_data (G_OBJECT (dialog), "password", tmp);
 
-  gtk_builder_connect_signals (builder, NULL);
-
   g_signal_connect (dialog, "response", G_CALLBACK (auth_response_callback), auth_data);
-  gtk_widget_show_all (dialog);
-}
-
-static void
-addressbook_activated (GSimpleAction *action,
-                       GVariant      *parameter,
-                       gpointer       user_data)
-{
-  app_contacts (NULL);
+  gtk_widget_show (dialog);
 }
 
 static void
@@ -150,7 +141,7 @@ roger_shell_phone (RogerShell *self,
 
   gtk_window_set_transient_for (GTK_WINDOW (phone), GTK_WINDOW (roger_shell_get_journal (self)));
   gtk_window_set_modal (GTK_WINDOW (phone), TRUE);
-  gtk_widget_show_all (phone);
+  gtk_widget_show (phone);
 }
 
 static void
@@ -173,7 +164,7 @@ preferences_activated (GSimpleAction *action,
 
   preferences = roger_preferences_window_new ();
   gtk_window_set_transient_for (GTK_WINDOW (preferences), GTK_WINDOW (roger_shell_get_journal (self)));
-  gtk_widget_show_all (GTK_WIDGET (preferences));
+  gtk_widget_show (GTK_WIDGET (preferences));
 }
 
 #define ABOUT_GROUP "About"
@@ -208,7 +199,7 @@ about_activated (GSimpleAction *action,
 
   gtk_about_dialog_set_program_name (GTK_ABOUT_DIALOG (dialog), PACKAGE_NAME);
   gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (dialog), PACKAGE_VERSION);
-  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (dialog), "(C) 2012-2021, Jan-Michael Brummer <jan.brummer@tabos.org>");
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (dialog), "(C) 2012-2022, Jan-Michael Brummer <jan.brummer@tabos.org>");
   gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (dialog), _("FRITZ!Box Journal, Soft/phone, and Fax\nDedicated to my father"));
   gtk_about_dialog_set_license_type (GTK_ABOUT_DIALOG (dialog), GTK_LICENSE_GPL_2_0_ONLY);
   gtk_about_dialog_set_wrap_license (GTK_ABOUT_DIALOG (dialog), TRUE);
@@ -225,8 +216,7 @@ about_activated (GSimpleAction *action,
     gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
   }
 
-  gtk_dialog_run (GTK_DIALOG (dialog));
-  gtk_widget_destroy (dialog);
+  gtk_widget_show (dialog);
 }
 
 static void
@@ -245,15 +235,13 @@ copy_ip_activated (GSimpleAction *action,
                    gpointer       user_data)
 {
   RmProfile *profile = rm_profile_get_active ();
-  char *ip;
+  g_autofree char *ip = NULL;
 
   ip = rm_router_get_ip (profile);
-  if (ip) {
-    gtk_clipboard_set_text (gtk_clipboard_get (GDK_NONE), ip, -1);
-    g_free (ip);
-  } else {
+  if (ip)
+    gdk_clipboard_set_text (gdk_display_get_clipboard (gdk_display_get_default ()), ip);
+  else
     g_warning ("Could not get IP address");
-  }
 }
 
 static void
@@ -272,21 +260,15 @@ shortcuts_activated (GSimpleAction *action,
                      gpointer       user_data)
 {
   RogerShell *self = ROGER_SHELL (user_data);
-  static GtkWidget *shortcuts_window;
+  GtkWidget *shortcuts_window;
+  g_autoptr (GtkBuilder) builder = NULL;
 
-  if (!shortcuts_window) {
-    g_autoptr (GtkBuilder) builder = NULL;
+  builder = gtk_builder_new_from_resource ("/org/tabos/roger/ui/shortcuts.ui");
+  shortcuts_window = GTK_WIDGET (gtk_builder_get_object (builder, "shortcuts_window"));
+  g_signal_connect (shortcuts_window, "destroy", G_CALLBACK (gtk_window_destroy), &shortcuts_window);
 
-    builder = gtk_builder_new_from_resource ("/org/tabos/roger/ui/shortcuts.ui");
-    shortcuts_window = GTK_WIDGET (gtk_builder_get_object (builder, "shortcuts_window"));
-
-    g_signal_connect (shortcuts_window, "destroy", G_CALLBACK (gtk_widget_destroyed), &shortcuts_window);
-  }
-
-  if (gtk_window_get_transient_for (GTK_WINDOW (shortcuts_window)) != GTK_WINDOW (roger_shell_get_journal (self)))
-    gtk_window_set_transient_for (GTK_WINDOW (shortcuts_window), GTK_WINDOW (roger_shell_get_journal (self)));
-
-  gtk_window_present_with_time (GTK_WINDOW (shortcuts_window), gtk_get_current_event_time ());
+  gtk_window_set_transient_for (GTK_WINDOW (shortcuts_window), GTK_WINDOW (roger_shell_get_journal (self)));
+  gtk_window_present_with_time (GTK_WINDOW (shortcuts_window), GDK_CURRENT_TIME);
 }
 
 void
@@ -305,7 +287,7 @@ app_pickup (RmConnection *connection)
 
   phone = roger_phone_new ();
   roger_phone_pickup_connection (ROGER_PHONE (phone), connection);
-  gtk_widget_show_all (phone);
+  gtk_widget_show (phone);
 }
 
 static void
@@ -361,7 +343,6 @@ journal_activated (GSimpleAction *action,
 }
 
 static GActionEntry apps_entries[] = {
-  { "addressbook", addressbook_activated, NULL, NULL, NULL },
   { "assistant", assistant_activated, NULL, NULL, NULL },
   { "preferences", preferences_activated, NULL, NULL, NULL },
   { "phone", phone_activated, NULL, NULL, NULL },
@@ -392,7 +373,7 @@ rm_object_message_cb (RmObject *object,
 
   gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", message ? message : "");
 
-  g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
+  g_signal_connect (dialog, "response", G_CALLBACK (gtk_window_destroy), NULL);
 
   gtk_window_present (GTK_WINDOW (dialog));
 }
@@ -416,7 +397,7 @@ rm_object_fax_process_cb (GtkWidget *widget,
   roger_fax_set_transfer_file (ROGER_FAX (fax), file_name);
   gtk_window_set_transient_for (GTK_WINDOW (fax), GTK_WINDOW (roger_shell_get_journal (self)));
   gtk_window_set_modal (GTK_WINDOW (fax), TRUE);
-  gtk_widget_show_all (fax);
+  gtk_widget_show (fax);
 }
 
 const struct {
@@ -424,7 +405,6 @@ const struct {
   const char *accelerators[9];
 } accels [] = {
   { "app.about", { "F1", NULL } },
-  { "app.contacts", { "<Primary>b", NULL } },
   { "app.debug", { "<Primary>d", NULL } },
   { "app.phone", { "<Primary>p", NULL } },
   { "app.preferences", { "<Primary>s", NULL } },
@@ -437,7 +417,7 @@ roger_shell_startup (GApplication *application)
 {
   G_APPLICATION_CLASS (roger_shell_parent_class)->startup (application);
 
-  hdy_init ();
+  adw_init ();
 }
 
 static void
@@ -484,15 +464,28 @@ run_in_background_set_mapping (const GValue       *value,
 }
 
 static void
+on_rm_failed_response (GtkDialog *dialog,
+                       int        response_id,
+                       gpointer   user_data)
+{
+  RogerShell *self = ROGER_SHELL (user_data);
+
+  gtk_window_destroy (GTK_WINDOW (roger_shell_get_journal (self)));
+}
+
+static void
 roger_shell_activate (GApplication *application)
 {
   RogerShell *self = ROGER_SHELL (application);
-  GList *list = gtk_application_get_windows (GTK_APPLICATION (self));
+  GList *windows = gtk_application_get_windows (GTK_APPLICATION (self));
   GAction *action;
   g_autoptr (GError) error = NULL;
+  const char *user_plugins;
+  g_autofree char *path = NULL;
   guint i;
 
-  if (g_list_length (list)) {
+  /* In case window exists, present it an exit */
+  if (g_list_length (windows) != 0) {
     gtk_window_present (GTK_WINDOW (roger_shell_get_journal (self)));
 
     if (self->call_number && strlen (self->call_number) > 0)
@@ -520,37 +513,45 @@ roger_shell_activate (GApplication *application)
                                 NULL);
 
 
-  const char *user_plugins = g_get_user_data_dir ();
-  char *path = g_build_filename (user_plugins, "roger", G_DIR_SEPARATOR_S, "plugins", NULL);
+  user_plugins = g_get_user_data_dir ();
+  path = g_build_filename (user_plugins, "roger", G_DIR_SEPARATOR_S, "plugins", NULL);
 
   rm_plugins_add_search_path (path);
   rm_plugins_add_search_path (rm_get_directory (APP_PLUGINS));
 
-  rm_new (debug_enabled, &error);
+  /* FIXME: rm_new should return object and debug_enabled should be a func */
+  self->rm = rm_new (debug_enabled, &error);
+  if (!self->rm) {
+    g_warning("Could not create rm: %s", error->message);
+    return;
+  }
   self->rm = rm_object;
+
   g_signal_connect_object (self->rm, "authenticate", G_CALLBACK (app_authenticate_cb), self, 0);
   g_signal_connect_object (self->rm, "message", G_CALLBACK (rm_object_message_cb), self, 0);
   g_signal_connect_object (self->rm, "profile-changed", G_CALLBACK (rm_object_profile_changed_cb), self, 0);
   g_signal_connect_object (self->rm, "fax-process", G_CALLBACK (rm_object_fax_process_cb), self, 0);
 
   self->journal = roger_journal_new ();
+  gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (roger_shell_get_journal (self)));
 
-  if (rm_init (&error) == FALSE) {
-    g_warning ("rm failed: %s\n", error ? error->message : "");
+  if (!rm_init (&error)) {
+    g_autoptr (GtkWidget) dialog = NULL;
 
-    GtkWidget *dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "RM failed");
+    g_warning ("rm failed: %s", error ? error->message : "");
+
+    dialog = gtk_message_dialog_new (GTK_WINDOW (self->journal), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "RouterManager failed");
     gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", error ? error->message : "");
-    gtk_dialog_run (GTK_DIALOG (dialog));
-    gtk_widget_destroy (dialog);
-
-    g_clear_error (&error);
+    g_signal_connect_object (dialog, "response", G_CALLBACK (on_rm_failed_response), self, 0);
+    gtk_widget_show (dialog);
     return;
   }
 
-  gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (roger_shell_get_journal (self)));
-
   if (!g_settings_get_boolean (ROGER_SETTINGS_MAIN, ROGER_PREFS_RUN_IN_BACKGROUND))
     gtk_widget_show (GTK_WIDGET (roger_shell_get_journal (self)));
+
+  if (self->call_number && strlen (self->call_number) > 0)
+    roger_shell_phone (self, self->call_number);
 }
 
 static void
@@ -734,7 +735,6 @@ main (int    argc,
   g_option_group_set_translation_domain (option_group, GETTEXT_PACKAGE);
   g_option_group_add_entries (option_group, option_entries);
   g_option_context_set_main_group (option_context, option_group);
-  g_option_context_add_group (option_context, gtk_get_option_group (TRUE));
 
   if (!g_option_context_parse (option_context, &argc, &argv, &error)) {
     g_print ("Failed to parse arguments: %s\n", error->message);

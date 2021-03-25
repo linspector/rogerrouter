@@ -19,6 +19,9 @@ G_BEGIN_DECLS
 #define ROGER_PREFS_SCHEMA    "org.tabos.roger"
 #define ROGER_SETTINGS_MAIN   roger_settings_get (ROGER_PREFS_SCHEMA)
 
+#define RM_PREFS_SCHEMA       "org.tabos.rm"
+#define RM_SETTINGS_MAIN      roger_settings_get (RM_PREFS_SCHEMA)
+
 #define ROGER_PREFS_RUN_IN_BACKGROUND       "run-in-background"
 
 GSettings *roger_settings_get (const char *schema);

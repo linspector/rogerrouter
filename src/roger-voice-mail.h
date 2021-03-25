@@ -13,13 +13,13 @@
 #pragma once
 
 #include <gtk/gtk.h>
-#include <handy.h>
+#include <adwaita.h>
 
 G_BEGIN_DECLS
 
 #define ROGER_TYPE_VOICE_MAIL (roger_voice_mail_get_type ())
 
-G_DECLARE_FINAL_TYPE (RogerVoiceMail, roger_voice_mail, ROGER, VOICE_MAIL, HdyWindow)
+G_DECLARE_FINAL_TYPE (RogerVoiceMail, roger_voice_mail, ROGER, VOICE_MAIL, AdwWindow)
 
 GtkWidget *roger_voice_mail_new (void);
 

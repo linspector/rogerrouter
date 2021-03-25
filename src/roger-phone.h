@@ -12,14 +12,14 @@
 
 #pragma once
 
-#include <handy.h>
+#include <adwaita.h>
 #include <rm/rm.h>
 
 G_BEGIN_DECLS
 
 #define ROGER_TYPE_PHONE (roger_phone_get_type ())
 
-G_DECLARE_FINAL_TYPE (RogerPhone, roger_phone, ROGER, PHONE, HdyWindow)
+G_DECLARE_FINAL_TYPE (RogerPhone, roger_phone, ROGER, PHONE, AdwWindow)
 
 GtkWidget *roger_phone_new (void);
 

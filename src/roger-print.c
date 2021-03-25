@@ -389,7 +389,7 @@ roger_print_journal (GList *journal)
     g_autoptr (GtkWidget) dialog = NULL;
 
     dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "%s", error->message);
-    g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
+    g_signal_connect (dialog, "response", G_CALLBACK (gtk_window_destroy), NULL);
     gtk_widget_show (dialog);
   }
 }

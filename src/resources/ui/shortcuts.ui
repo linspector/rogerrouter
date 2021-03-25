@@ -22,7 +22,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">1</property>
-                <property name="accelerator">&lt;ctrl&gt;question</property>
+                <property name="accelerator">&lt;ctrl&gt;F1</property>
                 <property name="title" translatable="yes" context="shortcut window">Shortcuts</property>
               </object>
             </child>
@@ -37,13 +37,6 @@
                 <property name="visible">1</property>
                 <property name="accelerator">&lt;ctrl&gt;P</property>
                 <property name="title" translatable="yes" context="shortcut window">Phone</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">1</property>
-                <property name="accelerator">&lt;ctrl&gt;B</property>
-                <property name="title" translatable="yes" context="shortcut window">Address book</property>
               </object>
             </child>
             <child>

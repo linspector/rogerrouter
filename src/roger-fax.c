@@ -14,11 +14,12 @@
 
 #include "roger-fax.h"
 
-#include "contacts.h"
+#include "contrib/suggestion-entry.h"
 #include "roger-contactsearch.h"
 #include "roger-journal.h"
 #include "roger-print.h"
 
+#include "adwaita.h"
 #include <ctype.h>
 #include <ghostscript/iapi.h>
 #include <ghostscript/ierrors.h>
@@ -28,15 +29,20 @@
 #include <rm/rm.h>
 
 struct _RogerFax {
-  HdyWindow parent_instance;
+  AdwWindow parent_instance;
 
   GtkWidget *header_bar;
-  GtkWidget *deck;
+  GtkWidget *window_title;
+  GtkWidget *leaflet;
   GtkWidget *search_entry;
   GtkWidget *sender_label;
   GtkWidget *receiver_label;
   GtkWidget *progress_bar;
+  GtkWidget *dial_button;
   GtkWidget *hangup_button;
+  GtkWidget *grid;
+  GtkWidget *menu_button;
+  GtkWidget *transfer_grid;
 
   RmConnection *connection;
   RmFaxStatus status;
@@ -44,7 +50,7 @@ struct _RogerFax {
   gint status_timer_id;
 };
 
-G_DEFINE_TYPE (RogerFax, roger_fax, HDY_TYPE_WINDOW)
+G_DEFINE_TYPE (RogerFax, roger_fax, ADW_TYPE_WINDOW)
 
 gboolean
 roger_fax_status_timer_cb (gpointer user_data)
@@ -104,7 +110,7 @@ roger_fax_status_timer_cb (gpointer user_data)
   }
 
   time_diff = rm_connection_get_duration_time (self->connection);
-  hdy_header_bar_set_subtitle (HDY_HEADER_BAR (self->header_bar), time_diff);
+  adw_window_title_set_subtitle (ADW_WINDOW_TITLE (self->window_title), time_diff);
 
   return G_SOURCE_CONTINUE;
 }
@@ -120,7 +126,7 @@ static void
 roger_fax_remove_status_timer (RogerFax *self)
 {
   g_clear_handle_id (&self->status_timer_id, g_source_remove);
-  hdy_header_bar_set_subtitle (HDY_HEADER_BAR (self->header_bar), "");
+  adw_window_title_set_subtitle (ADW_WINDOW_TITLE (self->window_title), "");
 
   gtk_widget_set_sensitive (self->hangup_button, FALSE);
 }
@@ -257,13 +263,13 @@ roger_fax_dial_button_clicked_cb (GtkWidget *button,
 
   g_assert (!self->connection);
 
-  number = gtk_entry_get_text (GTK_ENTRY (self->search_entry));
+  number = gtk_editable_get_text (GTK_EDITABLE (self->search_entry));
   if (RM_EMPTY_STRING (number))
     return;
 
   self->connection = rm_fax_send (rm_profile_get_fax (profile), self->file, number, rm_router_get_suppress_state (profile));
   if (self->connection) {
-    hdy_deck_set_visible_child_name (HDY_DECK (self->deck), "transfer");
+    adw_leaflet_set_visible_child (ADW_LEAFLET (self->leaflet), self->transfer_grid);
     roger_fax_start_status_timer (self);
   }
 }
@@ -290,10 +296,10 @@ roger_fax_number_button_clicked_cb (GtkWidget *widget,
   const char *name = gtk_widget_get_name (widget);
   gint num = name[7];
 
-  const char *text = gtk_entry_get_text (GTK_ENTRY (self->search_entry));
+  const char *text = gtk_editable_get_text (GTK_EDITABLE (self->search_entry));
   g_autofree char *tmp = g_strdup_printf ("%s%c", text, num);
 
-  gtk_entry_set_text (GTK_ENTRY (self->search_entry), tmp);
+  gtk_editable_set_text (GTK_EDITABLE (self->search_entry), tmp);
 }
 
 static void
@@ -301,13 +307,13 @@ roger_fax_clear_button_clicked_cb (GtkWidget *widget,
                                    gpointer   user_data)
 {
   RogerFax *self = ROGER_FAX (user_data);
-  const char *text = gtk_entry_get_text (GTK_ENTRY (self->search_entry));
+  const char *text = gtk_editable_get_text (GTK_EDITABLE (self->search_entry));
 
   if (!RM_EMPTY_STRING (text)) {
     g_autofree char *new = g_strdup (text);
 
     new[strlen (text) - 1] = '\0';
-    gtk_entry_set_text (GTK_ENTRY (self->search_entry), new);
+    gtk_editable_set_text (GTK_EDITABLE (self->search_entry), new);
   }
 }
 
@@ -321,6 +327,31 @@ roger_fax_dispose (GObject *object)
   G_OBJECT_CLASS (roger_fax_parent_class)->dispose (object);
 }
 
+static gboolean
+on_roger_fax_close_request (GtkWidget *window,
+                            gpointer   user_data)
+{
+  RogerFax *self = ROGER_FAX (window);
+
+  if (self->connection)
+    return TRUE;
+
+  return FALSE;
+}
+
+static void
+roger_fax_dtmf_button_clicked_cb (GtkWidget *widget,
+                                  gpointer   user_data)
+{
+  RogerFax *self = ROGER_FAX (user_data);
+  const char *text = gtk_editable_get_text (GTK_EDITABLE (self->search_entry));
+  const char *name = gtk_widget_get_name (widget);
+  gint num = name[7];
+  g_autofree char *tmp = g_strdup_printf ("%s%c", text, num);
+
+  gtk_editable_set_text (GTK_EDITABLE (self->search_entry), tmp);
+}
+
 static void
 roger_fax_class_init (RogerFaxClass *klass)
 {
@@ -332,18 +363,25 @@ roger_fax_class_init (RogerFaxClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class, "/org/tabos/roger/ui/fax.ui");
 
   gtk_widget_class_bind_template_child (widget_class, RogerFax, header_bar);
-  gtk_widget_class_bind_template_child (widget_class, RogerFax, deck);
-  gtk_widget_class_bind_template_child (widget_class, RogerFax, search_entry);
+  gtk_widget_class_bind_template_child (widget_class, RogerFax, leaflet);
+  /*gtk_widget_class_bind_template_child (widget_class, RogerFax, search_entry); */
   gtk_widget_class_bind_template_child (widget_class, RogerFax, sender_label);
   gtk_widget_class_bind_template_child (widget_class, RogerFax, receiver_label);
-  gtk_widget_class_bind_template_child (widget_class, RogerFax, progress_bar);
-  gtk_widget_class_bind_template_child (widget_class, RogerFax, hangup_button);
+  /*gtk_widget_class_bind_template_child (widget_class, RogerFax, progress_bar); */
+  gtk_widget_class_bind_template_child (widget_class, RogerFax, window_title);
+  gtk_widget_class_bind_template_child (widget_class, RogerFax, dial_button);
+  gtk_widget_class_bind_template_child (widget_class, RogerFax, grid);
+  gtk_widget_class_bind_template_child (widget_class, RogerFax, transfer_grid);
+  gtk_widget_class_bind_template_child (widget_class, RogerFax, menu_button);
+  /*gtk_widget_class_bind_template_child (widget_class, RogerFax, hangup_button); */
 
   gtk_widget_class_bind_template_callback (widget_class, roger_fax_number_button_clicked_cb);
   gtk_widget_class_bind_template_callback (widget_class, roger_fax_dial_button_clicked_cb);
   gtk_widget_class_bind_template_callback (widget_class, roger_fax_hangup_button_clicked_cb);
   gtk_widget_class_bind_template_callback (widget_class, roger_fax_clear_button_clicked_cb);
   gtk_widget_class_bind_template_callback (widget_class, roger_fax_delete_event_cb);
+  gtk_widget_class_bind_template_callback (widget_class, roger_fax_dtmf_button_clicked_cb);
+  gtk_widget_class_bind_template_callback (widget_class, on_roger_fax_close_request);
 }
 
 static void
@@ -357,6 +395,21 @@ roger_fax_set_suppression (GSimpleAction *action,
 static const GActionEntry fax_actions [] = {
   {"set-suppression", NULL, NULL, "false", roger_fax_set_suppression},
 };
+
+static void
+roger_fax_create_menu (RogerFax *self)
+{
+  RmProfile *profile = rm_profile_get_active ();
+  GMenu *menu;
+
+  menu = g_menu_new ();
+  g_menu_append (menu, _("Suppress number"), "fax.set-suppression");
+
+  if (rm_router_get_suppress_state (profile))
+    gtk_widget_activate_action_variant (GTK_WIDGET (self), "fax.set-suppression", NULL);
+
+  gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (self->menu_button), G_MENU_MODEL (menu));
+}
 
 static void
 roger_fax_init (RogerFax *self)
@@ -375,7 +428,16 @@ roger_fax_init (RogerFax *self)
                                   "fax",
                                   G_ACTION_GROUP (simple_action_group));
 
-  contact_search_completion_add (self->search_entry);
+  self->search_entry = suggestion_entry_new ();
+  gtk_widget_set_valign (self->search_entry, GTK_ALIGN_CENTER);
+  gtk_grid_attach (GTK_GRID (self->grid), self->search_entry, 0, 0, 3, 1);
+
+  roger_contact_search_completion_add (self->search_entry);
+
+  roger_fax_create_menu (self);
+
+  adw_window_title_set_title (ADW_WINDOW_TITLE (self->window_title), _("Fax"));
+  adw_window_title_set_subtitle (ADW_WINDOW_TITLE (self->window_title), "");
 
   gtk_label_set_text (GTK_LABEL (self->sender_label), g_settings_get_string (profile->settings, "fax-header"));
 

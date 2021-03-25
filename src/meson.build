@@ -12,13 +12,13 @@ enums = gnome.mkenums_simple('roger-type-builtins',
 )
 
 roger_sources = [
-  'contrib/gd-two-lines-renderer.c',
+  'contrib/suggestion-entry.c',
   'preferences/preferences.c',
   'preferences/preferences-audio.c',
   'preferences/preferences-telephony.c',
   'preferences/preferences-plugins.c',
-  'contacts.c',
   'roger-assistant.c',
+  #'contactsearch.c',
   'roger-contactsearch.c',
   'roger-fax.c',
   'roger-journal.c',
@@ -37,13 +37,13 @@ endif
 
 roger_deps = [
   config_h,
-  gtk3_dep,
+  gtk_dep,
   libsoup_dep,
   libtiff_dep,
   librm_dep,
   libm_dep,
   libgs_dep,
-  libhandy_dep
+  libadwaita_dep
 ]
 
 roger_includes = include_directories(

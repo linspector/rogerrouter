@@ -43,32 +43,35 @@ roger_preferences_setup_plugins (RogerPreferencesWindow *self)
     GtkWidget *toggle;
     GtkWidget *sub_row;
     GtkWidget *link;
+    static gboolean run = FALSE;
 
     if (plugin->builtin) {
       continue;
     }
 
-    row = hdy_expander_row_new ();
+    row = adw_expander_row_new ();
 
-    hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (row), plugin->name);
-    hdy_expander_row_set_subtitle (HDY_EXPANDER_ROW (row), plugin->description);
+    adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), plugin->name);
+    adw_expander_row_set_subtitle (ADW_EXPANDER_ROW (row), plugin->description);
 
     toggle = gtk_switch_new ();
     gtk_switch_set_active (GTK_SWITCH (toggle), plugin->enabled);
     g_signal_connect (toggle, "state-set", G_CALLBACK (plugins_switch_state_set_cb), plugin);
     gtk_widget_set_valign (toggle, GTK_ALIGN_CENTER);
-    hdy_expander_row_add_action (HDY_EXPANDER_ROW (row), toggle);
+    adw_expander_row_add_action (ADW_EXPANDER_ROW (row), toggle);
 
-    sub_row = hdy_action_row_new ();
-    gtk_container_add (GTK_CONTAINER (row), sub_row);
-    hdy_preferences_row_set_title (HDY_PREFERENCES_ROW (sub_row), _("Homepage"));
+    sub_row = adw_action_row_new ();
+    adw_expander_row_add_row (ADW_EXPANDER_ROW (row), sub_row);
+    adw_preferences_row_set_title (ADW_PREFERENCES_ROW (sub_row), _("Homepage"));
     gtk_list_box_row_set_activatable (GTK_LIST_BOX_ROW (sub_row), TRUE);
     link = gtk_link_button_new_with_label (plugin->homepage, plugin->homepage);
-    gtk_container_add (GTK_CONTAINER (sub_row), link);
+    adw_action_row_add_suffix (ADW_ACTION_ROW (sub_row), link);
 
-    if (plugin->configure) {
+    if (plugin->configure && !run) {
+      g_print ("%s\n", plugin->name);
+      run = TRUE;
       for (GList *sub_row = plugin->configure (plugin); sub_row && sub_row->data; sub_row = sub_row->next)
-        gtk_container_add (GTK_CONTAINER (row), sub_row->data);
+        adw_expander_row_add_row (ADW_EXPANDER_ROW (row), sub_row->data);
     }
 
     gtk_list_box_insert (GTK_LIST_BOX (self->plugins_listbox), row, -1);

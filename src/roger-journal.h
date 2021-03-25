@@ -1,5 +1,5 @@
 /*
- * Roger Router Copyright (c) 2012-2021 Jan-Michael Brummer
+ * Roger Router Copyright (c) 2012-2022 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include <handy.h>
+#include <adwaita.h>
 #include <rm/rm.h>
 
 G_BEGIN_DECLS
@@ -32,7 +32,7 @@ enum {
 
 #define ROGER_TYPE_JOURNAL (roger_journal_get_type ())
 
-G_DECLARE_FINAL_TYPE (RogerJournal, roger_journal, ROGER, JOURNAL, HdyWindow)
+G_DECLARE_FINAL_TYPE (RogerJournal, roger_journal, ROGER, JOURNAL, AdwApplicationWindow)
 
 GtkWidget *roger_journal_new (void);
 
