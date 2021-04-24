@@ -50,11 +50,6 @@ GdkPixbuf *journal_get_call_icon (gint type);
 
 /*void journal_update_filter_box (RogerJournal *self); */
 void journal_quit (RogerJournal *self);
-
-void journal_set_hide_on_quit (RogerJournal *self,
-                               gboolean      hide);
-void journal_set_hide_on_start (RogerJournal *self,
-                                gboolean      hide);
 GSList *journal_get_list (void);
 
 GtkWidget *journal_get_window (void);
