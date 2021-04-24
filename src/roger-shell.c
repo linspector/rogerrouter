@@ -56,7 +56,6 @@ enum {
 static GParamSpec *object_properties[N_PROPERTIES] = { NULL, };
 
 static RogerShell *roger_shell = NULL;
-static gboolean start_in_background = FALSE;
 static gboolean debug_enabled = FALSE;
 static char *startup_profile = NULL;
 static char *call_number = NULL;
@@ -381,6 +380,7 @@ static GActionEntry apps_entries[] = {
   { "hangup", hangup_activated, "i", NULL, NULL },
   { "journal", journal_activated, NULL, NULL, NULL },
   { "shortcuts", shortcuts_activated, NULL, NULL, NULL },
+  { "run-in-background", NULL, NULL, "false", NULL},
 };
 
 static void
@@ -471,11 +471,31 @@ roger_shell_constructed (GObject *object)
     G_OBJECT_CLASS (roger_shell_parent_class)->constructed (object);
 }
 
+static gboolean
+run_in_background_get_mapping (GValue   *value,
+                               GVariant *variant,
+                               gpointer  user_data)
+{
+  g_value_set_variant (value, variant);
+  return TRUE;
+}
+
+static GVariant *
+run_in_background_set_mapping (const GValue       *value,
+                               const GVariantType *expected_type,
+                               gpointer            user_data)
+{
+  GVariant *var = g_value_get_variant (value);
+
+  return g_variant_new_boolean (g_variant_get_boolean (var));
+}
+
 static void
 roger_shell_activate (GApplication *application)
 {
   RogerShell *self = ROGER_SHELL (application);
   GList *list = gtk_application_get_windows (GTK_APPLICATION (self));
+  GAction *action;
   g_autoptr (GError) error = NULL;
   guint i;
 
@@ -494,6 +514,18 @@ roger_shell_activate (GApplication *application)
                                            accels[i].accelerators);
   }
   g_action_map_add_action_entries (G_ACTION_MAP (self), apps_entries, G_N_ELEMENTS (apps_entries), self);
+
+  action = g_action_map_lookup_action (G_ACTION_MAP (self), "run-in-background");
+  g_settings_bind_with_mapping (ROGER_SETTINGS_MAIN,
+                                ROGER_PREFS_RUN_IN_BACKGROUND,
+                                action,
+                                "state",
+                                G_SETTINGS_BIND_DEFAULT,
+                                run_in_background_get_mapping,
+                                run_in_background_set_mapping,
+                                NULL,
+                                NULL);
+
 
   const char *user_plugins = g_get_user_data_dir ();
   char *path = g_build_filename (user_plugins, "roger", G_DIR_SEPARATOR_S, "plugins", NULL);
@@ -524,12 +556,8 @@ roger_shell_activate (GApplication *application)
 
   gtk_application_add_window (GTK_APPLICATION (self), GTK_WINDOW (roger_shell_get_journal (self)));
 
-  if (start_in_background) {
-    journal_set_hide_on_start (ROGER_JOURNAL (roger_shell_get_journal (self)), TRUE);
-    journal_set_hide_on_quit (ROGER_JOURNAL (roger_shell_get_journal (self)), TRUE);
-  } else {
+  if (!g_settings_get_boolean (ROGER_SETTINGS_MAIN, ROGER_PREFS_RUN_IN_BACKGROUND))
     gtk_widget_show (GTK_WIDGET (roger_shell_get_journal (self)));
-  }
 }
 
 static void
@@ -679,7 +707,6 @@ option_version_cb (const char  *option_name,
 }
 
 const GOptionEntry option_entries[] = {
-  { "background", 'b', 0, G_OPTION_ARG_NONE, &start_in_background, "Start in background", NULL },
   { "call", 'c', 0, G_OPTION_ARG_STRING, &call_number, "Call a number", NULL },
   { "profile", 'p', 0, G_OPTION_ARG_STRING, &startup_profile, "Start in custom profile", NULL },
   { "version", 'v', G_OPTION_FLAG_NO_ARG | G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_CALLBACK, option_version_cb, NULL, NULL },
