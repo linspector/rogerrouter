@@ -57,40 +57,51 @@ gboolean
 roger_fax_status_timer_cb (gpointer user_data)
 {
   RogerFax *self = ROGER_FAX (user_data);
-  RmFaxStatus *fax_status = &self->status;
+  RmFaxStatus fax_status;
   RmFax *fax = rm_profile_get_fax (rm_profile_get_active ());
   g_autofree char *time_diff = NULL;
   char buffer[256];
   static gdouble old_percent = 0.0f;
 
-  if (!rm_fax_get_status (fax, self->connection, fax_status))
-    return TRUE;
+  g_assert(fax);
 
-  if (old_percent != fax_status->percentage) {
-    old_percent = fax_status->percentage;
+  memset(&fax_status, 0, sizeof (RmFaxStatus));
+  if (!rm_fax_get_status (fax, self->connection, &fax_status)) {
+    self->status_timer_id = 0;
+    return G_SOURCE_REMOVE;
+  }
 
-    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (self->progress_bar), fax_status->percentage);
+  if (fax_status.phase == RM_FAX_PHASE_RELEASE) {
+    self->status_timer_id = 0;
+    return G_SOURCE_REMOVE;
+  }
+
+
+  if (old_percent != fax_status.percentage) {
+    old_percent = fax_status.percentage;
+
+    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (self->progress_bar), fax_status.percentage);
   }
 
   /* Update status information */
-  switch (fax_status->phase) {
+  switch (fax_status.phase) {
     case RM_FAX_PHASE_IDENTIFY:
-      gtk_label_set_text (GTK_LABEL (self->receiver_label), fax_status->remote_ident);
-      g_free (fax_status->remote_ident);
+      gtk_label_set_text (GTK_LABEL (self->receiver_label), fax_status.remote_ident);
+      g_free (fax_status.remote_ident);
 
     /* Fall through */
     case RM_FAX_PHASE_SIGNALLING:
-      snprintf (buffer, sizeof (buffer), _("Transferred %d of %d"), fax_status->pages_transferred, fax_status->pages_total);
+      snprintf (buffer, sizeof (buffer), _("Transferred %d of %d"), fax_status.pages_transferred, fax_status.pages_total);
       gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->progress_bar), buffer);
       break;
     case RM_FAX_PHASE_RELEASE:
-      if (!fax_status->error_code)
+      if (!fax_status.error_code)
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->progress_bar), _("Fax transfer successful"));
       else
         gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->progress_bar), _("Fax transfer failed"));
 
       if (self->status_timer_id && g_settings_get_boolean (rm_profile_get_active ()->settings, "fax-report"))
-        print_fax_report (fax_status, self->file, g_settings_get_string (rm_profile_get_active ()->settings, "fax-report-dir"));
+        print_fax_report (&fax_status, self->file, g_settings_get_string (rm_profile_get_active ()->settings, "fax-report-dir"));
 
       rm_fax_hangup (fax, self->connection);
       self->status_timer_id = 0;
@@ -100,7 +111,7 @@ roger_fax_status_timer_cb (gpointer user_data)
       gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->progress_bar), _("Connecting…"));
       break;
     default:
-      g_debug ("%s: Unhandled phase (%d)", __FUNCTION__, fax_status->phase);
+      g_debug ("%s: Unhandled phase (%d)", __FUNCTION__, fax_status.phase);
       gtk_progress_bar_set_text (GTK_PROGRESS_BAR (self->progress_bar), "");
       break;
   }
@@ -137,7 +148,6 @@ fax_connection_changed_cb (RmObject     *object,
 
   g_assert (connection);
   g_assert (self);
-  g_assert (self->connection);
 
   if (self->connection != connection)
     return;
@@ -307,7 +317,7 @@ roger_fax_dispose (GObject *object)
 {
   RogerFax *self = ROGER_FAX (object);
 
-  roger_fax_remove_status_timer (self);
+  g_clear_handle_id (&self->status_timer_id, g_source_remove);
 
   G_OBJECT_CLASS (roger_fax_parent_class)->dispose (object);
 }
