@@ -77,8 +77,6 @@ struct _RogerJournal {
   GMutex mutex;
   GCancellable *cancellable;
 
-  gboolean hide_on_quit;
-  gboolean hide_on_start;
   gboolean mobile;
   gboolean active;
   guint update_id;
@@ -754,36 +752,12 @@ on_view_row_activated (GtkTreeView       *view,
   }
 }
 
-void
-journal_set_hide_on_quit (RogerJournal *self,
-                          gboolean      hide)
-{
-  self->hide_on_quit = hide;
-
-  if (!hide) {
-    gtk_widget_set_visible (GTK_WIDGET (self), TRUE);
-  }
-}
-
-void
-journal_set_hide_on_start (RogerJournal *self,
-                           gboolean      hide)
-{
-  self->hide_on_start = hide;
-
-  if (hide) {
-    gtk_widget_set_visible (GTK_WIDGET (self), FALSE);
-  }
-}
-
 static gboolean
 on_delete_event (GtkWidget *widget,
                  GdkEvent  *event,
                  gpointer   user_data)
 {
-  RogerJournal *self = ROGER_JOURNAL (widget);
-
-  if (self->hide_on_quit) {
+  if (g_settings_get_boolean (ROGER_SETTINGS_MAIN, ROGER_PREFS_RUN_IN_BACKGROUND)) {
     gtk_widget_hide (widget);
 
     return TRUE;
@@ -1098,9 +1072,6 @@ roger_journal_constructed (GObject *object)
     gtk_window_fullscreen (GTK_WINDOW (journal));
 
   G_OBJECT_CLASS (roger_journal_parent_class)->constructed (object);
-
-  if (!journal->hide_on_start)
-    gtk_widget_show (GTK_WIDGET (journal));
 }
 
 static void
@@ -1276,8 +1247,6 @@ roger_journal_init (RogerJournal *self)
   gtk_list_box_set_header_func (GTK_LIST_BOX (self->journal_listbox), box_header_func, NULL, NULL);
 
   journal_update_filter_box (self);
-
-  gtk_widget_hide_on_delete (GTK_WIDGET (self));
 
   journal_filter_box_changed (GTK_COMBO_BOX (self->filter_combobox), self);
 

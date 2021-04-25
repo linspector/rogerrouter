@@ -77,6 +77,11 @@
 			<summary>Type of icons shown in journal window</summary>
 			<description>Type of icons shown in journal window.</description>
 		</key>
+		<key type="b" name="run-in-background">
+			<default>false</default>
+			<summary>Run in background</summary>
+			<description>If enabled, application continues running in the background after closing the window.</description>
+		</key>
 	</schema>
 
   <schema path="/org/tabos/roger/window-state/" id="org.tabos.roger.window-state" gettext-domain="roger">
