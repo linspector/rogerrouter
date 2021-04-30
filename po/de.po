@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roger 1.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-22 14:46+0100\n"
+"POT-Creation-Date: 2021-04-30 17:27+0200\n"
 "PO-Revision-Date: 2016-09-17 21:39+0200\n"
 "Last-Translator: Jan-Michael Brummer <jan.brummer@tabos.org>\n"
 "Language-Team: Deutsch <>\n"
@@ -27,10 +27,6 @@ msgstr "Roger Router"
 msgid "Journal, Fax-Software and Call-Monitor for AVM FRITZ!Box or compatible"
 msgstr ""
 "Journal, Fax-Software und Anrufmonitor für AVM FRITZ!Box oder kompatibel"
-
-#: data/org.tabos.roger.desktop.in:7
-msgid "org.tabos.roger"
-msgstr "org.tabos.roger"
 
 #: data/org.tabos.roger.desktop.in:12
 msgid "fritz;box;fritzbox;router;manager;fax;softphone;"
@@ -57,6 +53,47 @@ msgstr ""
 #: data/org.tabos.roger.appdata.xml.in:18
 msgid "Journal view of all calls"
 msgstr "Journalansicht aller Anrufe"
+
+#: data/org.tabos.roger.appdata.xml.in:25
+msgid "New features:"
+msgstr "Neue Funktionen:"
+
+#: data/org.tabos.roger.appdata.xml.in:29
+msgid "UI redesign"
+msgstr "UI Redesign"
+
+#: data/org.tabos.roger.appdata.xml.in:30
+msgid "Mobile design"
+msgstr "Mobiles Design"
+
+#: data/org.tabos.roger.appdata.xml.in:31
+msgid "Significant stability and performance improvements"
+msgstr "Signifikante Stabilitäts- und Performanceverbesserungen"
+
+#: data/org.tabos.roger.appdata.xml.in:32
+msgid "Preperations for GTK4 switch"
+msgstr "Vorbereitung für den Wechsel auf GTK4"
+
+#: data/org.tabos.roger.appdata.xml.in:33
+msgid "Bugfixes"
+msgstr "Bugfixes"
+
+#: data/org.tabos.roger.appdata.xml.in:46
+msgid "Official release of 2.1.0"
+msgstr "Offizielles Release der 2.1.0"
+
+#: data/org.tabos.roger.appdata.xml.in:51
+msgid "Official release of 2.0.0"
+msgstr "Offizielles Release der 2.0.0"
+
+#: data/org.tabos.roger.appdata.xml.in:56
+msgid "Beta-Release for upcoming 2.0."
+msgstr "Beta-Release der kommenden 2.0."
+
+#: data/org.tabos.roger.appdata.xml.in:81
+#: data/org.tabos.roger.appdata.xml.in:86
+msgid "Jan-Michael Brummer"
+msgstr "Jan-Michael Brummer"
 
 #: src/resources/ui/assistant.ui:38
 msgid "Assistant"
@@ -301,7 +338,7 @@ msgstr "Typ"
 msgid "Reset to defaults"
 msgstr "Auf Vorgaben zurücksetzen"
 
-#: src/resources/ui/journal.ui:74 src/roger-journal.c:901
+#: src/resources/ui/journal.ui:74 src/roger-journal.c:875
 msgid "Copy number"
 msgstr "Nummer kopieren"
 
@@ -309,7 +346,7 @@ msgstr "Nummer kopieren"
 msgid "Call number"
 msgstr "Nummer wählen"
 
-#: src/resources/ui/journal.ui:113 src/roger-journal.c:910
+#: src/resources/ui/journal.ui:113 src/roger-journal.c:884
 msgid "Add contact"
 msgstr "Kontakt hinzufügen"
 
@@ -399,7 +436,7 @@ msgid "_Phone"
 msgstr "_Telefon"
 
 #: src/resources/ui/journal-popover.ui:150
-#: src/resources/ui/journal-popover.ui:253
+#: src/resources/ui/journal-popover.ui:277
 msgid "_Functions"
 msgstr "_Funktionen"
 
@@ -407,23 +444,27 @@ msgstr "_Funktionen"
 msgid "_Assistant"
 msgstr "_Assistent"
 
-#: src/resources/ui/journal-popover.ui:190
+#: src/resources/ui/journal-popover.ui:187
+msgid "_Run in Background"
+msgstr "Im Hintergrund laufen"
+
+#: src/resources/ui/journal-popover.ui:214
 msgid "Pr_eferences"
 msgstr "_Einstellungen"
 
-#: src/resources/ui/journal-popover.ui:215
+#: src/resources/ui/journal-popover.ui:239
 msgid "_Keyboard Shortcuts"
 msgstr "Tasten_kürzel"
 
-#: src/resources/ui/journal-popover.ui:229
+#: src/resources/ui/journal-popover.ui:253
 msgid "A_bout Roger Router"
 msgstr "Info zu Roger Router"
 
-#: src/resources/ui/journal-popover.ui:270
+#: src/resources/ui/journal-popover.ui:294
 msgid "_Copy IP Address"
 msgstr "_IP-Adresse kopieren"
 
-#: src/resources/ui/journal-popover.ui:284
+#: src/resources/ui/journal-popover.ui:308
 msgid "_Reconnect"
 msgstr "_Neu verbinden"
 
@@ -787,12 +828,12 @@ msgstr "Neuer Kontakt"
 msgid "Do you want to delete contact '%s'?"
 msgstr "Wollen Sie den Kontakt '%s' löschen?"
 
-#: src/contacts.c:1063 src/roger-journal.c:486 src/roger-journal.c:544
-#: src/roger-journal.c:993 src/preferences/preferences.c:160
+#: src/contacts.c:1063 src/roger-journal.c:484 src/roger-journal.c:542
+#: src/roger-journal.c:967 src/preferences/preferences.c:160
 msgid "Cancel"
 msgstr "A_bbrechen"
 
-#: src/contacts.c:1066 src/roger-journal.c:487 src/roger-journal.c:545
+#: src/contacts.c:1066 src/roger-journal.c:485 src/roger-journal.c:543
 msgid "Delete"
 msgstr "Löschen"
 
@@ -840,53 +881,53 @@ msgstr "Fax Zuhause"
 msgid "Fax Work"
 msgstr "Fax Arbeit"
 
-#: src/roger-contactsearch.c:66 src/roger-journal.c:236
+#: src/roger-contactsearch.c:66 src/roger-journal.c:234
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: src/roger-fax.c:83
+#: src/roger-fax.c:94
 #, c-format
 msgid "Transferred %d of %d"
 msgstr "Übertragen %d von %d"
 
-#: src/roger-fax.c:88
+#: src/roger-fax.c:99
 msgid "Fax transfer successful"
 msgstr "Faxübertragung erfolgreich"
 
-#: src/roger-fax.c:90
+#: src/roger-fax.c:101
 msgid "Fax transfer failed"
 msgstr "Faxübertragung fehlgeschlagen"
 
-#: src/roger-fax.c:100
+#: src/roger-fax.c:111
 msgid "Connecting…"
 msgstr "Verbinden…"
 
-#: src/roger-journal.c:289
+#: src/roger-journal.c:287
 msgid "<No profile>"
 msgstr "<Kein Profil>"
 
-#: src/roger-journal.c:290
+#: src/roger-journal.c:288
 #, c-format
 msgid "%d calls, %d:%2.2dh"
 msgstr "%d Anrufe, %d:%2.2dh"
 
-#: src/roger-journal.c:484
+#: src/roger-journal.c:482
 msgid "Do you want to delete the router journal?"
 msgstr "Willst Du das Journal auf dem Router wirklich löschen?"
 
-#: src/roger-journal.c:542
+#: src/roger-journal.c:540
 msgid "Do you really want to delete the selected entry?"
 msgstr "Willst Du den ausgewählten Eintrag wirklich löschen?"
 
-#: src/roger-journal.c:993
+#: src/roger-journal.c:967
 msgid "Export journal"
 msgstr "Journal exportieren"
 
-#: src/roger-journal.c:993 src/preferences/preferences.c:164
+#: src/roger-journal.c:967 src/preferences/preferences.c:164
 msgid "Save"
 msgstr "Speichern"
 
-#: src/roger-journal.c:1296
+#: src/roger-journal.c:1265
 msgid "Restore default"
 msgstr "Auf Vorgaben zurücksetzen"
 
@@ -955,12 +996,12 @@ msgstr "Sendername:"
 msgid "Sender number:"
 msgstr "Sendernummer:"
 
-#: src/roger-shell.c:109
+#: src/roger-shell.c:108
 #, c-format
 msgid "A username and password are being requested by the site %s"
 msgstr "Ein Benutzername sowie Passwort werden von der Seite %s benötigt"
 
-#: src/roger-shell.c:220
+#: src/roger-shell.c:219
 msgid ""
 "FRITZ!Box Journal, Soft/phone, and Fax\n"
 "Dedicated to my father"
@@ -968,9 +1009,9 @@ msgstr ""
 "FRITZ!Box Journal, Soft/phone und Fax\n"
 "Gewidmet meinem Vater"
 
-#: src/roger-shell.c:227
+#: src/roger-shell.c:226
 msgid "Website"
-msgstr ""
+msgstr "Website"
 
 #: src/preferences/preferences.c:157
 msgid "Edit filter"
@@ -1072,17 +1113,8 @@ msgstr "VCard"
 msgid "VCard address book support"
 msgstr "VCard Adressbuch-Support"
 
-#~ msgid "Official release of 2.1.0"
-#~ msgstr "Offizielles Release der 2.1.0"
-
-#~ msgid "Official release of 2.0.0"
-#~ msgstr "Offizielles Release der 2.0.0"
-
-#~ msgid "Beta-Release for upcoming 2.0."
-#~ msgstr "Beta-Release der kommenden 2.0."
-
-#~ msgid "Jan-Michael Brummer"
-#~ msgstr "Jan-Michael Brummer"
+#~ msgid "org.tabos.roger"
+#~ msgstr "org.tabos.roger"
 
 #~ msgid "Google plugin: Authorization required"
 #~ msgstr "Google Plugin: Autorisierung benötigt"
@@ -1888,9 +1920,6 @@ msgstr "VCard Adressbuch-Support"
 #~ msgid "Fax devices"
 #~ msgstr "Faxgeräte"
 
-#~ msgid "Prefixes"
-#~ msgstr "Vorwahlen"
-
 #~ msgid "International call prefix"
 #~ msgstr "Internationaler Anrufpräfix"
 
@@ -2382,9 +2411,6 @@ msgstr "VCard Adressbuch-Support"
 
 #~ msgid "Existing entry"
 #~ msgstr "Existierender Eintrag"
-
-#~ msgid "New entry"
-#~ msgstr "Neuer Eintrag"
 
 #~ msgid "Faxes"
 #~ msgstr "Faxe"
