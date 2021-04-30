@@ -407,14 +407,14 @@ roger_print_load_tiff_page (TIFF *tiff_file)
   TIFFRGBAImage img;
   gint row, col;
   gint width, height;
-  uint32 *raster;
+  guint32 *raster;
 
   /* discover image height, width */
   TIFFGetField (tiff_file, TIFFTAG_IMAGEWIDTH, &width);
   TIFFGetField (tiff_file, TIFFTAG_IMAGELENGTH, &height);
 
   /* allocate and fill raster from file. */
-  raster = (uint32 *)_TIFFmalloc (width * height * sizeof (uint32));
+  raster = (guint32 *)_TIFFmalloc (width * height * sizeof (guint32));
   TIFFRGBAImageBegin (&img, tiff_file, FALSE, NULL);
   TIFFRGBAImageGet (&img, raster, width, height);
   TIFFRGBAImageEnd (&img);
@@ -422,7 +422,7 @@ roger_print_load_tiff_page (TIFF *tiff_file)
   /* vertically flip the raster */
   for (row = 0; row <= height / 2; row++) {
     for (col = 0; col < width; col++) {
-      uint32 tmp;
+      guint32 tmp;
 
       tmp = raster[row * width + col];
       raster[row * width + col] = raster[(height - row - 1) * width + col];
