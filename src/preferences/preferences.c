@@ -269,6 +269,9 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
     gtk_container_add (GTK_CONTAINER (self->notification_outgoing), row);
   }
 
+  gtk_widget_set_no_show_all (self->filter, TRUE);
+  gtk_widget_set_visible (self->filter, FALSE);
+
   /* Filter */
   for (list = rm_filter_get_list (rm_profile_get_active ()); list; list = list->next) {
     GtkWidget *edit;
