@@ -453,12 +453,12 @@ print_fax_report (RmFaxStatus *status,
   char *status_code = status->error_code == 0 ? _("SUCCESS") : _("FAILED");
   int pages = status->pages_transferred;
 
-  if (file == NULL || !g_file_test (file, G_FILE_TEST_EXISTS)) {
+  if (!file || !g_file_test (file, G_FILE_TEST_EXISTS)) {
     g_warning ("%s: File is invalid\n", __FUNCTION__);
     return;
   }
 
-  if (report_dir == NULL) {
+  if (!report_dir) {
     g_warning ("%s: report_dir is not set\n", __FUNCTION__);
     return;
   }
@@ -466,19 +466,19 @@ print_fax_report (RmFaxStatus *status,
   tiff = TIFFOpen (file, "r");
 
   pixbuf = roger_print_load_tiff_page (tiff);
-  if (pixbuf == NULL) {
+  if (!pixbuf) {
     g_warning ("pixbuf is null (file '%s')\n", file);
     return;
   }
 
   scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf, MM_TO_POINTS (594) - 140, MM_TO_POINTS (841) - 200, GDK_INTERP_BILINEAR);
+  g_clear_object (&pixbuf);
 
   buffer = g_strdup_printf ("%s/fax-report_%s_%s_%02d_%02d_%d_%02d_%02d_%02d.pdf",
                             report_dir, local, remote,
                             time_ptr->tm_mday, time_ptr->tm_mon + 1, time_ptr->tm_year + 1900,
                             time_ptr->tm_hour, time_ptr->tm_min, time_ptr->tm_sec);
   out = cairo_pdf_surface_create (buffer, MM_TO_POINTS (594), MM_TO_POINTS (841));
-
   if (!out) {
     g_warning ("%s: Could not create pdf surface - is report directory writeable?\n", __FUNCTION__);
     return;
@@ -486,6 +486,7 @@ print_fax_report (RmFaxStatus *status,
 
   cairo = cairo_create (out);
   gdk_cairo_set_source_pixbuf (cairo, scaled_pixbuf, 70, 200);
+  g_clear_object (&scaled_pixbuf);
   cairo_paint (cairo);
 
   cairo_set_source_rgb (cairo, 0, 0, 0);
@@ -495,7 +496,7 @@ print_fax_report (RmFaxStatus *status,
   cairo_move_to (cairo, 60, 60);
   buffer = g_strconcat (_("Fax Transfer Protocol"), " (", rm_router_get_name (profile), ")", NULL);
   cairo_show_text (cairo, buffer);
-  g_free (buffer);
+  g_clear_pointer (&buffer, g_free);
 
   cairo_select_font_face (cairo, "cairo:monospace", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
 
@@ -505,6 +506,7 @@ print_fax_report (RmFaxStatus *status,
   cairo_move_to (cairo, 280, 95);
   buffer = roger_print_journal_get_date_time ("%a %b %d %Y - %X");
   cairo_show_text (cairo, buffer);
+  g_clear_pointer (&buffer, g_free);
 
   /* Status */
   cairo_move_to (cairo, 1000, 95);
@@ -518,7 +520,7 @@ print_fax_report (RmFaxStatus *status,
   cairo_move_to (cairo, 280, 120);
   buffer = g_strdup_printf ("%s", status->remote_ident);
   cairo_show_text (cairo, buffer);
-  g_free (buffer);
+  g_clear_pointer (&buffer, g_free);
 
   /* Pages */
   cairo_move_to (cairo, 1000, 120);
@@ -526,7 +528,7 @@ print_fax_report (RmFaxStatus *status,
   cairo_move_to (cairo, 1220, 120);
   buffer = g_strdup_printf ("%d", pages);
   cairo_show_text (cairo, buffer);
-  g_free (buffer);
+  g_clear_pointer (&buffer, g_free);
 
   /* Remote name */
   cairo_move_to (cairo, 60, 145);
@@ -543,7 +545,7 @@ print_fax_report (RmFaxStatus *status,
   cairo_move_to (cairo, 1220, 145);
   buffer = rm_number_full (remote, FALSE);
   cairo_show_text (cairo, buffer);
-  g_free (buffer);
+  g_clear_pointer (&buffer, g_free);
 
   /* Local name */
   cairo_move_to (cairo, 60, 170);
@@ -551,7 +553,7 @@ print_fax_report (RmFaxStatus *status,
   buffer = g_strdup_printf ("%s", status->local_ident);
   cairo_move_to (cairo, 280, 170);
   cairo_show_text (cairo, buffer);
-  g_free (buffer);
+  g_clear_pointer (&buffer, g_free);
 
   /* Local number */
   cairo_move_to (cairo, 1000, 170);
@@ -559,7 +561,7 @@ print_fax_report (RmFaxStatus *status,
   cairo_move_to (cairo, 1220, 170);
   buffer = rm_number_full (local, FALSE);
   cairo_show_text (cairo, buffer);
-  g_free (buffer);
+  g_clear_pointer (&buffer, g_free);
 
   /* line */
   cairo_set_line_width (cairo, 0.5);
@@ -568,15 +570,14 @@ print_fax_report (RmFaxStatus *status,
   cairo_stroke (cairo);
 
   cairo_show_page (cairo);
-
   while (TIFFReadDirectory (tiff)) {
     pixbuf = roger_print_load_tiff_page (tiff);
 
     scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf, MM_TO_POINTS (594), MM_TO_POINTS (841), GDK_INTERP_BILINEAR);
-    g_object_unref (pixbuf);
-    pixbuf = scaled_pixbuf;
+    g_clear_object (&pixbuf);
 
-    gdk_cairo_set_source_pixbuf (cairo, pixbuf, 0, 0);
+    gdk_cairo_set_source_pixbuf (cairo, scaled_pixbuf, 0, 0);
+    g_clear_object (&scaled_pixbuf);
 
     cairo_paint (cairo);
     cairo_show_page (cairo);

@@ -71,12 +71,6 @@ roger_fax_status_timer_cb (gpointer user_data)
     return G_SOURCE_REMOVE;
   }
 
-  if (fax_status.phase == RM_FAX_PHASE_RELEASE) {
-    self->status_timer_id = 0;
-    return G_SOURCE_REMOVE;
-  }
-
-
   if (old_percent != fax_status.percentage) {
     old_percent = fax_status.percentage;
 
