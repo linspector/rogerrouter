@@ -72,5 +72,6 @@ subdir('po')
 subdir('plugins')
 subdir('src')
 
-meson.add_install_script('post_install.py')
-
+if get_option('enable-post-install')
+  meson.add_install_script('post_install.py')
+endif
