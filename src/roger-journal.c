@@ -477,19 +477,21 @@ static void
 clear_journal (RogerJournal *self)
 {
   GtkWidget *dialog;
+  GtkWidget *delete;
   gint flags = GTK_DIALOG_MODAL | GTK_DIALOG_USE_HEADER_BAR;
 
   dialog = gtk_message_dialog_new (GTK_WINDOW (self), flags, GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, _("Do you want to delete the router journal?"));
 
   gtk_dialog_add_button (GTK_DIALOG (dialog), _("Cancel"), GTK_RESPONSE_CANCEL);
   gtk_dialog_add_button (GTK_DIALOG (dialog), _("Delete"), GTK_RESPONSE_OK);
+  delete = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+  gtk_style_context_add_class (gtk_widget_get_style_context (delete), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION);
 
   gint result = gtk_dialog_run (GTK_DIALOG (dialog));
   gtk_widget_destroy (dialog);
 
-  if (result != GTK_RESPONSE_OK) {
+  if (result != GTK_RESPONSE_OK)
     return;
-  }
 
   rm_router_clear_journal (rm_profile_get_active ());
 }
@@ -535,12 +537,15 @@ journal_button_delete_clicked_cb (GtkWidget *button,
 {
   RogerJournal *self = ROGER_JOURNAL (user_data);
   GtkWidget *dialog;
+  GtkWidget *delete;
   gint flags = GTK_DIALOG_MODAL | GTK_DIALOG_USE_HEADER_BAR;
 
   dialog = gtk_message_dialog_new (GTK_WINDOW (self), flags, GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, _("Do you really want to delete the selected entry?"));
 
   gtk_dialog_add_button (GTK_DIALOG (dialog), _("Cancel"), GTK_RESPONSE_CANCEL);
   gtk_dialog_add_button (GTK_DIALOG (dialog), _("Delete"), GTK_RESPONSE_OK);
+  delete = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+  gtk_style_context_add_class (gtk_widget_get_style_context (delete), GTK_STYLE_CLASS_DESTRUCTIVE_ACTION);
 
   gint result = gtk_dialog_run (GTK_DIALOG (dialog));
   gtk_widget_destroy (dialog);
