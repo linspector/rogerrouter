@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2017 Jan-Michael Brummer <jan.brummer@tabos.org
+  Copyright 2021 Jan-Michael Brummer <jan.brummer@tabos.org
 -->
 <component type="desktop-application">
   <id>org.tabos.roger</id>
@@ -20,6 +20,17 @@
   </screenshots>
   <content_rating type="oars-1.1" />
   <releases>
+    <release version="2.4.2" date="2021-05-02" urgency="medium" >
+      <description>
+        <p>
+          New features:
+        </p>
+        <ul>
+          <li>Fix creation of fax report</li>
+          <li>Fix OS X build chain</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.4.1" date="2021-04-30" urgency="medium" >
       <description>
         <p>
@@ -30,7 +41,6 @@
           <li>Fix crash after fax transfer</li>
           <li>Fix double free crash</li>
           <li>Hide filter settings</li>
-          <li></li>
         </ul>
       </description>
     </release>
