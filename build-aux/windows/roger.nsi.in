@@ -211,6 +211,7 @@ Section RogerRouter
 	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstaudioresample.dll"
 	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstcoreelements.dll"
 	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstplayback.dll"
+	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstwasapi.dll"
 
 	SetOutPath "$INSTDIR\lib\gio"
 	File /r "C:\msys64\mingw64\lib\gio\"
