@@ -2,6 +2,7 @@
 
 import os
 import subprocess
+import shutil
 
 prefix = os.environ.get('MESON_INSTALL_PREFIX', '/usr')
 datadir = os.path.join(prefix, 'share')
@@ -10,9 +11,12 @@ datadir = os.path.join(prefix, 'share')
 if 'DESTDIR' not in os.environ:
     print('Updating icon cache...')
     icon_cache_dir = os.path.join(datadir, 'icons', 'hicolor')
+    gtk_update_icon_cache = shutil.which('gtk-update-icon-cache')
+    if not gtk_update_icon_cache:
+        gtk_update_icon_cache = shutil.which('gtk-update-icon-cache-3.0')
     if not os.path.exists(icon_cache_dir):
         os.makedirs(icon_cache_dir)
-    subprocess.call(['gtk-update-icon-cache', '-qtf', icon_cache_dir])
+    subprocess.call([gtk_update_icon_cache, '-qtf', icon_cache_dir])
 
     print('Updating desktop database...')
     desktop_database_dir = os.path.join(datadir, 'applications')
