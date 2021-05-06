@@ -294,7 +294,7 @@ Section -RegistryFiles SEC05
 	SetDetailsPrint none
  
 	;Include the results from Reg2NSIS utility
-	;!include $%PWD%/platform/windows/printer.nsh
+	!include printer.nsh
 	sleep 1
 SectionEnd
 

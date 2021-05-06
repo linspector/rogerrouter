@@ -21,6 +21,12 @@ ico = custom_target('makeico',
         command : [ico_writer, '@INPUT@', '@OUTPUT@'],
         install : false)
 
+printer = custom_target('makeprinter',
+        input : 'printer.nsh',
+        output : 'printer.nsh',
+        command : [ico_writer, '@INPUT@', '@OUTPUT@'],
+        install : false)
+
 roger_win_rc = configure_file(
   input: 'roger_winres.rc.in',
   output: 'roger_winres.rc',
@@ -29,6 +35,6 @@ roger_win_rc = configure_file(
 
 roger_win_res = windows.compile_resources(
   roger_win_rc,
-  depends: ico,
+  depends: [ico, printer],
   include_directories: include_directories('.')
 )
