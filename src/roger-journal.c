@@ -704,10 +704,14 @@ on_view_row_activated (GtkTreeView       *view,
 
   switch (call->type) {
     case RM_CALL_ENTRY_TYPE_FAX_REPORT: {
+#ifdef WIN32
+      ShellExecute(0, "open", call->priv, 0, 0, SW_SHOW);
+#else
       g_autofree char *uri = g_strdup_printf ("file:///%s", call->priv);
 
       if (!gtk_show_uri_on_window (GTK_WINDOW (self), uri, GDK_CURRENT_TIME, &error))
         g_debug ("%s(): Could not open uri '%s': %s", __FUNCTION__, uri, error->message);
+#endif
       break;
     }
     case RM_CALL_ENTRY_TYPE_FAX: {
