@@ -206,12 +206,13 @@ Section RogerRouter
 	File "C:\msys64\mingw64\bin\libcapi20-3.dll"
 
 	SetOutPath "$INSTDIR\lib\gstreamer-1.0"
-	# ;File /r "${MXE_SYSROOT}\lib/gstreamer-1.0/"
+	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstapp.dll"
 	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstaudioconvert.dll"
 	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstaudioresample.dll"
 	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstcoreelements.dll"
 	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstplayback.dll"
-	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstwasapi.dll"
+	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstdirectsound.dll"
+	File "C:\msys64\mingw64\lib\gstreamer-1.0\libgstdirectsoundsrc.dll"
 
 	SetOutPath "$INSTDIR\lib\gio"
 	File /r "C:\msys64\mingw64\lib\gio\"
