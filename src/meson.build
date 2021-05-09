@@ -57,6 +57,7 @@ executable('roger',
   roger_sources,
   dependencies: roger_deps,
   include_directories: roger_includes,
-  install: true
+  install: true,
+  gui_app: true
 )
 
