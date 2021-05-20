@@ -18,6 +18,7 @@ pacman --noconfirm -S --needed \
 	mingw-w64-$MSYS2_ARCH-spandsp \
 	mingw-w64-$MSYS2_ARCH-libsndfile \
 	mingw-w64-$MSYS2_ARCH-dlfcn \
+	mingw-w64-$MSYS2_ARCH-nsis \
 	mingw-w64-$MSYS2_ARCH-gst-plugins-base \
 	mingw-w64-$MSYS2_ARCH-gst-plugins-bad \
 	mingw-w64-$MSYS2_ARCH-gst-plugins-good \
@@ -40,4 +41,8 @@ cd ..
 git clone https://gitlab.com/tabos/rogerrouter.git
 cd rogerrouter
 meson _build
-ninja -C _build
+cd _build
+ninja
+ninja install
+
+makensis build-aux/windows/roger.nsi
