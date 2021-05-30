@@ -1,20 +1,13 @@
 /*
- * Roger Router
- * Copyright (c) 2012-2021 Jan-Michael Brummer
+ * Roger Router Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; version 2 only.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 only.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -705,7 +698,7 @@ on_view_row_activated (GtkTreeView       *view,
   switch (call->type) {
     case RM_CALL_ENTRY_TYPE_FAX_REPORT: {
 #ifdef WIN32
-      ShellExecute(0, "open", call->priv, 0, 0, SW_SHOW);
+      ShellExecute (0, "open", call->priv, 0, 0, SW_SHOW);
 #else
       g_autofree char *uri = g_strdup_printf ("file:///%s", call->priv);
 
@@ -727,7 +720,7 @@ on_view_row_activated (GtkTreeView       *view,
         rm_file_save (path, data, len);
 
 #ifdef WIN32
-        ShellExecute(0, "open", uri, 0, 0, SW_SHOW);
+        ShellExecute (0, "open", uri, 0, 0, SW_SHOW);
 #else
         if (!gtk_show_uri_on_window (GTK_WINDOW (self), uri, GDK_CURRENT_TIME, &error))
           g_debug ("%s(): Could not open uri '%s': %s", __FUNCTION__, uri, error->message);
@@ -739,7 +732,7 @@ on_view_row_activated (GtkTreeView       *view,
       char *tmp = call->priv;
 
 #ifdef WIN32
-        ShellExecute(0, "open", tmp, 0, 0, SW_SHOW);
+      ShellExecute (0, "open", tmp, 0, 0, SW_SHOW);
 #else
       if (!gtk_show_uri_on_window (GTK_WINDOW (self), tmp, GDK_CURRENT_TIME, &error))
         g_debug ("%s(): Could not open uri '%s': %s", __FUNCTION__, tmp, error->message);
@@ -1212,12 +1205,12 @@ add_col_to_header_menu (GtkWidget *menu,
   GtkWidget *column_item;
 
   button = gtk_tree_view_column_get_button (GTK_TREE_VIEW_COLUMN (col));
-  g_signal_connect(button, "button-press-event", G_CALLBACK(journal_column_header_button_pressed_cb), menu);
+  g_signal_connect (button, "button-press-event", G_CALLBACK (journal_column_header_button_pressed_cb), menu);
 
-  column_item = gtk_check_menu_item_new_with_label(gtk_tree_view_column_get_title (GTK_TREE_VIEW_COLUMN (col)));
-	//gtk_widget_set_sensitive(column_item, FALSE);
-	g_object_bind_property(col, "visible", column_item, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
-	gtk_menu_shell_append(GTK_MENU_SHELL(menu), column_item);
+  column_item = gtk_check_menu_item_new_with_label (gtk_tree_view_column_get_title (GTK_TREE_VIEW_COLUMN (col)));
+  /*gtk_widget_set_sensitive(column_item, FALSE); */
+  g_object_bind_property (col, "visible", column_item, "active", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), column_item);
 }
 
 static void
@@ -1225,7 +1218,7 @@ roger_journal_init (RogerJournal *self)
 {
   GtkTreeSortable *sortable;
   GSimpleActionGroup *simple_action_group;
-  GtkWidget *header_menu = gtk_menu_new();
+  GtkWidget *header_menu = gtk_menu_new ();
   GtkWidget *column_item;
 
   journal_window_state = g_settings_new ("org.tabos.roger.window-state");
@@ -1271,11 +1264,11 @@ roger_journal_init (RogerJournal *self)
   add_col_to_header_menu (header_menu, self->col7);
   add_col_to_header_menu (header_menu, self->col8);
 
-	column_item = gtk_menu_item_new_with_label(_("Restore default"));
-	g_signal_connect(G_OBJECT(column_item), "activate", G_CALLBACK(journal_column_restore_default), self);
-	gtk_menu_shell_append(GTK_MENU_SHELL(header_menu), column_item);
+  column_item = gtk_menu_item_new_with_label (_("Restore default"));
+  g_signal_connect (G_OBJECT (column_item), "activate", G_CALLBACK (journal_column_restore_default), self);
+  gtk_menu_shell_append (GTK_MENU_SHELL (header_menu), column_item);
 
-  gtk_widget_show_all(header_menu);
+  gtk_widget_show_all (header_menu);
 
   g_settings_bind (ROGER_SETTINGS_MAIN, "col-0-width", self->col0, "fixed-width", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (ROGER_SETTINGS_MAIN, "col-0-visible", self->col0, "visible", G_SETTINGS_BIND_DEFAULT);

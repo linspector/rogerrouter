@@ -1,20 +1,13 @@
 /*
- * Roger Router
- * Copyright (c) 2012-2021 Jan-Michael Brummer
+ * Roger Router Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; version 2 only.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 only.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -338,9 +331,9 @@ contacts_update_list (void)
       gtk_icon_size_lookup (GTK_ICON_SIZE_DIALOG, &size, NULL);
       img = gtk_image_new_from_pixbuf (rm_image_scale (contact->image, size));
     } else {
-        GtkWidget *avatar = hdy_avatar_new (48, contact->name, TRUE);
-        GdkPixbuf *pixbuf = hdy_avatar_draw_to_pixbuf (HDY_AVATAR (avatar), 48, 1);
-        img = gtk_image_new_from_pixbuf (pixbuf);
+      GtkWidget *avatar = hdy_avatar_new (48, contact->name, TRUE);
+      GdkPixbuf *pixbuf = hdy_avatar_draw_to_pixbuf (HDY_AVATAR (avatar), 48, 1);
+      img = gtk_image_new_from_pixbuf (pixbuf);
     }
     gtk_box_pack_start (GTK_BOX (child_box), img, FALSE, FALSE, 6);
 

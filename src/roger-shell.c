@@ -1,20 +1,13 @@
 /*
- * Roger Router
- * Copyright (c) 2012-2021 Jan-Michael Brummer
+ * Roger Router Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; version 2 only.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 only.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -606,8 +599,8 @@ roger_shell_add_platform_data (GApplication    *application,
     g_variant_builder_add (ctx_builder, "{iv}", 0, g_variant_new_string (self->call_number));
 
   g_variant_builder_add (builder, "{sv}",
-                       "roger-shell-startup-context",
-                       g_variant_builder_end (ctx_builder));
+                         "roger-shell-startup-context",
+                         g_variant_builder_end (ctx_builder));
 
   g_variant_builder_unref (ctx_builder);
 }
@@ -662,10 +655,10 @@ roger_shell_class_init (RogerShellClass *klass)
 
   object_properties[PROP_CALL_NUMBER] =
     g_param_spec_string ("call-number",
-                       "Call number",
-                       "The number to call.",
-                       "",
-                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                         "Call number",
+                         "The number to call.",
+                         "",
+                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (object_class,
                                      N_PROPERTIES,
@@ -760,4 +753,3 @@ main (int    argc,
 
   return status;
 }
-

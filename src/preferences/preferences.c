@@ -1,20 +1,13 @@
 /*
- * Roger Router
- * Copyright (c) 2012-2021 Jan-Michael Brummer
+ * Roger Router Copyright (c) 2012-2021 Jan-Michael Brummer
  *
  * This file is part of Roger Router.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; version 2 only.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 only.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -245,7 +238,7 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
                                   roger_notification_incoming_get_mapping,
                                   roger_notification_incoming_set_mapping,
                                   helper,
-                                  (GDestroyNotify) notification_helper_free);
+                                  (GDestroyNotify)notification_helper_free);
 
     gtk_container_add (GTK_CONTAINER (self->notification_incoming), row);
 
@@ -264,7 +257,7 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
                                   roger_notification_outgoing_get_mapping,
                                   roger_notification_outgoing_set_mapping,
                                   helper,
-                                  (GDestroyNotify) notification_helper_free);
+                                  (GDestroyNotify)notification_helper_free);
 
     gtk_container_add (GTK_CONTAINER (self->notification_outgoing), row);
   }
@@ -333,7 +326,7 @@ roger_preferences_window_constructed (GObject *object)
   roger_preferences_setup_plugins (self);
 }
 
-static void 
+static void
 roger_preferences_windows_finalize (GObject *object)
 {
   RogerPreferencesWindow *self = ROGER_PREFERENCES_WINDOW (object);

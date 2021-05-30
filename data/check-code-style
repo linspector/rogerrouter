@@ -17,7 +17,7 @@ then
 fi
 
 # create a filename to store our generated patch
-prefix="epiphany-ccs"
+prefix="roger-ccs"
 suffix="$(date +%C%y-%m-%d_%Hh%Mm%Ss)"
 patch="/tmp/$prefix-$suffix.patch"
 
@@ -25,7 +25,7 @@ patch="/tmp/$prefix-$suffix.patch"
 rm -f /tmp/$prefix*.patch
 
 pushd $SOURCE_ROOT
-for DIR in platform plugins roger
+for DIR in build-aux plugins src
 do
    for FILE in $(find "$DIR" -name "*.[c|h]" ! -path "*/contrib/*")
     do
