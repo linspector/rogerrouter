@@ -36,10 +36,6 @@ struct _RogerAssistant {
   GtkWidget *router_entry;
   GtkWidget *user_entry;
   GtkWidget *password_entry;
-  GtkWidget *ftp_user_label;
-  GtkWidget *ftp_user_entry;
-  GtkWidget *ftp_password_label;
-  GtkWidget *ftp_password_entry;
   GtkWidget *loading_label;
   GtkWidget *start_button;
 
@@ -48,7 +44,6 @@ struct _RogerAssistant {
   guint presence_check_id;
   guint get_settings_id;
   char *router_uri;
-  gboolean needs_ftp;
   RmProfile *profile;
 };
 
@@ -147,7 +142,6 @@ check_router_presence (gpointer user_data)
   gboolean present;
 
   present = rm_router_present (self->profile->router_info);
-  self->needs_ftp = !rm_network_tr64_available (self->profile);
   gtk_widget_set_sensitive (self->next_button, present);
 
   return G_SOURCE_REMOVE;
@@ -253,37 +247,6 @@ assistant_get_settings_thread (GTask        *task,
   if (rm_router_login (self->profile) && rm_router_get_settings (self->profile))
     ret = TRUE;
 
-  if (self->needs_ftp) {
-    const char *host = g_object_get_data (G_OBJECT (self->router_stack), "server");
-    const char *ftp_user = gtk_entry_get_text (GTK_ENTRY (self->ftp_user_entry));
-    const char *ftp_password = gtk_entry_get_text (GTK_ENTRY (self->ftp_password_entry));
-    char *message;
-    RmFtp *ftp;
-
-    /* Test ftp login */
-    gtk_label_set_text (GTK_LABEL (self->loading_label), _("Test FTP login"));
-    ftp = rm_ftp_init (host);
-    if (ftp) {
-      if (!rm_ftp_login (ftp, ftp_user, ftp_password)) {
-        /* Error: Could not login to ftp */
-        message = g_strdup (_("Please check your ftp user/password."));
-        rm_object_emit_message (_("Login failed"), message);
-        rm_ftp_shutdown (ftp);
-        ret = FALSE;
-
-        g_task_return_boolean (task, ret);
-
-        return;
-      }
-
-      rm_ftp_shutdown (ftp);
-
-      /* Store FTP credentials */
-      g_settings_set_string (self->profile->settings, "ftp-user", ftp_user);
-      rm_password_set (self->profile, "ftp-password", ftp_password);
-    }
-  }
-
   /* Enable telnet & capi port */
   gtk_label_set_text (GTK_LABEL (self->loading_label), _("Enable Ports"));
   if (rm_router_dial_number (self->profile, ROUTER_DIAL_PORT_AUTO, ROUTER_ENABLE_TELNET))
@@ -304,11 +267,6 @@ assistant_password_page_setup (RogerAssistant *self)
 {
   gtk_widget_set_sensitive (self->back_button, TRUE);
   gtk_widget_set_sensitive (self->next_button, TRUE);
-
-  gtk_widget_set_visible (self->ftp_user_label, self->needs_ftp);
-  gtk_widget_set_visible (self->ftp_user_entry, self->needs_ftp);
-  gtk_widget_set_visible (self->ftp_password_label, self->needs_ftp);
-  gtk_widget_set_visible (self->ftp_password_entry, self->needs_ftp);
 }
 
 static void
@@ -448,10 +406,6 @@ roger_assistant_class_init (RogerAssistantClass *klass)
   gtk_widget_class_bind_template_child (widget_class, RogerAssistant, router_entry);
   gtk_widget_class_bind_template_child (widget_class, RogerAssistant, user_entry);
   gtk_widget_class_bind_template_child (widget_class, RogerAssistant, password_entry);
-  gtk_widget_class_bind_template_child (widget_class, RogerAssistant, ftp_user_label);
-  gtk_widget_class_bind_template_child (widget_class, RogerAssistant, ftp_user_entry);
-  gtk_widget_class_bind_template_child (widget_class, RogerAssistant, ftp_password_label);
-  gtk_widget_class_bind_template_child (widget_class, RogerAssistant, ftp_password_entry);
   gtk_widget_class_bind_template_child (widget_class, RogerAssistant, loading_label);
   gtk_widget_class_bind_template_child (widget_class, RogerAssistant, start_button);
 
@@ -475,10 +429,6 @@ roger_assistant_init (RogerAssistant *self)
   placeholder = gtk_label_new (_("No router detected"));
   gtk_widget_show (placeholder);
   gtk_list_box_set_placeholder (GTK_LIST_BOX (self->router_listbox), placeholder);
-
-  g_object_bind_property (self->user_entry, "text", self->ftp_user_entry, "text", G_BINDING_DEFAULT);
-  g_object_bind_property (self->password_entry, "text", self->ftp_password_entry, "text", G_BINDING_DEFAULT);
-  gtk_entry_set_text (GTK_ENTRY (self->ftp_user_entry), "ftpuser");
 
   gtk_widget_grab_focus (self->profile_name_entry);
 

@@ -387,7 +387,7 @@ Author: Jan-Michael Brummer
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="margin-top">6</property>
-                    <property name="label" translatable="yes">Enter router login (webpage / FTP) credentials.</property>
+                    <property name="label" translatable="yes">Enter router login credentials.</property>
                     <property name="justify">center</property>
                     <property name="wrap">True</property>
                   </object>
@@ -420,7 +420,6 @@ Author: Jan-Michael Brummer
                     <property name="can-focus">True</property>
                     <property name="margin-top">24</property>
                     <property name="hexpand">True</property>
-                    <property name="placeholder-text" translatable="yes">Optional</property>
                   </object>
                   <packing>
                     <property name="left-attach">1</property>
