@@ -333,13 +333,22 @@ roger_preferences_window_constructed (GObject *object)
   roger_preferences_setup_plugins (self);
 }
 
+static void 
+roger_preferences_windows_finalize (GObject *object)
+{
+  RogerPreferencesWindow *self = ROGER_PREFERENCES_WINDOW (object);
+
+  rm_profile_update_numbers (self->profile);
+  G_OBJECT_CLASS (roger_preferences_window_parent_class)->finalize (object);
+}
+
 static void
 roger_preferences_window_class_init (RogerPreferencesWindowClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  /*object_class->finalize = prefs_dialog_finalize; */
+  object_class->finalize = roger_preferences_windows_finalize;
   object_class->constructed = roger_preferences_window_constructed;
 
   gtk_widget_class_set_template_from_resource (widget_class,

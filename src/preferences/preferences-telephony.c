@@ -66,10 +66,12 @@ roger_phone_number_get_mapping (GValue   *value,
     if (g_strcmp0 (numbers[idx], g_variant_get_string (variant, NULL)) == 0) {
       g_value_set_int (value, idx);
 
+      rm_profile_update_numbers (rm_profile_get_active ());
       return TRUE;
     }
   }
 
+  rm_profile_update_numbers (rm_profile_get_active ());
   return TRUE;
 }
 
@@ -82,6 +84,7 @@ roger_phone_number_set_mapping (const GValue       *value,
   g_autofree GStrv numbers = NULL;
   guint idx;
 
+  rm_profile_update_numbers (rm_profile_get_active ());
   numbers = rm_router_get_numbers (self->profile);
 
   idx = g_value_get_int (value);
