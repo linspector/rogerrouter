@@ -9,6 +9,7 @@ plugin_deps = [
 plugin_includes = include_directories('.', '..')
 
 subdir('evolution')
+subdir('gtknotify')
 subdir('keychain')
 subdir('osxab')
 subdir('thunderbird')
