@@ -1,3 +1,5 @@
+if host_machine.system() == 'windows'
+
 gtknotify_gresources = gnome.compile_resources(
   'gtknotify-gresources', 'gtknotify.gresource.xml',
   source_dir : '.',
@@ -26,3 +28,5 @@ custom_target('gtknotify.plugin',
     command : [msgfmt, '--desktop', '--template', '@INPUT@', '-d', podir, '-o', '@OUTPUT@'],
     install : true,
     install_dir : get_option('prefix') + '/' + get_option('libdir') + '/roger/gtknotify/')
+
+endif
