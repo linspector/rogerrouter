@@ -108,6 +108,7 @@ Section RogerRouter
 	File "C:\msys64\mingw64\bin\libgtk-3-0.dll"
 	File "C:\msys64\mingw64\bin\libiconv-2.dll"
 	File "C:\msys64\mingw64\bin\libintl-8.dll"
+	File "C:\msys64\mingw64\bin\libLerc.dll"
 	File "C:\msys64\mingw64\bin\libpango-1.0-0.dll"
 	File "C:\msys64\mingw64\bin\libpangocairo-1.0-0.dll"
 	File "C:\msys64\mingw64\bin\libpangowin32-1.0-0.dll"
@@ -160,7 +161,7 @@ Section RogerRouter
 
 	# UPnP
 	File "C:\msys64\mingw64\bin\libgssdp-1.2-0.dll"
-	File "C:\msys64\mingw64\bin\libgupnp-1.2-0.dll"
+	File "C:\msys64\mingw64\bin\libgupnp-1.2-1.dll"
 	File "C:\msys64\mingw64\bin\libjson-glib-1.0-0.dll"
 
 	# GStreamer

@@ -11,6 +11,7 @@ pacman --noconfirm -S --needed \
     mingw-w64-$MSYS2_ARCH-toolchain \
 	mingw-w64-$MSYS2_ARCH-meson \
 	mingw-w64-$MSYS2_ARCH-gtk3 \
+	mingw-w64-$MSYS2_ARCH-gtk4 \
 	mingw-w64-$MSYS2_ARCH-ghostscript \
 	mingw-w64-$MSYS2_ARCH-libhandy \
 	mingw-w64-$MSYS2_ARCH-libsoup \
