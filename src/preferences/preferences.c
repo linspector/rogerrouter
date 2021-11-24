@@ -288,6 +288,16 @@ roger_preferences_setup_journal (RogerPreferencesWindow *self)
 }
 
 static void
+roger_preferences_login_password_changed (GtkEditable *editable,
+                                          gpointer     user_data)
+{
+  RogerPreferencesWindow *self = ROGER_PREFERENCES_WINDOW (user_data);
+  const char *text = gtk_entry_get_text (GTK_ENTRY (editable));
+
+  rm_router_set_login_password (self->profile, text);
+}
+
+static void
 roger_preferences_window_constructed (GObject *object)
 {
   RogerPreferencesWindow *self = ROGER_PREFERENCES_WINDOW (object);
@@ -305,6 +315,7 @@ roger_preferences_window_constructed (GObject *object)
   g_settings_bind (self->profile->settings, "host", self->host, "text", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (self->profile->settings, "login-user", self->login_user, "text", G_SETTINGS_BIND_DEFAULT);
   gtk_entry_set_text (GTK_ENTRY (self->login_password), rm_router_get_login_password (self->profile));
+  g_signal_connect (self->login_password, "changed", G_CALLBACK (roger_preferences_login_password_changed), self);
 
   /* Codes */
   g_settings_bind (self->profile->settings, "external-access-code", self->external_code, "text", G_SETTINGS_BIND_DEFAULT);
