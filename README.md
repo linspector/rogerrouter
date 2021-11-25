@@ -21,14 +21,14 @@ Roger Router is a utility to control and monitor AVM Fritz!Box Routers.
 * Supports libsecret (GNOME Keychain, KWallet)
 * Control of own filter views in the journal
 
-## Linux installation
+## Linux Installation
 
 A detailed installation guide (including printer installation) can be found at: [tabos.gitlab.io](https://tabos.gitlab.io/project/rogerrouter/#installation-linux)
 
 ### Fedora compilation
 sudo dnf install ghostscript-devel 
 
-## macOS installation
+## macOS Installation
 
 Use HomeBrew to install Roger Router. 
 
@@ -45,3 +45,14 @@ To run roger, type "roger" in the terminal.
 
 To auto-start Roger Router on login, add /usr/local/bin/roger to your autostarts in your User preferences.
 
+## Windows Installation
+
+1. Download and install "msys2-x86_64-yyyymmdd.exe" from https://www.msys2.org/ to "C:\msys64" and follow their installation guide.
+2. Open "MSYS2 64bit" and run the following command inside:
+
+```
+git clone https://gitlab.com/tabos/rogerrouter.git
+./rogerrouter/build-aux/windows/build-msys.sh
+```
+
+4. Final installer should be created in _build\build-aux\windows" as "Roger Router-X.x.x.exe"
