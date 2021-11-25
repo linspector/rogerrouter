@@ -204,17 +204,13 @@ convert_to_fax (const char *file_name)
   output = g_strdup_printf ("-sOutputFile=%s", out_file);
   args[9] = output;
 
-  /* improved dithering pattern
-   * as proposed in this ghostscript ticket:
+  /* improved dithering pattern as proposed in this ghostscript ticket:
    * https://bugs.ghostscript.com/show_bug.cgi?id=694762#c3
    */
   args[10] = "-Ilib";
   args[11] = "stocht.ps";
 
-  /* set everything below 25% brightness to black
-   * and everything above 75% brightness to white.
-   * This improves that readability of faxes which contain
-   * grayscale or color scans.
+  /* set everything below 25% brightness to black and everything above 75% brightness to white. This improves that readability of faxes which contain grayscale or color scans.
    */
   args[12] = "-c";
   args[13] = "{ dup .25 lt { pop 0 } if dup .75 gt { pop 1 } if } settransfer";

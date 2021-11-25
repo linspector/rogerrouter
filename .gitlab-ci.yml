@@ -46,6 +46,7 @@ windows:
     - shared-windows
     - windows
     - windows-1809
+  allow_failure: true
   variables:
     PACMAN_OPTIONS: "--needed --noconfirm --noprogressbar --overwrite \\*"
   script:
