@@ -23,7 +23,7 @@ Roger Router is a utility to control and monitor AVM Fritz!Box Routers.
 
 ## Linux installation
 
-A detailed installation guide (including printer installation) can be found at: [tabos.gitlab.io](https://tabos.gitlab.io/project/rogerrouter/#installation-linux)
+A detailed installation guide (including printer installation) can be found at: [tabos.org](https://tabos.org/projects/rogerrouter/)
 
 ### Fedora compilation
 sudo dnf install ghostscript-devel 
