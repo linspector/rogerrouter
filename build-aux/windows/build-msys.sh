@@ -27,6 +27,7 @@ pacman --noconfirm -S --needed \
 
 git clone https://gitlab.gnome.org/GNOME/gssdp.git
 cd gssdp
+git checkout gssdp-1.4.0.1
 meson _build -Dvapi=false -Dintrospection=false
 ninja -C _build
 ninja -C _build install
@@ -34,6 +35,7 @@ cd ..
 
 git clone https://gitlab.gnome.org/GNOME/gupnp.git
 cd gupnp
+git checkout gupnp-1.4.3
 meson _build -Dvapi=false -Dintrospection=false
 ninja -C _build
 ninja -C _build install

@@ -160,8 +160,8 @@ Section RogerRouter
 	File "C:\msys64\mingw64\bin\libdatrie-1.dll"
 
 	# UPnP
-	File "C:\msys64\mingw64\bin\libgssdp-1.6-0.dll"
-	File "C:\msys64\mingw64\bin\libgupnp-1.6-0.dll"
+	File "C:\msys64\mingw64\bin\libgssdp-1.2-0.dll"
+	File "C:\msys64\mingw64\bin\libgupnp-1.2-1.dll"
 	File "C:\msys64\mingw64\bin\libjson-glib-1.0-0.dll"
 
 	# GStreamer
