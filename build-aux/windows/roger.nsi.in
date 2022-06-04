@@ -138,7 +138,7 @@ Section RogerRouter
 	File "C:\msys64\mingw64\bin\libopenjp2-7.dll"
 	File "C:\msys64\mingw64\bin\libpaper-1.dll"
 	File "C:\msys64\mingw64\bin\libgs-9.dll"
-	File "C:\msys64\mingw64\bin\libFLAC-8.dll"
+	File "C:\msys64\mingw64\bin\libFLAC.dll"
 	File "C:\msys64\mingw64\bin\libidn-12.dll"
 	File "C:\msys64\mingw64\bin\liblcms2-2.dll"
 	File "C:\msys64\mingw64\bin\libogg-0.dll"
