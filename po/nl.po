@@ -1,0 +1,1144 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the roger package.
+#
+# Heimen Stoffels <vistausss@fastmail.com>, 2022.
+msgid ""
+msgstr ""
+"Project-Id-Version: roger\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-28 19:43+0200\n"
+"PO-Revision-Date: 2022-07-29 13:55+0200\n"
+"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
+"Language-Team: Dutch\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 22.04.3\n"
+
+#: data/org.tabos.roger.desktop.in:3 data/org.tabos.roger.desktop.in:4
+#: data/org.tabos.roger.appdata.xml.in:9
+msgid "Roger Router"
+msgstr "Roger Router"
+
+#: data/org.tabos.roger.desktop.in:5 data/org.tabos.roger.appdata.xml.in:10
+msgid "Journal, Fax-Software and Call-Monitor for AVM FRITZ!Box or compatible"
+msgstr ""
+"Logboek, faxsoftware en oproepmonitor voor AVM FRITZ!Box of daarmee"
+" compatibele apparaten"
+
+#: data/org.tabos.roger.desktop.in:12
+msgid "fritz;box;fritzbox;router;manager;fax;softphone;"
+msgstr "fritz;box;fritzbox;router;beheerder;fax;softphone;"
+
+#: data/org.tabos.roger.appdata.xml.in:13
+msgid ""
+"Roger Router is a clean solution for controlling the FRITZ!Box or compatible "
+"router with Linux. It offers a rich feature list, including call monitor, "
+"journal, fax support and also has a great integration into several address "
+"books."
+msgstr ""
+"Roger Router is een handig programma voor het beheren van FRITZ!Box of"
+" daarmee compatible routers. Het programma beschikt over diverse functies,"
+" zoals oproepgeschiedenis, een logboek, faxondersteuning en integratie met"
+" diverse adresboeken."
+
+#: data/org.tabos.roger.appdata.xml.in:18
+msgid "Journal view of all calls"
+msgstr "Logboek met alle oproepen"
+
+#: data/org.tabos.roger.appdata.xml.in:25
+#: data/org.tabos.roger.appdata.xml.in:36
+#: data/org.tabos.roger.appdata.xml.in:49
+msgid "New features:"
+msgstr "Wijzigingslog:"
+
+#: data/org.tabos.roger.appdata.xml.in:29
+msgid "Fix creation of fax report"
+msgstr "Opgelost: aanmaken van faxverslagen"
+
+#: data/org.tabos.roger.appdata.xml.in:30
+msgid "Fix OS X build chain"
+msgstr "Opgelost: compilatie op macOS"
+
+#: data/org.tabos.roger.appdata.xml.in:40
+msgid "Add Run in Background option"
+msgstr "Nieuw: optie om op de achtergrond te draaien"
+
+#: data/org.tabos.roger.appdata.xml.in:41
+msgid "Fix crash after fax transfer"
+msgstr "Opgelost: crash na faxoverdracht"
+
+#: data/org.tabos.roger.appdata.xml.in:42
+msgid "Fix double free crash"
+msgstr "Opgelast: dubbele vrij crash"
+
+#: data/org.tabos.roger.appdata.xml.in:43
+msgid "Hide filter settings"
+msgstr "Filterinstellingen zijn voortaan verborgen"
+
+#: data/org.tabos.roger.appdata.xml.in:53
+msgid "UI redesign"
+msgstr "Nieuwe vormgeving"
+
+#: data/org.tabos.roger.appdata.xml.in:54
+msgid "Mobile design"
+msgstr "Nieuw ontwerp voor mobiele apparaten"
+
+#: data/org.tabos.roger.appdata.xml.in:55
+msgid "Significant stability and performance improvements"
+msgstr "Enorme stabiliteits- en prestatieverbeteringen"
+
+#: data/org.tabos.roger.appdata.xml.in:56
+msgid "Preperations for GTK4 switch"
+msgstr "Voorbereidingen voor GTK4"
+
+#: data/org.tabos.roger.appdata.xml.in:57
+msgid "Bugfixes"
+msgstr "Bugs opgelost"
+
+#: data/org.tabos.roger.appdata.xml.in:70
+msgid "Official release of 2.1.0"
+msgstr "Officiële vrijgave van versie 2.1.0"
+
+#: data/org.tabos.roger.appdata.xml.in:75
+msgid "Official release of 2.0.0"
+msgstr "Officiële vrijgave van versie 2.0.0"
+
+#: data/org.tabos.roger.appdata.xml.in:80
+msgid "Beta-Release for upcoming 2.0."
+msgstr "Bètaversie 2.0"
+
+#: data/org.tabos.roger.appdata.xml.in:89
+msgid "box"
+msgstr "box"
+
+#: data/org.tabos.roger.appdata.xml.in:90
+msgid "fax"
+msgstr "fax"
+
+#: data/org.tabos.roger.appdata.xml.in:91
+msgid "fritz"
+msgstr "fritz"
+
+#: data/org.tabos.roger.appdata.xml.in:92
+msgid "fritzbox"
+msgstr "fritzbox"
+
+#: data/org.tabos.roger.appdata.xml.in:93
+msgid "router"
+msgstr "router"
+
+#: data/org.tabos.roger.appdata.xml.in:94
+msgid "softphone"
+msgstr "softphone"
+
+#: data/org.tabos.roger.appdata.xml.in:95
+msgid "verwaltung"
+msgstr "Beheer"
+
+#: data/org.tabos.roger.appdata.xml.in:105
+#: data/org.tabos.roger.appdata.xml.in:110
+msgid "Jan-Michael Brummer"
+msgstr "Jan-Michael Brummer"
+
+#: src/resources/ui/assistant.ui:38
+msgid "Assistant"
+msgstr "Instelhulp"
+
+#: src/resources/ui/assistant.ui:41 src/roger-assistant.c:348
+msgid "Quit"
+msgstr "Afsluiten"
+
+#: src/resources/ui/assistant.ui:50
+msgid "Next"
+msgstr "Volgende"
+
+#: src/resources/ui/assistant.ui:110
+msgid "Create Profile"
+msgstr "Nieuw profiel aanmaken"
+
+#: src/resources/ui/assistant.ui:127
+msgid "A profile is linked to the router and helps to identify it, e.g. home"
+msgstr ""
+"Een profiel is gekoppeld aan een router om deze gemakkelijk te herkennen,"
+" bijv. ‘Thuis’"
+
+#: src/resources/ui/assistant.ui:148
+msgid "Profile Name"
+msgstr "Profielnaam"
+
+#: src/resources/ui/assistant.ui:183
+msgid "Create profile"
+msgstr "Profiel aanmaken"
+
+#: src/resources/ui/assistant.ui:214
+msgid "Select Router"
+msgstr "Kies een router"
+
+#: src/resources/ui/assistant.ui:232
+msgid ""
+"Select auto discovered router below or switch to manual mode and enter it's "
+"ip address."
+msgstr ""
+"Kies hieronder de automatisch herkende router of voer het ip-adres in in de"
+" handmatige modus."
+
+#: src/resources/ui/assistant.ui:269
+msgid "Automatic"
+msgstr "Automatisch"
+
+#: src/resources/ui/assistant.ui:283
+msgid "IP address"
+msgstr "IP-adres"
+
+#: src/resources/ui/assistant.ui:312
+msgid "Manual"
+msgstr "Handmatig"
+
+#: src/resources/ui/assistant.ui:341
+msgid "Select router"
+msgstr "Router kiezen"
+
+#: src/resources/ui/assistant.ui:373
+msgid "Router Password"
+msgstr "Routerwachtwoord"
+
+#: src/resources/ui/assistant.ui:390
+msgid "Enter router login credentials."
+msgstr "Voer de inloggegevens van de router in."
+
+#: src/resources/ui/assistant.ui:406 src/resources/ui/preferences.ui:45
+msgid "User"
+msgstr "Gebruikersnaam"
+
+#: src/resources/ui/assistant.ui:434 src/resources/ui/preferences.ui:63
+#: src/resources/authenticate.glade:115
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: src/resources/ui/assistant.ui:464
+msgid "FTP User"
+msgstr "Ftp-gebruikersnaam"
+
+#: src/resources/ui/assistant.ui:480
+msgid "FTP Password"
+msgstr "Ftp-wachtwoord"
+
+#: src/resources/ui/assistant.ui:542
+msgid "Router password"
+msgstr "Routerwachtwoord"
+
+#: src/resources/ui/assistant.ui:570
+msgid "Please Wait"
+msgstr "Even geduld…"
+
+#: src/resources/ui/assistant.ui:586
+msgid "Setup Roger Router"
+msgstr "Roger Router instellen"
+
+#: src/resources/ui/assistant.ui:597 src/resources/ui/journal.ui:344
+msgid "loading"
+msgstr "Bezig met laden…"
+
+#: src/resources/ui/assistant.ui:627
+msgid "Finish!"
+msgstr "Voltooid!"
+
+#: src/resources/ui/assistant.ui:644
+msgid "Thanks for using Roger Router and please consider a donation."
+msgstr ""
+"Bedankt voor het gebruik van dit programma. Overweeg een donatie te doen."
+
+#: src/resources/ui/assistant.ui:656
+msgid "Start using Roger Router"
+msgstr "Aan de slag met Roger Router"
+
+#: src/resources/ui/assistant.ui:676
+msgid "finish"
+msgstr "Afronden"
+
+#: src/resources/ui/fax.ui:31 src/resources/ui/phone.ui:93
+msgid "Suppress number"
+msgstr "Nummer verbergen"
+
+#: src/resources/ui/fax.ui:61
+msgid "Fax"
+msgstr "Fax"
+
+#: src/resources/ui/fax.ui:62
+msgid "00:00:00"
+msgstr "00:00:00"
+
+#: src/resources/ui/fax.ui:121 src/resources/ui/phone.ui:176
+msgid "1"
+msgstr "1"
+
+#: src/resources/ui/fax.ui:137 src/resources/ui/fax.ui:589
+#: src/resources/ui/fax.ui:706 src/resources/ui/phone.ui:192
+#: src/resources/ui/phone.ui:644 src/resources/ui/phone.ui:761
+msgid "<small> </small>"
+msgstr "<small> </small>"
+
+#: src/resources/ui/fax.ui:174 src/resources/ui/phone.ui:229
+msgid "2"
+msgstr "2"
+
+#: src/resources/ui/fax.ui:188 src/resources/ui/phone.ui:243
+msgid "<small>ABC</small>"
+msgstr "<small>ABC</small>"
+
+#: src/resources/ui/fax.ui:225 src/resources/ui/phone.ui:280
+msgid "3"
+msgstr "3"
+
+#: src/resources/ui/fax.ui:240 src/resources/ui/phone.ui:295
+msgid "<small>DEF</small>"
+msgstr "<small>DEF</small>"
+
+#: src/resources/ui/fax.ui:277 src/resources/ui/phone.ui:332
+msgid "4"
+msgstr "4"
+
+#: src/resources/ui/fax.ui:292 src/resources/ui/phone.ui:347
+msgid "<small>GHI</small>"
+msgstr "<small>GHI</small>"
+
+#: src/resources/ui/fax.ui:329 src/resources/ui/phone.ui:384
+msgid "5"
+msgstr "5"
+
+#: src/resources/ui/fax.ui:344 src/resources/ui/phone.ui:399
+msgid "<small>JKL</small>"
+msgstr "<small>JKL</small>"
+
+#: src/resources/ui/fax.ui:381 src/resources/ui/phone.ui:436
+msgid "6"
+msgstr "6"
+
+#: src/resources/ui/fax.ui:396 src/resources/ui/phone.ui:451
+msgid "<small>MNO</small>"
+msgstr "<small>MNO</small>"
+
+#: src/resources/ui/fax.ui:433 src/resources/ui/phone.ui:488
+msgid "7"
+msgstr "7"
+
+#: src/resources/ui/fax.ui:448 src/resources/ui/phone.ui:503
+msgid "<small>PQRS</small>"
+msgstr "<small>PQRS</small>"
+
+#: src/resources/ui/fax.ui:486 src/resources/ui/phone.ui:541
+msgid "<small>TUV</small>"
+msgstr "<small>TUV</small>"
+
+#: src/resources/ui/fax.ui:501 src/resources/ui/phone.ui:556
+msgid "8"
+msgstr "8"
+
+#: src/resources/ui/fax.ui:537 src/resources/ui/phone.ui:592
+msgid "9"
+msgstr "9"
+
+#: src/resources/ui/fax.ui:552 src/resources/ui/phone.ui:607
+msgid "<small>WXYZ</small>"
+msgstr "<small>WXYZ</small>"
+
+#: src/resources/ui/fax.ui:604 src/resources/ui/phone.ui:659
+msgid "*"
+msgstr "*"
+
+#: src/resources/ui/fax.ui:641 src/resources/ui/phone.ui:696
+msgid "<small>+</small>"
+msgstr "<small>+</small>"
+
+#: src/resources/ui/fax.ui:656 src/resources/ui/phone.ui:711
+msgid "0"
+msgstr "0"
+
+#: src/resources/ui/fax.ui:692 src/resources/ui/phone.ui:747
+msgid "#"
+msgstr "#"
+
+#: src/resources/ui/fax.ui:841
+msgid "From"
+msgstr "Van"
+
+#: src/resources/ui/fax.ui:881
+msgid "To"
+msgstr "Aan"
+
+#: src/resources/ui/fax.ui:936
+msgid " "
+msgstr " "
+
+#: src/resources/ui/journal.ui:19 src/resources/ui/journal.ui:370
+#: src/roger-print.c:275
+msgid "Type"
+msgstr "Type"
+
+#: src/resources/ui/journal.ui:44
+msgid "Reset to defaults"
+msgstr "Standaardwaarden herstellen"
+
+#: src/resources/ui/journal.ui:74 src/roger-journal.c:877
+msgid "Copy number"
+msgstr "Nummer kopiëren"
+
+#: src/resources/ui/journal.ui:88
+msgid "Call number"
+msgstr "Nummer bellen"
+
+#: src/resources/ui/journal.ui:113 src/roger-journal.c:886
+msgid "Add contact"
+msgstr "Contactpersoon toevoegen"
+
+#: src/resources/ui/journal.ui:175
+msgid "empty"
+msgstr "leeg"
+
+#: src/resources/ui/journal.ui:256
+msgid "full"
+msgstr "vol"
+
+#: src/resources/ui/journal.ui:288
+msgid "Search Journal"
+msgstr "Logboek doorzoeken"
+
+#: src/resources/ui/journal.ui:330
+msgid "Loading…"
+msgstr "Bezig met laden……"
+
+#: src/resources/ui/journal.ui:384 src/roger-print.c:279
+msgid "Date/Time"
+msgstr "Datum en tijd"
+
+#: src/resources/ui/journal.ui:398 src/contacts.c:675 src/roger-print.c:283
+msgid "Name"
+msgstr "Naam"
+
+#: src/resources/ui/journal.ui:412
+msgid "Company"
+msgstr "Bedrijf"
+
+#: src/resources/ui/journal.ui:426 src/resources/ui/preferences.ui:218
+#: src/resources/ui/preferences.ui:239 src/contacts.c:709 src/roger-print.c:287
+msgid "Number"
+msgstr "Nummer"
+
+#: src/resources/ui/journal.ui:440 src/contacts.c:751
+msgid "City"
+msgstr "Woonplaats"
+
+#: src/resources/ui/journal.ui:454
+msgid "Extension"
+msgstr "Kengetal"
+
+#: src/resources/ui/journal.ui:468
+msgid "Line"
+msgstr "Lijn"
+
+#: src/resources/ui/journal.ui:482 src/roger-print.c:299
+msgid "Duration"
+msgstr "Duur"
+
+#: src/resources/ui/journal.ui:497
+msgid "Call"
+msgstr "Oproep"
+
+#: src/resources/ui/journal.ui:506
+msgid "treeview"
+msgstr "Boomweergave"
+
+#: src/resources/ui/journal.ui:542
+msgid "Welcome to Roger Router"
+msgstr "Welkom bij Roger Router"
+
+#: src/resources/ui/journal.ui:561
+msgid "Create a connection to the router using the Assistant."
+msgstr "Zet een verbinding op met de router met behulp van de instelhulp."
+
+#: src/resources/ui/journal.ui:573
+msgid "Start Assistant"
+msgstr "Instelhulp starten"
+
+#: src/resources/ui/journal.ui:596
+msgid "welcome"
+msgstr "Welkom"
+
+#: src/resources/ui/journal.ui:622
+msgid "mobile"
+msgstr "Mobiel"
+
+#: src/resources/ui/journal-popover.ui:123
+msgid "_Contacts"
+msgstr "_Contactpersonen"
+
+#: src/resources/ui/journal-popover.ui:137
+msgid "_Phone"
+msgstr "_Telefoon"
+
+#: src/resources/ui/journal-popover.ui:150
+#: src/resources/ui/journal-popover.ui:277
+msgid "_Functions"
+msgstr "_Functies"
+
+#: src/resources/ui/journal-popover.ui:165
+msgid "_Assistant"
+msgstr "_Instelhulp"
+
+#: src/resources/ui/journal-popover.ui:187
+msgid "_Run in Background"
+msgstr "Uitvoe_ren op achtergrond"
+
+#: src/resources/ui/journal-popover.ui:214
+msgid "Pr_eferences"
+msgstr "Voork_euren"
+
+#: src/resources/ui/journal-popover.ui:239
+msgid "_Keyboard Shortcuts"
+msgstr "_Sneltoetsen"
+
+#: src/resources/ui/journal-popover.ui:253
+msgid "A_bout Roger Router"
+msgstr "Over Ro_ger Router"
+
+#: src/resources/ui/journal-popover.ui:294
+msgid "_Copy IP Address"
+msgstr "IP-adres kopiëren"
+
+#: src/resources/ui/journal-popover.ui:308
+msgid "_Reconnect"
+msgstr "Opnieuw ve_rbinden"
+
+#: src/resources/ui/phone.ui:50
+msgid "Phones"
+msgstr "Telefoons"
+
+#: src/resources/ui/phone.ui:123 src/roger-phone.c:359
+msgid "Phone"
+msgstr "Telefoon"
+
+#: src/resources/ui/phone.ui:812
+msgid "<small>Mute</small>"
+msgstr "<small>Dempen</small>"
+
+#: src/resources/ui/phone.ui:862
+msgid "<small>Hold</small>"
+msgstr "<small>In de wacht zetten</small>"
+
+#: src/resources/ui/phone.ui:912
+msgid "<small>Record</small>"
+msgstr "<small>Opnemen</small>"
+
+#: src/resources/ui/preferences.ui:17
+msgid "Connections"
+msgstr "Verbindingen"
+
+#: src/resources/ui/preferences.ui:21
+msgid "Router"
+msgstr "Router"
+
+#: src/resources/ui/preferences.ui:27
+msgid "Host"
+msgstr "Host"
+
+#: src/resources/ui/preferences.ui:82
+msgid "Codes"
+msgstr "Codes"
+
+#: src/resources/ui/preferences.ui:88
+msgid "External"
+msgstr "Extern"
+
+#: src/resources/ui/preferences.ui:106
+msgid "International"
+msgstr "Buitenland"
+
+#: src/resources/ui/preferences.ui:124
+msgid "Country"
+msgstr "Land"
+
+#: src/resources/ui/preferences.ui:142
+msgid "National"
+msgstr "Binnenland"
+
+#: src/resources/ui/preferences.ui:160
+msgid "Area"
+msgstr "Gebied"
+
+#: src/resources/ui/preferences.ui:178 src/resources/ui/preferences.ui:385
+msgid "Devices"
+msgstr "Apparaten"
+
+#: src/resources/ui/preferences.ui:183 src/resources/ui/preferences.ui:212
+msgid "Softphone"
+msgstr "Softphone"
+
+#: src/resources/ui/preferences.ui:184
+msgid "Enable softphone support"
+msgstr "Softphone-ondersteuning inschakelen"
+
+#: src/resources/ui/preferences.ui:197 src/resources/ui/preferences.ui:233
+msgid "Softfax"
+msgstr "Softfax"
+
+#: src/resources/ui/preferences.ui:198
+msgid "Enable softfax support"
+msgstr "Softfax-ondersteuning inschakelen"
+
+#: src/resources/ui/preferences.ui:219
+msgid "Phone number which will be used by softphone"
+msgstr "Het door softphone te gebruiken telefoonnummer"
+
+#: src/resources/ui/preferences.ui:225 src/resources/ui/preferences.ui:245
+msgid "Controller"
+msgstr "Controller"
+
+#: src/resources/ui/preferences.ui:226
+msgid "Router controller to take of router connections"
+msgstr "De routercontroller voor de routerverbindingen"
+
+#: src/resources/ui/preferences.ui:252
+msgid "Header"
+msgstr "Kop"
+
+#: src/resources/ui/preferences.ui:270
+msgid "Ident"
+msgstr "Identificatie"
+
+#: src/resources/ui/preferences.ui:287
+msgid "Resolution"
+msgstr "Resultaat"
+
+#: src/resources/ui/preferences.ui:293
+msgid "Service"
+msgstr "Dienst"
+
+#: src/resources/ui/preferences.ui:299
+msgid "Fax reports"
+msgstr "Faxverslagen"
+
+#: src/resources/ui/preferences.ui:304
+msgid "Directory"
+msgstr "Map"
+
+#: src/resources/ui/preferences.ui:320
+msgid "Error correction"
+msgstr "Verbindingsfout"
+
+#: src/resources/ui/preferences.ui:337 src/roger-print.c:234
+msgid "Journal"
+msgstr "Logboek"
+
+#: src/resources/ui/preferences.ui:341
+msgid "Incoming Notifications"
+msgstr "Inkomende meldingen"
+
+#: src/resources/ui/preferences.ui:347
+msgid "Outgoing Notifications"
+msgstr "Uitgaande meldingen"
+
+#: src/resources/ui/preferences.ui:353
+msgid "Filter"
+msgstr "Filter"
+
+#: src/resources/ui/preferences.ui:362
+msgid "Audio"
+msgstr "Audio"
+
+#: src/resources/ui/preferences.ui:366 src/resources/ui/preferences.ui:416
+msgid "Configuration"
+msgstr "Configuratie"
+
+#: src/resources/ui/preferences.ui:371
+msgid "Ringtone"
+msgstr "Beltoon"
+
+#: src/resources/ui/preferences.ui:390
+msgid "Microphone"
+msgstr "Microfoon"
+
+#: src/resources/ui/preferences.ui:396
+msgid "Speaker"
+msgstr "Luidspreker"
+
+#: src/resources/ui/preferences.ui:402
+msgid "Ringer"
+msgstr "Beltoon"
+
+#: src/resources/ui/preferences.ui:412
+msgid "Plugins"
+msgstr "Plug-ins"
+
+#: src/resources/ui/shortcuts.ui:14
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Algemeen"
+
+#: src/resources/ui/shortcuts.ui:19
+msgctxt "shortcut window"
+msgid "Fullscreen"
+msgstr "Schermvullende weergave"
+
+#: src/resources/ui/shortcuts.ui:26
+msgctxt "shortcut window"
+msgid "Shortcuts"
+msgstr "Sneltoetsen"
+
+#: src/resources/ui/shortcuts.ui:34
+msgctxt "shortcut window"
+msgid "Journal"
+msgstr "Logboek"
+
+#: src/resources/ui/shortcuts.ui:39
+msgctxt "shortcut window"
+msgid "Phone"
+msgstr "Telefoon"
+
+#: src/resources/ui/shortcuts.ui:46
+msgctxt "shortcut window"
+msgid "Address book"
+msgstr "Adresboek"
+
+#: src/resources/ui/shortcuts.ui:53
+msgctxt "shortcut window"
+msgid "Quit"
+msgstr "Afsluiten"
+
+#: src/resources/ui/shortcuts.ui:60
+msgctxt "shortcut window"
+msgid "Settings"
+msgstr "Instellingen"
+
+#: src/resources/ui/voice-mail.ui:29
+msgid "Voice Mail"
+msgstr "Voicemail"
+
+#: src/resources/authenticate.glade:7
+msgid "Authenticate"
+msgstr "Authenticeren"
+
+#: src/resources/authenticate.glade:73
+msgid "A username and password are being requested by the site"
+msgstr "De website vereist een gebruikersnaam en wachtwoord"
+
+#: src/resources/authenticate.glade:104
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: src/resources/contacts.glade:42
+msgid "Type to search"
+msgstr "Typ om te zoeken…"
+
+#: src/resources/contacts.glade:187
+msgid "No address book plugin selected"
+msgstr "Er is geen adresboekplug-in gekozen"
+
+#: src/resources/contacts.glade:238
+msgid "Book"
+msgstr "Boek"
+
+#: src/resources/contacts.glade:254
+msgid "All contacts"
+msgstr "Alle contactpersonen"
+
+#: src/resources/contacts.glade:322
+msgid "Contact"
+msgstr "Contactpersoon"
+
+#: src/resources/contacts.glade:330
+msgid "Edit"
+msgstr "Bewerken"
+
+#: src/contacts.c:156
+msgid "Dial number"
+msgstr "Telefoonnummer"
+
+#: src/contacts.c:178
+msgid "Private"
+msgstr "Privé"
+
+#: src/contacts.c:181
+msgid "Business"
+msgstr "Zakelijk"
+
+#: src/contacts.c:184
+msgid "Other"
+msgstr "Overig"
+
+#: src/contacts.c:223
+msgid "<b>Choose a contact</b>"
+msgstr "<b>Kies een contactpersoon</b>"
+
+#: src/contacts.c:524
+msgid "Open image"
+msgstr "Afbeelding openen"
+
+#: src/contacts.c:525
+msgid "_Cancel"
+msgstr "_Annuleren"
+
+#: src/contacts.c:525
+msgid "_Open"
+msgstr "_Openen"
+
+#: src/contacts.c:525
+msgid "_No image"
+msgstr "Gee_n afbeelding"
+
+#: src/contacts.c:697 src/contacts.c:735 src/roger-contactsearch.c:38
+msgid "Home"
+msgstr "Thuis"
+
+#: src/contacts.c:698 src/contacts.c:736 src/roger-contactsearch.c:41
+msgid "Work"
+msgstr "Werk"
+
+#: src/contacts.c:699 src/roger-contactsearch.c:44
+msgid "Mobile"
+msgstr "Mobiel"
+
+#: src/contacts.c:700 src/contacts.c:779
+msgid "Home Fax"
+msgstr "Faxnummer (thuis)"
+
+#: src/contacts.c:701 src/contacts.c:780
+msgid "Work Fax"
+msgstr "Faxnummer (werk)"
+
+#: src/contacts.c:702 src/contacts.c:781
+msgid "Pager"
+msgstr "Pieper"
+
+#: src/contacts.c:715
+msgid "Remove number"
+msgstr "Nummer wissen"
+
+#: src/contacts.c:742
+msgid "Remove address"
+msgstr "Adres wissen"
+
+#: src/contacts.c:749
+msgid "Street"
+msgstr "Straatnaam"
+
+#: src/contacts.c:750
+msgid "ZIP"
+msgstr "Postcode"
+
+#: src/contacts.c:776
+msgid "Home phone"
+msgstr "Telefoonnummer (thuis)"
+
+#: src/contacts.c:777
+msgid "Work phone"
+msgstr "Telefoonnummer (werk)"
+
+#: src/contacts.c:778
+msgid "Mobile phone"
+msgstr "Telefoonnummer (mobiel)"
+
+#: src/contacts.c:782
+msgid "Home address"
+msgstr "Adres (thuis)"
+
+#: src/contacts.c:783
+msgid "Work address"
+msgstr "Adres (werk)"
+
+#: src/contacts.c:788
+msgid "Add detail"
+msgstr "Item toevoegen"
+
+#: src/contacts.c:846
+msgid ""
+"Note: Depending on the address book plugin not all information might be saved"
+msgstr "Let op: sommige adresboekplug-ins kunnen niet alle informatie opslaan"
+
+#: src/contacts.c:848
+msgid "Do not show again"
+msgstr "Niet meer tonen"
+
+#: src/contacts.c:1005
+msgid "New contact"
+msgstr "Nieuw contactpersoon"
+
+#: src/contacts.c:1053
+#, c-format
+msgid "Do you want to delete contact '%s'?"
+msgstr "Weet u zeker dat u ‘%s’ wilt verwijderen?"
+
+#: src/contacts.c:1056 src/roger-journal.c:478 src/roger-journal.c:538
+#: src/roger-journal.c:969 src/preferences/preferences.c:153
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: src/contacts.c:1059 src/roger-journal.c:479 src/roger-journal.c:539
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: src/roger-assistant.c:116
+msgid "on"
+msgstr "Aan"
+
+#: src/roger-assistant.c:246
+msgid "Get Settings"
+msgstr "Instellingen ophalen"
+
+#: src/roger-assistant.c:251
+msgid "Enable Ports"
+msgstr "Poorten inschakelen"
+
+#: src/roger-assistant.c:259
+msgid "Trigger Reconnect"
+msgstr "Opnieuw verbinden"
+
+#: src/roger-assistant.c:366
+msgid "Back"
+msgstr "Terug"
+
+#: src/roger-assistant.c:429
+msgid "No router detected"
+msgstr "Er is geen router aangetroffen"
+
+#: src/roger-contactsearch.c:47
+msgid "Fax Home"
+msgstr "Fax (thuis)"
+
+#: src/roger-contactsearch.c:50
+msgid "Fax Work"
+msgstr "Fax (werk)"
+
+#: src/roger-contactsearch.c:59 src/roger-journal.c:227
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: src/roger-fax.c:81
+#, c-format
+msgid "Transferred %d of %d"
+msgstr "%d van %d verstuurd"
+
+#: src/roger-fax.c:86
+msgid "Fax transfer successful"
+msgstr "De fax is verstuurd"
+
+#: src/roger-fax.c:88
+msgid "Fax transfer failed"
+msgstr "Het versturen is mislukt"
+
+#: src/roger-fax.c:98
+msgid "Connecting…"
+msgstr "Bezig met verbinden…"
+
+#: src/roger-journal.c:280
+msgid "<No profile>"
+msgstr "<geen profiel>"
+
+#: src/roger-journal.c:281
+#, c-format
+msgid "%d calls, %d:%2.2dh"
+msgstr "%d oproepen; %d:%2.2dh"
+
+#: src/roger-journal.c:476
+msgid "Do you want to delete the router journal?"
+msgstr "Weet u zeker dat u het routerlogboek wilt verwijderen?"
+
+#: src/roger-journal.c:536
+msgid "Do you really want to delete the selected entry?"
+msgstr "Weet u zeker dat u het gekozen item wilt verwijderen?"
+
+#: src/roger-journal.c:969
+msgid "Export journal"
+msgstr "Logboek exporteren"
+
+#: src/roger-journal.c:969 src/preferences/preferences.c:157
+msgid "Save"
+msgstr "Opslaan"
+
+#: src/roger-journal.c:1267
+msgid "Restore default"
+msgstr "Standaardwaarden herstellen"
+
+#: src/roger-phone.c:129
+msgid "Cannot close window, a call is in progress"
+msgstr "Het venster kan niet worden gesloten wegens een actief gesprek"
+
+#: src/roger-print.c:241
+#, c-format
+msgid "<small>Page %d of %d</small>"
+msgstr "<small>Pagina %d van %d</small>"
+
+#: src/roger-print.c:291
+msgid "Local Name"
+msgstr "Lokale naam"
+
+#: src/roger-print.c:295
+msgid "Local Number"
+msgstr "Lokaal nummer"
+
+#: src/roger-print.c:376
+msgid "Roger Router-Journal"
+msgstr "Roger Router-logboek"
+
+#: src/roger-print.c:446
+msgid "SUCCESS"
+msgstr "VOLTOOID"
+
+#: src/roger-print.c:446
+msgid "FAILED"
+msgstr "MISLUKT"
+
+#: src/roger-print.c:490
+msgid "Fax Transfer Protocol"
+msgstr "Fax-overdrachtsprotocol"
+
+#: src/roger-print.c:498
+msgid "Date/Time:"
+msgstr "Datum en tijd:"
+
+#: src/roger-print.c:506
+msgid "Transfer status:"
+msgstr "Overdrachtsstatus:"
+
+#: src/roger-print.c:512
+msgid "Receiver ID:"
+msgstr "Ontvanger-id:"
+
+#: src/roger-print.c:520
+msgid "Pages sent:"
+msgstr "Aantal verstuurde pagina's:"
+
+#: src/roger-print.c:528
+msgid "Recipient name:"
+msgstr "Naam van ontvanger:"
+
+#: src/roger-print.c:537
+msgid "Recipient number:"
+msgstr "Nummer van ontvanger:"
+
+#: src/roger-print.c:545
+msgid "Sender name:"
+msgstr "Naam van afzender:"
+
+#: src/roger-print.c:553
+msgid "Sender number:"
+msgstr "Nummer van afzender:"
+
+#: src/roger-shell.c:101
+#, c-format
+msgid "A username and password are being requested by the site %s"
+msgstr "De website ‘%s’ vereist een gebruikersnaam en wachtwoord"
+
+#: src/roger-shell.c:212
+msgid ""
+"FRITZ!Box Journal, Soft/phone, and Fax\n"
+"Dedicated to my father"
+msgstr ""
+"FRITZ!Box-logboek, softphone en fax\n"
+"Opgedragen aan mijn vader"
+
+#: src/roger-shell.c:219
+msgid "Website"
+msgstr "Website"
+
+#: src/preferences/preferences.c:150
+msgid "Edit filter"
+msgstr "Filter bewerken"
+
+#: src/preferences/preferences.c:167
+msgid "Name:"
+msgstr "Naam:"
+
+#: src/preferences/preferences.c:286
+msgid "Add filter"
+msgstr "Filter toevoegen"
+
+#: src/preferences/preferences-plugins.c:64
+msgid "Homepage"
+msgstr "Website"
+
+#: src/preferences/preferences-telephony.c:32
+msgid "ISDN 1"
+msgstr "ISDN 1"
+
+#: src/preferences/preferences-telephony.c:34
+msgid "ISDN 2"
+msgstr "ISDN 2"
+
+#: src/preferences/preferences-telephony.c:36
+msgid "System ISDN"
+msgstr "Systeem-isdn"
+
+#: src/preferences/preferences-telephony.c:38
+msgid "System Analog"
+msgstr "Systeemanaloog"
+
+#: src/preferences/preferences-telephony.c:40
+msgid "Internet 1"
+msgstr "Internet 1"
+
+#: src/preferences/preferences-telephony.c:42
+msgid "Internet 2"
+msgstr "Internet 2"
+
+#: src/preferences/preferences-telephony.c:99
+msgid "Low (98dpi)"
+msgstr "Laag (98dpi)"
+
+#: src/preferences/preferences-telephony.c:101
+msgid "High (196dpi)"
+msgstr "Hoog (196dpi)"
+
+#: src/preferences/preferences-telephony.c:115
+msgid "Analog"
+msgstr "Analoog"
+
+#: src/preferences/preferences-telephony.c:117
+msgid "ISDN"
+msgstr "ISDN"
+
+#: plugins/evolution/evolution.desktop.in:4
+msgid "Evolution"
+msgstr "Evolution"
+
+#: plugins/evolution/evolution.desktop.in:5
+msgid "Evolution address book support"
+msgstr "Evolution-adresboekondersteuning"
+
+#: plugins/thunderbird/thunderbird.c:1155
+msgid "Thunderbird file"
+msgstr "Thunderbird-bestand"
+
+#: plugins/thunderbird/thunderbird.c:1157
+msgid "Select Thunderbird Addressbook"
+msgstr "Kies een Thunderbird-adresboek"
+
+#: plugins/thunderbird/thunderbird.desktop.in:4
+msgid "Thunderbird"
+msgstr "Thunderbird"
+
+#: plugins/thunderbird/thunderbird.desktop.in:5
+msgid "Thunderbird address book support"
+msgstr "Thunderbird-adresboekondersteuning"
+
+#: plugins/vcard/vcard.c:1254
+msgid "Select vcard file"
+msgstr "Kies een vcard-bestand"
+
+#: plugins/vcard/vcard.c:1294
+msgid "VCard file"
+msgstr "VCard-bestand"
+
+#: plugins/vcard/vcard.c:1298
+msgid "Select VCard"
+msgstr "VCard kiezen"
+
+#: plugins/vcard/vcard.desktop.in:4
+msgid "VCard"
+msgstr "VCard"
+
+#: plugins/vcard/vcard.desktop.in:5
+msgid "VCard address book support"
+msgstr "VCard-adresboekondersteuning"
